@@ -1,3 +1,3 @@
  FROM navikt/java:8
 
-COPY build/libs/eessi-pensjon-journalforing-*.jar /app/app.jar
+COPY build/libs/eessi-pensjon-begrens-innsyn-*.jar /app/app.jar
