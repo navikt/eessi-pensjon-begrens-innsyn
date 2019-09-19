@@ -18,11 +18,11 @@ test:
 
 docker:
 	$(NAIS) validate
-	$(DOCKER) build --pull -t $(REGISTRY)/eessi-pensjon-journalforing .
+	$(DOCKER) build --pull -t $(REGISTRY)/eessi-pensjon-begrens-innsyn .
 
 docker-push:
-	$(DOCKER) tag $(REGISTRY)/eessi-pensjon-journalforing $(REGISTRY)/eessi-pensjon-journalforing:$(VERSION)
-	$(DOCKER) push $(REGISTRY)/eessi-pensjon-journalforing:$(VERSION)
+	$(DOCKER) tag $(REGISTRY)/eessi-pensjon-begrens-innsyn $(REGISTRY)/eessi-pensjon-begrens-innsyn:$(VERSION)
+	$(DOCKER) push $(REGISTRY)/eessi-pensjon-begrens-innsyn:$(VERSION)
 
 bump-version:
 	@echo $$(($$(cat ./VERSION) + 1)) > ./VERSION
@@ -33,4 +33,4 @@ tag:
 	git tag -a $(VERSION) -m "auto-tag from Makefile"
 
 manifest:
-	$(NAIS) upload --app eessi-pensjon-journalforing -v $(VERSION)
+	$(NAIS) upload --app eessi-pensjon-begrens-innsyn -v $(VERSION)
