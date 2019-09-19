@@ -11,11 +11,11 @@ node {
             appToken = github.generateAppToken()
 
             sh "git init"
-            sh "git pull https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-journalforing.git"
+            sh "git pull https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-begrens-innsyn.git"
             sh "make bump-version"
 
             commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-            github.commitStatus("pending", "navikt/eessi-pensjon-journalforing", appToken, commitHash)
+            github.commitStatus("pending", "navikt/eessi-pensjon-begrens-innsyn", appToken, commitHash)
         }
 
         stage("build") {
@@ -41,7 +41,7 @@ node {
                 sh "docker login -u ${env.NEXUS_USERNAME} -p ${env.NEXUS_PASSWORD} repo.adeo.no:5443"
             }
             sh "make release"
-            sh "git push --tags https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-journalforing HEAD:master"
+            sh "git push --tags https://x-access-token:$appToken@github.com/navikt/eessi-pensjon-begrens-innsyn HEAD:master"
         }
 
         stage("upload manifest") {
@@ -56,8 +56,8 @@ node {
                     job       : 'nais-deploy-pipeline',
                     wait      : true,
                     parameters: [
-                            string(name: 'APP', value: "eessi-pensjon-journalforing"),
-                            string(name: 'REPO', value: "navikt/eessi-pensjon-journalforing"),
+                            string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
                             string(name: 'VERSION', value: version),
                             string(name: 'DEPLOY_REF', value: version),
                             string(name: 'NAMESPACE', value: 't8'),
@@ -72,8 +72,8 @@ node {
                     job       : 'nais-deploy-pipeline',
                     wait      : true,
                     parameters: [
-                            string(name: 'APP', value: "eessi-pensjon-journalforing"),
-                            string(name: 'REPO', value: "navikt/eessi-pensjon-journalforing"),
+                            string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
                             string(name: 'VERSION', value: version),
                             string(name: 'DEPLOY_REF', value: version),
                             string(name: 'NAMESPACE', value: 'q2'),
@@ -82,9 +82,9 @@ node {
             ])
         }
 
-        github.commitStatus("success", "navikt/eessi-pensjon-journalforing", appToken, commitHash)
+        github.commitStatus("success", "navikt/eessi-pensjon-begrens-innsyn", appToken, commitHash)
     } catch (err) {
-        github.commitStatus("failure", "navikt/eessi-pensjon-journalforing", appToken, commitHash)
+        github.commitStatus("failure", "navikt/eessi-pensjon-begrens-innsyn", appToken, commitHash)
         throw err
     }
 }
