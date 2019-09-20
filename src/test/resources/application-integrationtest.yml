@@ -1,0 +1,31 @@
+kafka:
+  sedSendt:
+    topic: eessi-basis-sedSendt-v1
+    groupid: eessi-pensjon-group
+
+spring:
+  kafka:
+    listener:
+      ack-mode: manual
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    properties:
+      security.protocol: PLAINTEXT
+  main:
+    allow-bean-definition-overriding: true
+
+securityTokenService:
+  discoveryUrl: http://localhost:${mockServerport}/.well-known/openid-configuration
+
+EUX_RINA_API_V1_URL: http://localhost:${mockServerport}
+securitytokenservice.url: http://someurl
+srvusername: someuser
+srvpassword: somepass
+oppgave.oppgaver.url: http://localhost:${mockServerport}
+JOURNALPOST_V1_URL: http://localhost:${mockServerport}
+aktoerregister.api.v1.url: http://localhost:${mockServerport}
+virksomhet.person.v3:
+  endpointurl: http://localhost:${mockServerport}
+eessifagmodulservice_URL: http://localhost:${mockServerport}
