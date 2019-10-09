@@ -31,3 +31,17 @@ fasitResources:
   used:
     - alias: eessi-pensjon-active-profiles
       resourceType: ApplicationProperties
+    - alias: srveessi-pensjon-begrens-innsyn
+        resourceType: credential
+        propertyMap:
+          username: srvusername
+          password: srvpassword
+    #TPS
+    - alias: virksomhet:Person_v3
+      resourceType: WebserviceEndpoint
+    #Brukes av nye rest tjenester
+    - alias: security-token-service-openid-configuration
+      resourceType: RestService
+    #Brukes av gamle tjenester
+    - alias: securityTokenService
+      resourceType: BaseUrl
