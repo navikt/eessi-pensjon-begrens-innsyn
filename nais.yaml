@@ -45,3 +45,5 @@ fasitResources:
     #Brukes av gamle tjenester
     - alias: securityTokenService
       resourceType: BaseUrl
+    - alias: eux-rina-api_v1
+      resourceType: RestService
