@@ -36,6 +36,8 @@ fasitResources:
       propertyMap:
         username: srvusername
         password: srvpassword
+    - alias: kafka_bootstrap_servers
+      resourceType: baseurl
     #TPS
     - alias: virksomhet:Person_v3
       resourceType: WebserviceEndpoint
