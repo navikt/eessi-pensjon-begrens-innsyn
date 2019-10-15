@@ -1,10 +1,10 @@
 kafka:
   sedSendt:
     topic: eessi-basis-sedSendt-v1
-    groupid: eessi-pensjon-group
+    groupid: eessi-pensjon-begrens-innsyn-group
   sedMottatt:
     topic: eessi-basis-sedMottatt-v1
-    groupid: eessi-pensjon-group
+    groupid: eessi-pensjon-begrens-innsyn-group
 
 #Spring
 spring:
