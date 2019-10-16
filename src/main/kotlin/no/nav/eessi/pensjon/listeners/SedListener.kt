@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.listeners
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -13,7 +14,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 
 @Service
-class SedListener(
+class SedListener(private val begrensInnsynService: BegrensInnsynService,
         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
 ) {
 
@@ -31,6 +32,7 @@ class SedListener(
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 logger.debug(hendelse)
                 try {
+                    begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
                 } catch (ex: Exception) {
                     logger.error(

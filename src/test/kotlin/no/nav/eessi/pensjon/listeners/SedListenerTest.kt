@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.listeners
 
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -23,11 +24,14 @@ class SedListenerTest {
     @Mock
     lateinit var cr: ConsumerRecord<String, String>
 
+    @Mock
+    lateinit var begrensInnsynService: BegrensInnsynService
+
     lateinit var sedListener: SedListener
 
     @BeforeEach
     fun setup() {
-        sedListener = SedListener()
+        sedListener = SedListener(begrensInnsynService)
     }
 
     @Test

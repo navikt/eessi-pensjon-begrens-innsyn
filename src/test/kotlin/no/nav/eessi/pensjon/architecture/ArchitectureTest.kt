@@ -55,16 +55,16 @@ class ArchitectureTest {
         val STS = "begrens.innsyn.security.sts"
         val EuxService = "begrens.innsyn.services.eux"
         val PersonV3Service = "begrens.innsyn.services.personv3"
+        val BegrensInnsyn = "begrens.innsyn.begrens.innsyn"
 
         val packages: Map<String, String> = mapOf(
                 ROOT to root,
                 Config to "$root.config",
                 Health to "$root.health",
-                // TODO BegrensInnsyn to "$root.begrens.innsyn",
+                BegrensInnsyn to "$root.begrens.innsyn",
                 JSON to "$root.json",
                 Listeners to "$root.listeners",
                 Logging to "$root.logging",
-                // TODO Logging to "$root.logging",begrens.innsyn
                 Metrics to "$root.metrics",
                 STS to "$root.security.sts",
                 EuxService to "$root.services.eux",
@@ -73,7 +73,6 @@ class ArchitectureTest {
 
         /*
         TODO do something about the dependencies surrounding STS, but there is a bit too much black magic there for me ...
-        TODO look at/refactor the relationship between journalforing.JournalpostModel and services.journalpost.JournalpostService ...
          */
         layeredArchitecture()
                 //Define components
@@ -87,6 +86,7 @@ class ArchitectureTest {
                 .layer(STS).definedBy(packages[STS])
                 .layer(EuxService).definedBy(packages[EuxService])
                 .layer(PersonV3Service).definedBy(packages[PersonV3Service])
+                .layer(BegrensInnsyn).definedBy(packages[BegrensInnsyn])
                 //define rules
                 .whereLayer(ROOT).mayNotBeAccessedByAnyLayer()
                 .whereLayer(Config).mayNotBeAccessedByAnyLayer()
@@ -94,10 +94,9 @@ class ArchitectureTest {
                 .whereLayer(Listeners).mayOnlyBeAccessedByLayers(ROOT)
                 .whereLayer(Logging).mayOnlyBeAccessedByLayers(Config, STS)
                 .whereLayer(STS).mayOnlyBeAccessedByLayers(Config, PersonV3Service)
-/*              .whereLayer(EuxService).mayOnlyBeAccessedByLayers(Journalforing)
-                .whereLayer(PersonV3Service).mayOnlyBeAccessedByLayers(ROOT, Journalforing)
-                TODO legg til disse når BegrensInnsyn er klar
-*/
+                .whereLayer(EuxService).mayOnlyBeAccessedByLayers(BegrensInnsyn)
+                .whereLayer(PersonV3Service).mayOnlyBeAccessedByLayers(ROOT, BegrensInnsyn)
+
                 //Verify rules
                 .check(classesToAnalyze)
     }
