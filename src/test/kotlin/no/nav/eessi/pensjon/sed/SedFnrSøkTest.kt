@@ -31,7 +31,7 @@ internal class SedFnrSøkTest {
         val funnedeFnr = sedFnrSøk.finnAlleFnrDnrISed(sed)
 
         // SÅ
-        assertTrue(funnedeFnr.containsAll(listOf("12345678910")))
-        assertEquals(funnedeFnr.size, 1)
+        assertTrue(funnedeFnr.containsAll(listOf("12345678910", "12345678990")))
+        assertEquals(funnedeFnr.size, 2)
     }
 }

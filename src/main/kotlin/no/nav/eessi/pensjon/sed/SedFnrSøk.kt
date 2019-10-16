@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.sed
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component
 class SedFnrSøk {
 
     private val mapper = jacksonObjectMapper()
+    private val logger = LoggerFactory.getLogger(SedFnrSøk::class.java)
 
     /**
      * Finner alle fnr i SED
@@ -24,32 +26,46 @@ class SedFnrSøk {
      * @return distinkt set av fnr
      */
     fun finnAlleFnrDnrISed(sed: String) : Set<String> {
-        val sedRootNode = mapper.readTree(sed)
-        val funnedeFnr =  mutableSetOf<String>()
+        logger.info("Søker etter fnr i SED")
+        try {
+            val sedRootNode = mapper.readTree(sed)
+            val funnedeFnr = mutableSetOf<String>()
 
-        traverserNode(sedRootNode, funnedeFnr)
-        return funnedeFnr.toSet()
+            traverserNode(sedRootNode, funnedeFnr)
+            return funnedeFnr.toSet()
+        } catch ( ex : Exception) {
+            logger.info("En feil oppstod under søk av fødselsnummer i SED", ex)
+            throw ex
+        }
     }
 
     /**
      * Rekursiv traversering av json noden
      */
     private fun traverserNode(jsonNode: JsonNode, funnedeFnr: MutableSet<String>) {
-        val fnr = finnFnr(jsonNode)
+        val fødselsnummere = finnFnr(jsonNode)
 
         when {
             jsonNode.isObject -> {
-                if(fnr != null && erPinNorsk(jsonNode)) {
-                    funnedeFnr.add(fnr)
-                } else {
+                if(fødselsnummere.isEmpty()) {
                     jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
+                } else {
+                    leggTilFunnedeFnr(fødselsnummere, jsonNode, funnedeFnr)
                 }
             }
             jsonNode.isArray -> {
                 jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
             }
             else -> {
-                if(fnr != null && erPinNorsk(jsonNode)) { funnedeFnr.add(fnr) }
+                leggTilFunnedeFnr(fødselsnummere, jsonNode, funnedeFnr)
+            }
+        }
+    }
+
+    private fun leggTilFunnedeFnr(fnre: List<String>, jsonNode: JsonNode, funnedeFnr: MutableSet<String>) {
+        fnre.forEach { fnr ->
+            if (erPinNorsk(jsonNode)) {
+                funnedeFnr.add(fnr)
             }
         }
     }
@@ -59,7 +75,7 @@ class SedFnrSøk {
      *
      * Eksempel node:
      *  {
-     *     sektor" : "pensjoner",
+     *       sektor" : "pensjoner",
      *       identifikator" : "09809809809",
      *       land" : "NO"
      *  }
@@ -99,28 +115,32 @@ class SedFnrSøk {
      *          "oppholdsland": "12345678910"
      *       }
      */
-    private fun finnFnr(jsonNode: JsonNode): String? {
+    private fun finnFnr(jsonNode: JsonNode): List<String> {
         val pin = jsonNode.get("pin")
-        if (pin != null) {
+        pin?.let {
             val idNode = pin.get("identifikator")
             if (idNode != null && erFnrDnrFormat(idNode.asText())) {
-                return idNode.textValue()
+                return listOf(idNode.textValue())
             }
+
+            val fnre = mutableListOf<String>()
+
             val kompetenteulandNode = pin.get("kompetenteuland")
             if (kompetenteulandNode != null && erFnrDnrFormat(kompetenteulandNode.asText())) {
-                return kompetenteulandNode.textValue()
+                fnre.add(kompetenteulandNode.textValue())
             }
 
             val oppholdslandNode = pin.get("oppholdsland")
             if (oppholdslandNode != null && erFnrDnrFormat(oppholdslandNode.asText())) {
-                return oppholdslandNode.textValue()
+                fnre.add(oppholdslandNode.textValue())
             }
+            if(fnre.isNotEmpty()) return fnre
         }
 
         val idNode = jsonNode.get("identifikator")
         if (idNode != null && erFnrDnrFormat(idNode.asText())) {
-            return idNode.asText()
+            return listOf(idNode.asText())
         }
-        return null
+        return emptyList()
     }
 }
