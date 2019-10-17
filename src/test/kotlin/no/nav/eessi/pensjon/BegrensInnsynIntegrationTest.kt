@@ -202,7 +202,7 @@ class BegrensInnsynIntegrationTest {
                 HttpRequest.request()
                         .withMethod(HttpMethod.PUT)
                         .withPath("/buc/147729/sensitivsak"),
-                VerificationTimes.exactly(1)
+                VerificationTimes.exactly(0)
         )
 
         // Verifiser at det har blitt forsøkt å hente person fra tps
