@@ -22,10 +22,10 @@ class RestTemplateConfig(private val securityTokenExchangeService: STSService, p
     @Value("\${EUX_RINA_API_V1_URL}")
     lateinit var euxUrl: String
 
-    @Value("\${username}")
+    @Value("\${srvusername}")
     lateinit var username: String
 
-    @Value("\${password}")
+    @Value("\${srvpassword}")
     lateinit var password: String
 
     @Bean
