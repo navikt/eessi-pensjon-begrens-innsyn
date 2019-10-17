@@ -23,8 +23,6 @@ EUX_RINA_API_V1_URL: http://localhost:${mockServerport}
 securitytokenservice.url: http://someurl
 srvusername: someuser
 srvpassword: somepass
-username: someuser
-password: somepass
 JOURNALPOST_V1_URL: http://localhost:${mockServerport}
 aktoerregister.api.v1.url: http://localhost:${mockServerport}
 virksomhet.person.v3:

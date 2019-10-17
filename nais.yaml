@@ -32,18 +32,11 @@ fasitResources:
     - alias: eessi-pensjon-active-profiles
       resourceType: ApplicationProperties
 
-    - alias: srveessi-pensjon-begrens-innsyn
-      resourceType: credential
-      propertyMap:
-        username: username
-        password: password
-
-    # Fjernes så fort srveessi-pensjon-begrens-innsyn får consumer rettigheter i sedSendt og sedMottatt topicene
-    - alias: srveessipensjon
-      resourceType: Credential
-      propertyMap:
-        username: srvusername
-        password: srvpassword
+    - alias: srveessi-pensjon-journalforing
+        resourceType: credential
+        propertyMap:
+          username: srvusername
+          password: srvpassword
 
     - alias: kafka_bootstrap_servers
       resourceType: baseurl
