@@ -30,7 +30,7 @@ class BegrensInnsynService(private val euxService: EuxService,
 
         fnre.forEach { fnr ->
             val person = personV3Service.hentPerson(fnr)
-            person.diskresjonskode?.kodeverksRef.let {
+            person.diskresjonskode?.kodeverksRef?.let {
                 val diskresjonskode = Diskresjonskode.valueOf(person.diskresjonskode.kodeverksRef)
                 if(diskresjonskode == Diskresjonskode.SPFO || diskresjonskode == Diskresjonskode.SPSF) {
                     logger.debug("personen har diskret adresse")

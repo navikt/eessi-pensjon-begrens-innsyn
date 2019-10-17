@@ -1,20 +1,18 @@
 package no.nav.eessi.pensjon
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.spyk
+import io.mockk.*
 import no.nav.eessi.pensjon.listeners.SedListener
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
+import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -57,9 +55,8 @@ class BegrensInnsynIntegrationTest {
     @Autowired
     lateinit var  personV3Service: PersonV3Service
 
-    @Disabled
     @Test
-    fun `Når en sedSendt hendelse blir konsumert skal det opprettes journalføringsoppgave for pensjon SEDer`() {
+    fun `Gitt en sedSendt hendelse med KODE6 eller KODE7 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
         // Mock personV3
         capturePersonMock()
@@ -79,24 +76,15 @@ class BegrensInnsynIntegrationTest {
         sedListener.getLatch().await(15000, TimeUnit.MILLISECONDS)
 
         // Verifiserer alle kall
-        //TODO verifiser()
+        verifiser()
 
         // Shutdown
         shutdown(container)
     }
 
     private fun produserSedHendelser(sedSendtProducerTemplate: KafkaTemplate<Int, String>) {
-        // Sender 1 Foreldre SED til Kafka
-        println("Produserer FB_BUC_01 melding")
-        sedSendtProducerTemplate.sendDefault(String(Files.readAllBytes(Paths.get("src/test/resources/sed/FB_BUC_01.json"))))
-
-        // Sender 3 Pensjon SED til Kafka
-        println("Produserer P_BUC_01 melding")
+        // Sender 1 Pensjon SED til Kafka
         sedSendtProducerTemplate.sendDefault(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))))
-        println("Produserer P_BUC_03 melding")
-        sedSendtProducerTemplate.sendDefault(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_03.json"))))
-        println("Produserer P_BUC_05 melding")
-        sedSendtProducerTemplate.sendDefault(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_05.json"))))
     }
 
     private fun shutdown(container: KafkaMessageListenerContainer<String, String>) {
@@ -169,6 +157,26 @@ class BegrensInnsynIntegrationTest {
                                             "}"
                             )
                     )
+
+            // Mocker EUX sensitiv sak
+            mockServer.`when`(
+                    HttpRequest.request()
+                            .withMethod(HttpMethod.PUT)
+                            .withPath("/buc/147729/sensitivsak"))
+                    .respond(HttpResponse.response()
+                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                            .withStatusCode(HttpStatusCode.OK_200.code()))
+
+            mockServer.`when`(
+                    HttpRequest.request()
+                            .withMethod(HttpMethod.GET)
+                            .withPath("/buc/147729/sed/b12e06dda2c7474b9998c7139c841646"))
+                    .respond(HttpResponse.response()
+                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                            .withStatusCode(HttpStatusCode.OK_200.code())
+                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV.json"))))
+                    )
+
         }
 
         private fun randomFrom(from: Int = 1024, to: Int = 65535): Int {
@@ -177,16 +185,29 @@ class BegrensInnsynIntegrationTest {
         }
     }
 
-/*
-
     private fun verifiser() {
-        assertEquals(0, sedListener.getLatch().count, "Alle meldinger har ikke blitt konsumert")
+        Assertions.assertEquals(0, sedListener.getLatch().count, "Alle meldinger har ikke blitt konsumert")
+
+        // Verifiserer at SED har blitt hentet
+        mockServer.verify(
+                HttpRequest.request()
+                        .withMethod(HttpMethod.GET)
+                        .withPath("/buc/147729/sed/b12e06dda2c7474b9998c7139c841646"),
+                VerificationTimes.exactly(1)
+        )
+
+
+        // Verifiserer at det har blitt forsøkt å sette en sak til sensitiv
+        mockServer.verify(
+                HttpRequest.request()
+                        .withMethod(HttpMethod.PUT)
+                        .withPath("/buc/147729/sensitivsak"),
+                VerificationTimes.exactly(1)
+        )
 
         // Verifiser at det har blitt forsøkt å hente person fra tps
-        verify(exactly = 1) { personV3Service.hentPerson(any()) }
+        verify(exactly = 4) { personV3Service.hentPerson(any()) }
     }
-
-*/
     // Mocks the PersonV3 Service so we don't have to deal with SOAP
     @TestConfiguration
     class TestConfig{

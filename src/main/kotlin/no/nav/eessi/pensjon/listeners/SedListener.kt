@@ -19,7 +19,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
 ) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
-    private val latch = CountDownLatch(4)
+    private val latch = CountDownLatch(1)
 
     fun getLatch(): CountDownLatch {
         return latch
@@ -34,15 +34,11 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 try {
                     begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
+                    latch.countDown()
                 } catch (ex: Exception) {
-                    logger.error(
-                            "Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n" +
-                                    "${ex.message}",
-                            ex
-                    )
+                    logger.error("Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
-            latch.countDown()
             }
         }
     }
@@ -56,11 +52,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 try {
                     acknowledgment.acknowledge()
                 } catch (ex: Exception) {
-                    logger.error(
-                            "Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n" +
-                                    "${ex.message}",
-                            ex
-                    )
+                    logger.error("Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }

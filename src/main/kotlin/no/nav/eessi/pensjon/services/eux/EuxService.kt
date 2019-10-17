@@ -32,15 +32,10 @@ class EuxService(
 
         try {
             logger.info("Henter SED fra EUX /${builder.toUriString()}")
-            val resp = euxOidcRestTemplate.exchange(builder.toUriString(),
+            return euxOidcRestTemplate.exchange(builder.toUriString(),
                     HttpMethod.GET,
                     null,
-                    String::class.java)
-            if(resp.statusCode.isError) {
-                logger.error("En feil oppstod under henting av SED fra EUX: status: ${resp.statusCode} + ${resp.statusCodeValue} body: ${resp.body}")
-            }
-
-            return resp.body
+                    String::class.java).body
         } catch( ex: Exception) {
             logger.error("En feil oppstod under henting av SED fra EUX", ex)
             throw ex
@@ -48,7 +43,7 @@ class EuxService(
     }
 
     fun settSensitivSak(rinaSakId: String) : String? {
-        val path = "/cpi/buc/{RinaSakId}/sensitivsak"
+        val path = "/buc/{RinaSakId}/sensitivsak"
         val uriParams = mapOf("RinaSakId" to rinaSakId)
         val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
