@@ -22,8 +22,6 @@ class BegrensInnsynService(private val euxService: EuxService,
             // Vi ignorerer alle hendelser som ikke har vår sektorkode
             return
         }
-        // Smoketester grensesnittet, FJERNES STRAKS
-        euxService.settSensitivSak(sedHendelse.rinaSakId)
 
         val sed = euxService.getSed(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
         val fnre = sedFnrSøk.finnAlleFnrDnrISed(sed!!)
