@@ -66,37 +66,37 @@ node {
 //            ])
 //        }
 //
-        stage("deploy Q1") {
-                    def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
-                    build([
-                            job       : 'nais-deploy-pipeline',
-                            wait      : true,
-                            parameters: [
-                                    string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
-                                    string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
-                                    string(name: 'VERSION', value: version),
-                                    string(name: 'DEPLOY_REF', value: version),
-                                    string(name: 'NAMESPACE', value: 'q1'),
-                                    string(name: 'DEPLOY_ENV', value: 'q1')
-                            ]
-                    ])
-                }
+//        stage("deploy Q1") {
+//                    def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
+//                    build([
+//                            job       : 'nais-deploy-pipeline',
+//                            wait      : true,
+//                            parameters: [
+//                                    string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
+//                                    string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
+//                                    string(name: 'VERSION', value: version),
+//                                    string(name: 'DEPLOY_REF', value: version),
+//                                    string(name: 'NAMESPACE', value: 'q1'),
+//                                    string(name: 'DEPLOY_ENV', value: 'q1')
+//                            ]
+//                    ])
+//                }
 
-//        stage("deploy Q2") {
-//            def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
-//            build([
-//                    job       : 'nais-deploy-pipeline',
-//                    wait      : true,
-//                    parameters: [
-//                            string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
-//                            string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
-//                            string(name: 'VERSION', value: version),
-//                            string(name: 'DEPLOY_REF', value: version),
-//                            string(name: 'NAMESPACE', value: 'q2'),
-//                            string(name: 'DEPLOY_ENV', value: 'q2')
-//                    ]
-//            ])
-//        }
+        stage("deploy Q2") {
+            def version = sh(script: 'git describe --abbrev=0', returnStdout: true).trim()
+            build([
+                    job       : 'nais-deploy-pipeline',
+                    wait      : true,
+                    parameters: [
+                            string(name: 'APP', value: "eessi-pensjon-begrens-innsyn"),
+                            string(name: 'REPO', value: "navikt/eessi-pensjon-begrens-innsyn"),
+                            string(name: 'VERSION', value: version),
+                            string(name: 'DEPLOY_REF', value: version),
+                            string(name: 'NAMESPACE', value: 'q2'),
+                            string(name: 'DEPLOY_ENV', value: 'q2')
+                    ]
+            ])
+        }
 
         github.commitStatus("success", "navikt/eessi-pensjon-begrens-innsyn", appToken, commitHash)
     } catch (err) {
