@@ -33,10 +33,10 @@ fasitResources:
       resourceType: ApplicationProperties
 
     - alias: srveessi-pensjon-journalforing
-        resourceType: credential
-        propertyMap:
-          username: srvusername
-          password: srvpassword
+      resourceType: credential
+      propertyMap:
+        username: srvusername
+        password: srvpassword
 
     - alias: kafka_bootstrap_servers
       resourceType: baseurl
