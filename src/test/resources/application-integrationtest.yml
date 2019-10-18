@@ -1,7 +1,7 @@
 kafka:
   sedSendt:
     topic: eessi-basis-sedSendt-v1
-    groupid: eessi-pensjon-group
+    groupid: eessi-pensjon-begrens-innsyn-group
 
 spring:
   kafka:
@@ -23,8 +23,6 @@ EUX_RINA_API_V1_URL: http://localhost:${mockServerport}
 securitytokenservice.url: http://someurl
 srvusername: someuser
 srvpassword: somepass
-JOURNALPOST_V1_URL: http://localhost:${mockServerport}
-aktoerregister.api.v1.url: http://localhost:${mockServerport}
 virksomhet.person.v3:
   endpointurl: http://localhost:${mockServerport}
 eessifagmodulservice_URL: http://localhost:${mockServerport}
