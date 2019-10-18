@@ -15,9 +15,7 @@ class BegrensInnsynService(private val euxService: EuxService,
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
     fun begrensInnsyn(hendelse: String) {
-
         val sedHendelse = SedHendelseModel.fromJson(hendelse)
-
         if (sedHendelse.sektorKode != "P") {
             // Vi ignorerer alle hendelser som ikke har vår sektorkode
             return
@@ -34,6 +32,7 @@ class BegrensInnsynService(private val euxService: EuxService,
                 if(diskresjonskode == Diskresjonskode.SPFO || diskresjonskode == Diskresjonskode.SPSF) {
                     logger.debug("Personen har diskret adresse")
                     euxService.settSensitivSak(sedHendelse.rinaSakId)
+                    return
                 }
             }
         }

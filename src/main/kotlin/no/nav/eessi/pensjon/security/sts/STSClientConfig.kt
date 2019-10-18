@@ -57,23 +57,12 @@ class STSClientConfig {
 
 fun <T> configureRequestSamlToken(service: T) {
     val client = ClientProxy.getClient(service)
-    configureSTSRequestSamlToken(client, true)
+    configureSTSRequestSamlToken(client)
 }
 
-fun <T> configureRequestSamlTokenOnBehalfOfOidc(service: T, token: String) {
-    val client = ClientProxy.getClient(service)
-
-    // Add interceptor to extract token from request context and add to STS request as the OnbehalfOf element.
-    client.outInterceptors.add(OnBehalfOfOutInterceptor())
-    configureSTSRequestSamlToken(client, false)
-
-    client.requestContext[REQUEST_CONTEXT_ONBEHALFOF_TOKEN] = token
-    client.requestContext[REQUEST_CONTEXT_ONBEHALFOF_TOKEN_TYPE] = OnBehalfOfOutInterceptor.TokenType.OIDC
-}
-
-private fun configureSTSRequestSamlToken(client: Client, cacheTokenInEndpoint: Boolean) {
+private fun configureSTSRequestSamlToken(client: Client) {
     val stsClient = createCustomSTSClient(client.bus)
-    configureSTSWithPolicyForClient(stsClient, client, STS_REQUEST_SAML_POLICY, cacheTokenInEndpoint)
+    configureSTSWithPolicyForClient(stsClient, client, STS_REQUEST_SAML_POLICY)
 }
 
 /**
@@ -99,10 +88,10 @@ private fun createCustomSTSClient(bus: Bus): STSClient {
     return STSClientWSTrust13And14(bus)
 }
 
-private fun configureSTSWithPolicyForClient(stsClient: STSClient, client: Client, policyReference: String, cacheTokenInEndpoint: Boolean) {
+private fun configureSTSWithPolicyForClient(stsClient: STSClient, client: Client, policyReference: String) {
     configureSTSClient(stsClient)
     client.requestContext[SecurityConstants.STS_CLIENT] = stsClient
-    client.requestContext[SecurityConstants.CACHE_ISSUED_TOKEN_IN_ENDPOINT] = cacheTokenInEndpoint
+    client.requestContext[SecurityConstants.CACHE_ISSUED_TOKEN_IN_ENDPOINT] = true
     setEndpointPolicyReference(client, policyReference)
 }
 
@@ -131,8 +120,6 @@ private fun configureSTSClient(stsClient: STSClient) {
         isEnableAppliesTo = false
         isAllowRenewing = false
         location = STS_URL
-        // Debug/logging av meldinger som sendes mellom app og STS
-        // features = listOf(LoggingFeature()) // TODO: Add denne featureren bare dersom DEBUG er enabled
         properties = mapOf(
                 SecurityConstants.USERNAME to SERVICEUSER_USERNAME,
                 SecurityConstants.PASSWORD to SERVICEUSER_PASSWORD
