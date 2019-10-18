@@ -28,11 +28,11 @@ class BegrensInnsynService(private val euxService: EuxService,
 
         fnre.forEach { fnr ->
             val person = personV3Service.hentPerson(fnr)
-            if(person.diskresjonskode != null && person.diskresjonskode.value != null) {
-                logger.debug("Diskresjonskode: ${person.diskresjonskode.value}")
-                val diskresjonskode = Diskresjonskode.valueOf(person.diskresjonskode.value)
+            person.diskresjonskode?.value?.let { kode ->
+                logger.debug("Diskresjonskode: $kode")
+                val diskresjonskode = Diskresjonskode.valueOf(kode)
                 if(diskresjonskode == Diskresjonskode.SPFO || diskresjonskode == Diskresjonskode.SPSF) {
-                    logger.debug("personen har diskret adresse")
+                    logger.debug("Personen har diskret adresse")
                     euxService.settSensitivSak(sedHendelse.rinaSakId)
                 }
             }
