@@ -1,15 +1,17 @@
 package no.nav.eessi.pensjon.listeners
 
+import com.nhaarman.mockitokotlin2.doThrow
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
+import org.mockito.exceptions.base.MockitoException
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.kafka.support.Acknowledgment
 import java.nio.file.Files
@@ -46,10 +48,9 @@ class SedListenerTest {
         verify(acknowledgment).acknowledge()
     }
 
-    @Disabled //TODO
     @Test
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-       //doThrow(MockitoException("Boom!")).`when`(jouralforingService).journalfor(eq("Explode!"), any())
+       doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
 
         assertThrows<RuntimeException> {
             sedListener.consumeSedSendt("Explode!",cr, acknowledgment)
@@ -57,10 +58,9 @@ class SedListenerTest {
         verify(acknowledgment, times(0)).acknowledge()
     }
 
-    @Disabled //TODO
     @Test
     fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-        //doThrow(MockitoException("Boom!")).`when`(jouralforingService).journalfor(eq("Explode!"), any())
+        doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
 
         assertThrows<RuntimeException> {
             sedListener.consumeSedMottatt("Explode!",cr, acknowledgment)
