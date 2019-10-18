@@ -20,4 +20,5 @@ object PersonMock {
                                                         true -> Landkoder().withValue("NOR")
                                                         else -> null
                                             })))
+            .withDiskresjonskode(Diskresjonskoder().withValue(Diskresjonskode.SPSF.toString()))
 }

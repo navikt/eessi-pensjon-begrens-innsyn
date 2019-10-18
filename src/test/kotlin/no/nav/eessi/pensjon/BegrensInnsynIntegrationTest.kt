@@ -202,11 +202,11 @@ class BegrensInnsynIntegrationTest {
                 HttpRequest.request()
                         .withMethod(HttpMethod.PUT)
                         .withPath("/buc/147729/sensitivsak"),
-                VerificationTimes.exactly(0)
+                VerificationTimes.exactly(1)
         )
 
         // Verifiser at det har blitt forsøkt å hente person fra tps
-        verify(exactly = 4) { personV3Service.hentPerson(any()) }
+        verify(exactly = 1) { personV3Service.hentPerson(any()) }
     }
     // Mocks the PersonV3 Service so we don't have to deal with SOAP
     @TestConfiguration

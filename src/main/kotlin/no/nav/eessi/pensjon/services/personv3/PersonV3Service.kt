@@ -16,13 +16,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
 
-fun hentLandkode(person: Person?) =
-        person?.bostedsadresse?.strukturertAdresse?.landkode?.value
-
-fun hentPersonNavn(person: Person?) =
-        person?.personnavn?.sammensattNavn
-
-
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
  */

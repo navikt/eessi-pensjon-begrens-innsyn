@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
 
-data class SecurityTokenResponse(
+class SecurityTokenResponse(
         @JsonProperty("access_token")
         val accessToken: String,
         @JsonProperty("token_type")
@@ -30,7 +30,7 @@ data class SecurityTokenResponse(
         val expiresIn: Long
 )
 
-data class WellKnownSTS(
+class WellKnownSTS(
         @JsonProperty("issuer")
         val issuer: String,
         @JsonProperty("token_endpoint")
@@ -50,8 +50,7 @@ data class WellKnownSTS(
 @Service
 class STSService(
         private val securityTokenExchangeBasicAuthRestTemplate: RestTemplate,
-        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
-) {
+        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger = LoggerFactory.getLogger(STSService::class.java)
 
@@ -64,7 +63,7 @@ class STSService(
     fun discoverEndpoints() {
         metricsHelper.measure("disoverSTS") {
             try {
-                logger.info("Henter STS endepunkter fra well.known " + discoveryUrl)
+                logger.info("Henter STS endepunkter fra well.known $discoveryUrl")
                     wellKnownSTS = RestTemplate().exchange(discoveryUrl,
                             HttpMethod.GET,
                             null,
