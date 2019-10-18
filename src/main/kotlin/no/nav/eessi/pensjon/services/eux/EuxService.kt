@@ -26,41 +26,45 @@ class EuxService(
     private val mapper: ObjectMapper = jacksonObjectMapper().configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
 
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
-        val path = "/buc/{RinaSakId}/sed/{DokumentId}"
-        val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
-        val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+        return metricsHelper.measure("hentSed") {
+            val path = "/buc/{RinaSakId}/sed/{DokumentId}"
+            val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
+            val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
-        try {
-            logger.info("Henter SED fra EUX /${builder.toUriString()}")
-            return euxOidcRestTemplate.exchange(builder.toUriString(),
-                    HttpMethod.GET,
-                    null,
-                    String::class.java).body
-        } catch( ex: Exception) {
-            logger.error("En feil oppstod under henting av SED fra EUX", ex)
-            throw ex
+            try {
+                logger.info("Henter SED fra EUX /${builder.toUriString()}")
+                euxOidcRestTemplate.exchange(builder.toUriString(),
+                        HttpMethod.GET,
+                        null,
+                        String::class.java).body
+            } catch( ex: Exception) {
+                logger.error("En feil oppstod under henting av SED fra EUX", ex)
+                throw ex
+            }
         }
     }
 
     fun settSensitivSak(rinaSakId: String) : String? {
-        val path = "/buc/{RinaSakId}/sensitivsak"
-        val uriParams = mapOf("RinaSakId" to rinaSakId)
-        val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+        return metricsHelper.measure("settSensitiv") {
+            val path = "/buc/{RinaSakId}/sensitivsak"
+            val uriParams = mapOf("RinaSakId" to rinaSakId)
+            val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
-        try {
-            logger.info("Setter BUC som sensitiv /${builder.toUriString()}")
-            val resp = euxOidcRestTemplate.exchange(builder.toUriString(),
-                    HttpMethod.PUT,
-                    null,
-                    String::class.java)
-            if(resp.statusCode.isError) {
-                logger.error("En feil oppstod under setting av sensitiv sak: status: ${resp.statusCode} + ${resp.statusCodeValue} body: ${resp.body}")
+            try {
+                logger.info("Setter BUC som sensitiv /${builder.toUriString()}")
+                val resp = euxOidcRestTemplate.exchange(builder.toUriString(),
+                        HttpMethod.PUT,
+                        null,
+                        String::class.java)
+                if(resp.statusCode.isError) {
+                    logger.error("En feil oppstod under setting av sensitiv sak: status: ${resp.statusCode} + ${resp.statusCodeValue} body: ${resp.body}")
+                }
+
+                resp.body
+            } catch( ex: Exception) {
+                logger.error("En feil oppstod under henting av SED fra EUX", ex)
+                throw ex
             }
-
-            return resp.body
-        } catch( ex: Exception) {
-            logger.error("En feil oppstod under henting av SED fra EUX", ex)
-            throw ex
         }
     }
 }
