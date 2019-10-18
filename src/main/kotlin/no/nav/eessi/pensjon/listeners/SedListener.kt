@@ -34,9 +34,10 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 try {
                     begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
+                    logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latch.countDown()
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n $hendelse \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
@@ -50,9 +51,11 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}\")")
                 logger.debug(hendelse)
                 try {
+                    begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
+                    logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av SED-hendelse:\n $hendelse \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n $hendelse \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
