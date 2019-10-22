@@ -24,6 +24,7 @@ class SedListenerTest {
     lateinit var acknowledgment: Acknowledgment
 
     @Mock
+
     lateinit var cr: ConsumerRecord<String, String>
 
     @Mock
