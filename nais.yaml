@@ -32,7 +32,7 @@ fasitResources:
     - alias: eessi-pensjon-active-profiles
       resourceType: ApplicationProperties
 
-    - alias: srveessi-pensjon-journalforing
+    - alias: srveessi-pensjon-begrens-innsyn
       resourceType: credential
       propertyMap:
         username: srvusername
