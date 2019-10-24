@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.security.sts
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
+import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +40,8 @@ class STSRestTemplate {
                 .additionalInterceptors(
                         RequestIdHeaderInterceptor(),
                         RequestCountInterceptor(meterRegistry),
-                        BasicAuthenticationInterceptor(username, password)
+                        BasicAuthenticationInterceptor(username, password),
+                        RequestResponseLoggerInterceptor()
                 ).build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
