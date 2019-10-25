@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.lang.RuntimeException
 
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
@@ -35,12 +36,15 @@ class PersonV3Service(
                 logger.info("Kaller PersonV3.hentPerson service")
                 val resp = kallPersonV3(fnr)
                 resp.person as Person
-            } catch (personIkkefunnet: HentPersonPersonIkkeFunnet) {
-                logger.error("Kaller PersonV3.hentPerson service Feilet")
-                throw PersonV3IkkeFunnetException(personIkkefunnet.message)
-            } catch (personSikkerhetsbegrensning: HentPersonSikkerhetsbegrensning) {
-                logger.error("Kaller PersonV3.hentPerson service Feilet")
-                throw PersonV3SikkerhetsbegrensningException(personSikkerhetsbegrensning.message)
+            } catch (pif: HentPersonPersonIkkeFunnet) {
+                logger.error("PersonV3: Kunne ikke hente person, ikke funnet", pif)
+                throw PersonV3IkkeFunnetException(pif.message)
+            } catch (sb: HentPersonSikkerhetsbegrensning) {
+                logger.error("PersonV3: Kunne ikke hente person, sikkerhetsbegrensning", sb)
+                throw PersonV3SikkerhetsbegrensningException(sb.message)
+            } catch (ex: Exception) {
+                logger.error("PersonV3: Kunne ikke hente person", ex)
+                throw RuntimeException(ex.message)
             }
         }
     }
