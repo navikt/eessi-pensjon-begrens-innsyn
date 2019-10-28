@@ -14,9 +14,9 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.assertEquals
 
 class PersonV3ServiceTest {
 
@@ -56,13 +56,7 @@ class PersonV3ServiceTest {
 
     @Test
     fun `Kaller hentPerson med subject som ikke finnes`(){
-        try {
-            personV3Service.hentPerson(ikkeFunnetSubject)
-            assert(false)
-        }catch(ex: Exception){
-            assert(ex is PersonV3IkkeFunnetException)
-            assertEquals(ex.message, "$ikkeFunnetSubject ikke funnet")
-        }
+        assertNull(personV3Service.hentPerson(ikkeFunnetSubject))
     }
 
     @Test
