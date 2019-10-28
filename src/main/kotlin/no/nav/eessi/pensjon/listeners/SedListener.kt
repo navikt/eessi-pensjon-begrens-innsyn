@@ -49,21 +49,23 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         }
     }
 
-//    @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
-//    fun consumeSedMottatt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
-//        MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
-//            metricsHelper.measure("consumeIncomingSed") {
-//                logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}\")")
-//                logger.debug(hendelse)
-//                try {
-//                    begrensInnsynService.begrensInnsyn(hendelse)
-//                    acknowledgment.acknowledge()
-//                    logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
-//                } catch (ex: Exception) {
-//                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n $hendelse \n ${ex.message}", ex)
-//                    throw RuntimeException(ex.message)
-//                }
-//            }
-//        }
-//    }
+    @KafkaListener(groupId = "\${kafka.sedMottatt.groupid}",
+            topicPartitions = [TopicPartition(topic = "\${kafka.sedMottatt.topic}",
+                    partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "0")])])
+    fun consumeSedMottatt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
+        MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
+            metricsHelper.measure("consumeIncomingSed") {
+                logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}\")")
+                logger.debug(hendelse)
+                try {
+                    begrensInnsynService.begrensInnsyn(hendelse)
+                    acknowledgment.acknowledge()
+                    logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
+                } catch (ex: Exception) {
+                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n $hendelse \n ${ex.message}", ex)
+                    throw RuntimeException(ex.message)
+                }
+            }
+        }
+    }
 }

@@ -43,11 +43,11 @@ class SedListenerTest {
     }
 
 
-//    @Test
-//    fun `gitt en gyldig sedHendelse når sedMottatt hendelse konsumeres så så ack melding`() {
-//        sedListener.consumeSedMottatt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))),cr, acknowledgment)
-//        verify(acknowledgment).acknowledge()
-//    }
+    @Test
+    fun `gitt en gyldig sedHendelse når sedMottatt hendelse konsumeres så så ack melding`() {
+        sedListener.consumeSedMottatt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))),cr, acknowledgment)
+        verify(acknowledgment).acknowledge()
+    }
 
     @Test
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
@@ -59,13 +59,13 @@ class SedListenerTest {
         verify(acknowledgment, times(0)).acknowledge()
     }
 
-//    @Test
-//    fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-//        doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
-//
-//        assertThrows<RuntimeException> {
-//            sedListener.consumeSedMottatt("Explode!",cr, acknowledgment)
-//        }
-//        verify(acknowledgment, times(0)).acknowledge()
-//    }
+    @Test
+    fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
+        doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
+
+        assertThrows<RuntimeException> {
+            sedListener.consumeSedMottatt("Explode!",cr, acknowledgment)
+        }
+        verify(acknowledgment, times(0)).acknowledge()
+    }
 }
