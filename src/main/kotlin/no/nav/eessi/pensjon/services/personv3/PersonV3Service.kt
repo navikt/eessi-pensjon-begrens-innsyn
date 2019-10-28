@@ -37,7 +37,7 @@ class PersonV3Service(
                 val resp = kallPersonV3(fnr)
                 resp.person as Person
             } catch (pif: HentPersonPersonIkkeFunnet) {
-                logger.error("PersonV3: Kunne ikke hente person, ikke funnet", pif)
+                logger.warn("PersonV3: Kunne ikke hente person, ikke funnet", pif)
                 null
             } catch (sb: HentPersonSikkerhetsbegrensning) {
                 logger.error("PersonV3: Kunne ikke hente person, sikkerhetsbegrensning", sb)
