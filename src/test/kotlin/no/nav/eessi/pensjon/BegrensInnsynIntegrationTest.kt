@@ -6,6 +6,7 @@ import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
@@ -55,6 +56,7 @@ class BegrensInnsynIntegrationTest {
     @Autowired
     lateinit var  personV3Service: PersonV3Service
 
+    @Disabled
     @Test
     fun `Gitt en sedSendt hendelse med KODE6 eller KODE7 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
