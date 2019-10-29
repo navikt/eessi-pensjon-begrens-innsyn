@@ -5,8 +5,9 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 
-
+@Profile("prod")
 @Configuration
 class KafkaConfig()  {
 
