@@ -13,7 +13,7 @@ class SedHendelseModel (
         val bucType: BucType?,
         val rinaSakId: String,
         val avsenderId: String?,
-        val avsenderNavn: String,
+        val avsenderNavn: String?,
         val avsenderLand: String? = null,
         val mottakerId: String,
         val mottakerNavn: String,

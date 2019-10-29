@@ -5,7 +5,7 @@
   "bucType": "P_BUC_01",
   "rinaSakId": "147729",
   "avsenderId": null,
-  "avsenderNavn": "NAVT003",
+  "avsenderNavn": null,
   "avsenderLand": "NO",
   "mottakerId": "NO:NAVT007",
   "mottakerNavn": "NAV Test 07",

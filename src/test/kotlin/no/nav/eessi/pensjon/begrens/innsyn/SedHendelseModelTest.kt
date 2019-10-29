@@ -28,7 +28,7 @@ class SedHendelseModelTest {
     }
 
     @Test
-    fun `AvsenderId skal kunne vaere null i mapping av SEDSendt`() {
+    fun `AvsenderId og avsnederNavn skal kunne vaere null i mapping av SEDSendt`() {
         val sedSendtJson = String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01_avsenderId_null.json")))
         val sedHendelse = SedHendelseModel.fromJson(sedSendtJson)
         assertEquals(sedHendelse.id, 1869L)
@@ -37,7 +37,7 @@ class SedHendelseModelTest {
         assertEquals(sedHendelse.bucType, BucType.P_BUC_01)
         assertEquals(sedHendelse.rinaSakId, "147729")
         assertEquals(sedHendelse.avsenderId, null)
-        assertEquals(sedHendelse.avsenderNavn, "NAVT003")
+        assertEquals(sedHendelse.avsenderNavn, null)
         assertEquals(sedHendelse.mottakerNavn, "NAV Test 07")
         assertEquals(sedHendelse.rinaDokumentId, "b12e06dda2c7474b9998c7139c841646")
         assertEquals(sedHendelse.rinaDokumentVersjon, "2")
