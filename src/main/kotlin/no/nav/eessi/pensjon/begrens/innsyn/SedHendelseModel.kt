@@ -12,7 +12,7 @@ class SedHendelseModel (
         val sektorKode: String,
         val bucType: BucType?,
         val rinaSakId: String,
-        val avsenderId: String,
+        val avsenderId: String?,
         val avsenderNavn: String,
         val avsenderLand: String? = null,
         val mottakerId: String,
