@@ -12,7 +12,7 @@ internal class SedFnrSøkTest {
     @Test
     fun `Gitt en SED med flere norske fnr i Pin-identifikator feltet når det søkes etter fnr i SED så returner alle norske fnr`() {
         // Gitt
-        val sed = String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV.json")))
+        val sed = String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV_med_flere_fnr.json")))
 
         // Når
         val funnedeFnr = sedFnrSøk.finnAlleFnrDnrISed(sed)

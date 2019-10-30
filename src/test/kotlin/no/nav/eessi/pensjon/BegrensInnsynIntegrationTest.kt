@@ -2,11 +2,12 @@ package no.nav.eessi.pensjon
 
 import io.mockk.*
 import no.nav.eessi.pensjon.listeners.SedListener
+import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
@@ -57,7 +58,7 @@ class BegrensInnsynIntegrationTest {
     lateinit var  personV3Service: PersonV3Service
 
     @Test
-    fun `Gitt en sedSendt hendelse med KODE6 eller KODE7 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
+    fun `Gitt en sedSendt hendelse med KODE6 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
         // Mock personV3
         capturePersonMock()
@@ -118,8 +119,9 @@ class BegrensInnsynIntegrationTest {
     }
 
     private fun capturePersonMock() {
-        val slot = slot<String>()
-        every { personV3Service.hentPerson(fnr = capture(slot)) } answers { PersonMock.createWith()!! }
+        every { personV3Service.hentPerson("12345678910") } answers { PersonMock.createWith()!! }
+        every { personV3Service.hentPerson("99999999999") } answers { PersonMock.createWith()!! }
+        every { personV3Service.hentPerson("11111111111") } answers { PersonMock.createWith(diskresjonskode = Diskresjonskoder().withValue(Diskresjonskode.SPSF.toString()))!! }
     }
 
     companion object {
@@ -150,10 +152,10 @@ class BegrensInnsynIntegrationTest {
                             .withStatusCode(HttpStatusCode.OK_200.code())
                             .withBody(
                                     "{\n" +
-                                            "  \"issuer\": \"http://localhost:${port}\",\n" +
-                                            "  \"token_endpoint\": \"http://localhost:${port}/rest/v1/sts/token\",\n" +
-                                            "  \"exchange_token_endpoint\": \"http://localhost:${port}/rest/v1/sts/token/exchange\",\n" +
-                                            "  \"jwks_uri\": \"http://localhost:${port}/rest/v1/sts/jwks\",\n" +
+                                            "  \"issuer\": \"http://localhost:$port\",\n" +
+                                            "  \"token_endpoint\": \"http://localhost:$port/rest/v1/sts/token\",\n" +
+                                            "  \"exchange_token_endpoint\": \"http://localhost:$port/rest/v1/sts/token/exchange\",\n" +
+                                            "  \"jwks_uri\": \"http://localhost:$port/rest/v1/sts/jwks\",\n" +
                                             "  \"subject_types_supported\": [\"public\"]\n" +
                                             "}"
                             )
@@ -171,11 +173,31 @@ class BegrensInnsynIntegrationTest {
             mockServer.`when`(
                     HttpRequest.request()
                             .withMethod(HttpMethod.GET)
-                            .withPath("/buc/147729/sed/b12e06dda2c7474b9998c7139c841646"))
+                            .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
                             .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV.json"))))
+                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P6000-NAV_uten_SPSF.json"))))
+                    )
+            mockServer.`when`(
+                    HttpRequest.request()
+                            .withMethod(HttpMethod.GET)
+                            .withPath("/buc/147729/sed/02249d3f5bdd4336999ccfbf7bb13c64"))
+                    .respond(HttpResponse.response()
+                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                            .withStatusCode(HttpStatusCode.OK_200.code())
+                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV_med_SPSF.json"))))
+                    )
+
+            // Mocker Fagmodul allDocuments
+            mockServer.`when`(
+                    HttpRequest.request()
+                            .withMethod(HttpMethod.GET)
+                            .withPath("/buc/147729/allDocuments"))
+                    .respond(HttpResponse.response()
+                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
+                            .withStatusCode(HttpStatusCode.OK_200.code())
+                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/allDocuments.json"))))
                     )
 
         }
@@ -193,8 +215,8 @@ class BegrensInnsynIntegrationTest {
         mockServer.verify(
                 HttpRequest.request()
                         .withMethod(HttpMethod.GET)
-                        .withPath("/buc/147729/sed/b12e06dda2c7474b9998c7139c841646"),
-                VerificationTimes.exactly(1)
+                        .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"),
+                VerificationTimes.exactly(2)
         )
 
 
@@ -207,7 +229,7 @@ class BegrensInnsynIntegrationTest {
         )
 
         // Verifiser at det har blitt forsøkt å hente person fra tps
-        verify(exactly = 1) { personV3Service.hentPerson(any()) }
+        verify(exactly = 6) { personV3Service.hentPerson(any()) }
     }
     // Mocks the PersonV3 Service so we don't have to deal with SOAP
     @TestConfiguration

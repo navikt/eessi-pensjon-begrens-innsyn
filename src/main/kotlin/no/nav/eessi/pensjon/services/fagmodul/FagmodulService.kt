@@ -1,0 +1,46 @@
+package no.nav.eessi.pensjon.services.fagmodul
+
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
+import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
+import java.lang.RuntimeException
+
+
+/**
+ * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
+ */
+@Service
+class FagmodulService(
+        private val fagmodulOidcRestTemplate: RestTemplate,
+        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+) {
+
+    private val logger: Logger by lazy { LoggerFactory.getLogger(FagmodulService::class.java) }
+
+    fun hentAlleDokumenterFraRinaSak(rinaNr: String): String? {
+        return metricsHelper.measure("hentSeds") {
+            val path = "/buc/$rinaNr/allDocuments"
+            try {
+                logger.info("Henter jsondata for alle sed for rinaNr: $rinaNr")
+                val response = fagmodulOidcRestTemplate.exchange(path,
+                        HttpMethod.GET,
+                        null,
+                        String::class.java)
+                if (!response.statusCode.isError) {
+                    logger.info("Hentet seds fra fagmodulen")
+                    response.body
+                } else {
+                    throw RuntimeException("Noe gikk galt under henting av seds fra fagmodulen: ${response.statusCode}")
+                }
+            } catch (ex: Exception) {
+                logger.error("Noe gikk galt under henting av seds fra fagmodulen: ${ex.message}")
+                throw RuntimeException("Feil ved henting av seds")
+            }
+        }
+    }
+}

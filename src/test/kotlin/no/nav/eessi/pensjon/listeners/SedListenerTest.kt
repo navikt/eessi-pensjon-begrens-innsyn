@@ -1,9 +1,6 @@
 package no.nav.eessi.pensjon.listeners
 
-import com.nhaarman.mockitokotlin2.doThrow
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
@@ -51,8 +48,6 @@ class SedListenerTest {
 
     @Test
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-       doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
-
         assertThrows<RuntimeException> {
             sedListener.consumeSedSendt("Explode!",cr, acknowledgment)
         }
@@ -61,8 +56,6 @@ class SedListenerTest {
 
     @Test
     fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-        doThrow(MockitoException("Boom!")).`when`(begrensInnsynService).begrensInnsyn(eq("Explode!"))
-
         assertThrows<RuntimeException> {
             sedListener.consumeSedMottatt("Explode!",cr, acknowledgment)
         }

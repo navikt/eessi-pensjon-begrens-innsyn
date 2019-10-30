@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.services.personv3
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*
 
 object PersonMock {
-    internal fun createWith(landkoder: Boolean = true, fornavn: String = "Test", etternavn: String = "Testesen"):
+    internal fun createWith(landkoder: Boolean = true, fornavn: String = "Test", etternavn: String = "Testesen", diskresjonskode: Diskresjonskoder? = null):
             Person? = Person()
                     .withPersonnavn(Personnavn()
                             .withEtternavn(etternavn)
@@ -20,5 +20,5 @@ object PersonMock {
                                                         true -> Landkoder().withValue("NOR")
                                                         else -> null
                                             })))
-            .withDiskresjonskode(Diskresjonskoder().withValue(Diskresjonskode.SPSF.toString()))
+            .withDiskresjonskode(diskresjonskode)
 }
