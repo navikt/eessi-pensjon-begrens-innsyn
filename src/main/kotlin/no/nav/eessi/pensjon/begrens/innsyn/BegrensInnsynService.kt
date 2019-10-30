@@ -29,7 +29,7 @@ class BegrensInnsynService(private val euxService: EuxService,
             person?.diskresjonskode?.value?.let { kode ->
                 logger.debug("Diskresjonskode: $kode")
                 val diskresjonskode = Diskresjonskode.valueOf(kode)
-                if(diskresjonskode == Diskresjonskode.SPFO || diskresjonskode == Diskresjonskode.SPSF) {
+                if(diskresjonskode == Diskresjonskode.SPSF) {
                     logger.debug("Personen har diskret adresse")
                     euxService.settSensitivSak(sedHendelse.rinaSakId)
                     return
