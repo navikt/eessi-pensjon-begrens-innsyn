@@ -27,7 +27,7 @@ class EuxService(
 
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return metricsHelper.measure("hentSed") {
-            val path = "/buc/{RinaSakId}/sed/{DokumentId}"
+            val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
             val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
@@ -46,7 +46,7 @@ class EuxService(
 
     fun settSensitivSak(rinaSakId: String) : String? {
         return metricsHelper.measure("settSensitiv") {
-            val path = "/buc/{RinaSakId}/sensitivsak"
+            val path = "/buc/$rinaSakId/sensitivsak"
             val uriParams = mapOf("RinaSakId" to rinaSakId)
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 

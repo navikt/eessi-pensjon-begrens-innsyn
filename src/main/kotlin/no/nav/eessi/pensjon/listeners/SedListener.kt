@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.listeners
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
+import no.nav.eessi.pensjon.begrens.innsyn.SedHendelseModel
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -32,7 +33,8 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 logger.debug(hendelse)
                 try {
-                    begrensInnsynService.begrensInnsyn(hendelse)
+                    val sedHendelse = SedHendelseModel.fromJson(hendelse)
+                    begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latch.countDown()
@@ -51,7 +53,8 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}\")")
                 logger.debug(hendelse)
                 try {
-                    begrensInnsynService.begrensInnsyn(hendelse)
+                    val sedHendelse = SedHendelseModel.fromJson(hendelse)
+                    begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                 } catch (ex: Exception) {

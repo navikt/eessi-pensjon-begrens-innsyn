@@ -51,3 +51,5 @@ fasitResources:
       resourceType: BaseUrl
     - alias: eux-rina-api_v1
       resourceType: RestService
+    - alias: eessifagmodulservice
+      resourceType: RestService
