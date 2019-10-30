@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.annotation.PartitionOffset
-import org.springframework.kafka.annotation.TopicPartition
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
 import java.util.*
@@ -27,10 +25,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         return latch
     }
 
-
-    @KafkaListener(groupId = "\${kafka.sedSendt.groupid}",
-            topicPartitions = [TopicPartition(topic = "\${kafka.sedSendt.topic}",
-                    partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "0")])])
+    @KafkaListener(topics = ["\${kafka.sedSendt.topic}"], groupId = "\${kafka.sedSendt.groupid}")
     fun consumeSedSendt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             metricsHelper.measure("consumeOutgoingSed") {
@@ -49,9 +44,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         }
     }
 
-    @KafkaListener(groupId = "\${kafka.sedMottatt.groupid}",
-            topicPartitions = [TopicPartition(topic = "\${kafka.sedMottatt.topic}",
-                    partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "0")])])
+    @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
     fun consumeSedMottatt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             metricsHelper.measure("consumeIncomingSed") {

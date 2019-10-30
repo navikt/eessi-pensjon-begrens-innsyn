@@ -56,7 +56,6 @@ class BegrensInnsynIntegrationTest {
     @Autowired
     lateinit var  personV3Service: PersonV3Service
 
-    @Disabled
     @Test
     fun `Gitt en sedSendt hendelse med KODE6 eller KODE7 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
