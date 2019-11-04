@@ -61,7 +61,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     val sedHendelse = SedHendelseModel.fromJson(hendelse)
                     if(sedHendelse.sektorKode != "P") {
                         acknowledgment.acknowledge()
-                        logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
+                        logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     } else {
                         begrensInnsynService.begrensInnsyn(sedHendelse)
                         acknowledgment.acknowledge()
