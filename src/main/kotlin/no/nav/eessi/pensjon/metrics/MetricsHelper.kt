@@ -64,15 +64,35 @@ class MetricsHelper(val registry: MeterRegistry, @Autowired(required = false) va
         }
     }
 
-    class Configuration(
+    fun increment(
+            event: String,
+            eventType: String = configuration.eventTypeTagValue,
+            throwable: Throwable? = null,
+            meterName: String = configuration.incrementMeterName) {
+        try {
+            Counter.builder(meterName)
+                    .tag(configuration.eventTag, event)
+                    .tag(configuration.typeTag, eventType)
+                    .register(registry)
+                    .increment()
+        } catch (t: Throwable) {
+            // ignoring on purpose
+        }
+    }
+
+    data class Configuration(
+            val incrementMeterName: String = "event",
             val measureMeterName: String = "method",
             val measureTimerSuffix: String = "timer",
 
+            val eventTag: String = "event",
             val methodTag: String = "method",
             val typeTag: String = "type",
 
             val successTypeTagValue: String = "successful",
             val failureTypeTagValue: String = "failed",
+
+            val eventTypeTagValue: String = "occurred",
 
             val callEventTypeTagValue: String = "called"
     )
