@@ -19,12 +19,14 @@ class MetricsHelper(val registry: MeterRegistry, @Autowired(required = false) va
                 "disoverSTS",
                 "getSystemOidcToken",
                 "hentSeds").forEach {counterName ->
-            Counter.builder(counterName)
+            Counter.builder(configuration.measureMeterName)
                     .tag(configuration.typeTag, configuration.successTypeTagValue)
+                    .tag(configuration.methodTag, counterName)
                     .register(registry)
 
-            Counter.builder(counterName)
+            Counter.builder(configuration.measureMeterName)
                     .tag(configuration.typeTag, configuration.failureTypeTagValue)
+                    .tag(configuration.methodTag, counterName)
                     .register(registry)
         }
     }
@@ -63,11 +65,9 @@ class MetricsHelper(val registry: MeterRegistry, @Autowired(required = false) va
     }
 
     class Configuration(
-            val incrementMeterName: String = "event",
             val measureMeterName: String = "method",
             val measureTimerSuffix: String = "timer",
 
-            val eventTag: String = "event",
             val methodTag: String = "method",
             val typeTag: String = "type",
 
