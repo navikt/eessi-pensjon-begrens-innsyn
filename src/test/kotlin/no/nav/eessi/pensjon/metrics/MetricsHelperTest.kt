@@ -99,4 +99,37 @@ internal class MetricsHelperTest {
                 timer.totalTime(TimeUnit.MILLISECONDS),
                 10.0)
     }
+
+    @Test
+    fun increment_increments_a_counter() {
+        metricsHelper.increment(
+                event = "myevent",
+                eventType = "mottatt")
+
+        assertEquals(1.0,
+                registry.counter(
+                        config.incrementMeterName,
+                        config.eventTag, "myevent",
+                        config.typeTag, "mottatt"
+                ).count(),
+                0.0001)
+
+    }
+
+    @Test
+    fun increment_can_take_a_throwable() {
+        metricsHelper.increment(
+                event = "myevent",
+                eventType = "failed",
+                throwable = RuntimeException("BOOM!")
+        )
+
+        assertEquals(1.0,
+                registry.counter(
+                        config.incrementMeterName,
+                        config.eventTag, "myevent",
+                        config.typeTag, "failed").count(),
+                0.0001)
+
+    }
 }
