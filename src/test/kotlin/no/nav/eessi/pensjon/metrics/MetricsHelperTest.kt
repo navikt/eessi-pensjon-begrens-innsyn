@@ -30,13 +30,13 @@ internal class MetricsHelperTest {
         }
 
         assertEquals(
-            1.0,
-            registry.counter(
-                    config.measureMeterName,
-                    config.methodTag, "dummy",
-                    config.typeTag, config.successTypeTagValue)
-                .count(),
-            0.0001)
+                1.0,
+                registry.counter(
+                        config.measureMeterName,
+                        config.methodTag, "dummy",
+                        config.typeTag, config.successTypeTagValue)
+                        .count(),
+                0.0001)
     }
 
     @Test
@@ -50,13 +50,13 @@ internal class MetricsHelperTest {
         }
 
         assertEquals(
-            1.0,
-            registry.counter(
-                    config.measureMeterName,
-                    config.methodTag, "dummy",
-                    config.typeTag, config.failureTypeTagValue)
-                .count(),
-            0.0001)
+                1.0,
+                registry.counter(
+                        config.measureMeterName,
+                        config.methodTag, "dummy",
+                        config.typeTag, config.failureTypeTagValue)
+                        .count(),
+                0.0001)
     }
 
     @Test
@@ -70,13 +70,13 @@ internal class MetricsHelperTest {
         }
 
         assertEquals(
-            1.0,
-            registry.counter(
-                    config.measureMeterName,
-                    config.methodTag, "dummy",
-                    config.typeTag, config.failureTypeTagValue)
-                .count(),
-            0.0001)
+                1.0,
+                registry.counter(
+                        config.measureMeterName,
+                        config.methodTag, "dummy",
+                        config.typeTag, config.failureTypeTagValue)
+                        .count(),
+                0.0001)
     }
 
     @Test
@@ -110,8 +110,8 @@ internal class MetricsHelperTest {
                 registry.counter(
                         config.incrementMeterName,
                         config.eventTag, "myevent",
-                        config.typeTag, "mottatt"
-                ).count(),
+                        config.typeTag, "mottatt")
+                        .count(),
                 0.0001)
 
     }
@@ -128,7 +128,8 @@ internal class MetricsHelperTest {
                 registry.counter(
                         config.incrementMeterName,
                         config.eventTag, "myevent",
-                        config.typeTag, "failed").count(),
+                        config.typeTag, "failed")
+                        .count(),
                 0.0001)
 
     }
