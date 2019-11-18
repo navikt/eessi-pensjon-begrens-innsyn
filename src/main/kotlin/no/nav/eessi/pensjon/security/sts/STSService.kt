@@ -6,17 +6,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import javax.annotation.PostConstruct
 import no.nav.eessi.pensjon.json.mapAnyToJson
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.client.HttpStatusCodeException
+import java.lang.RuntimeException
 
 
 inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
@@ -63,14 +61,17 @@ class STSService(
     fun discoverEndpoints() {
         metricsHelper.measure("disoverSTS") {
             try {
-                logger.info("Henter STS endepunkter fra well.known $discoveryUrl")
-                    wellKnownSTS = RestTemplate().exchange(discoveryUrl,
-                            HttpMethod.GET,
-                            null,
-                            typeRef<WellKnownSTS>()).body!!
-            } catch (ex: Exception) {
-                logger.error("Feil ved henting av STS endepunkter fra well.known: ${ex.message}", ex)
-                throw RestClientException(ex.message!!)
+                logger.info("Henter STS endepunkter fra well.known " + discoveryUrl)
+                wellKnownSTS = RestTemplate().exchange(discoveryUrl,
+                        HttpMethod.GET,
+                        null,
+                        typeRef<WellKnownSTS>()).body!!
+            } catch(ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under service discovery av STS ex: $ex body: ${ex.responseBodyAsString}")
+                throw RuntimeException("En feil oppstod under service discovery av STS ex: ${ex.message} body: ${ex.responseBodyAsString}")
+            } catch(ex: Exception) {
+                logger.error("En feil oppstod under service discovery av STS ex: $ex")
+                throw RuntimeException("En feil oppstod under service discovery av STS ex: ${ex.message}")
             }
         }
     }
@@ -90,20 +91,14 @@ class STSService(
                         typeRef<SecurityTokenResponse>())
 
                 logger.debug("SecurityTokenResponse ${mapAnyToJson(responseEntity)} ")
-                validateResponse(responseEntity)
                 responseEntity.body!!.accessToken
-            } catch (ex: Exception) {
-                logger.error("Feil ved bytting av username/password til OIDC token: ${ex.message}", ex)
-                throw SystembrukerTokenException(ex.message!!)
+            } catch(ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under bytting av username/password til OIDC token ex: $ex body: ${ex.responseBodyAsString}")
+                throw RuntimeException("En feil oppstod under bytting av username/password til OIDC token ex: ${ex.message} body: ${ex.responseBodyAsString}")
+            } catch(ex: Exception) {
+                logger.error("En feil oppstod under bytting av username/password til OIDC token ex: $ex")
+                throw RuntimeException("En feil oppstod under bytting av username/password til OIDC token ex: ${ex.message}")
             }
         }
     }
-
-    private fun validateResponse(responseEntity: ResponseEntity<SecurityTokenResponse>) {
-        if (responseEntity.statusCode.isError)
-            throw RuntimeException("SecurityTokenExchange received http-error ${responseEntity.statusCode}:${responseEntity.statusCodeValue}")
-    }
 }
-
-@ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
-class SystembrukerTokenException(message: String) : Exception(message)

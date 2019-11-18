@@ -1,8 +1,5 @@
 package no.nav.eessi.pensjon.services.eux
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.Logger
@@ -10,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -23,7 +21,6 @@ class EuxService(
 ) {
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxService::class.java) }
-    private val mapper: ObjectMapper = jacksonObjectMapper().configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
 
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return metricsHelper.measure("hentSed") {
@@ -37,9 +34,12 @@ class EuxService(
                         HttpMethod.GET,
                         null,
                         String::class.java).body
-            } catch( ex: Exception) {
-                logger.error("En feil oppstod under henting av SED fra EUX", ex)
-                throw ex
+            } catch(ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under henting av SED fra EUX ex: $ex body: ${ex.responseBodyAsString}")
+                throw RuntimeException("En feil oppstod under henting av SED fra EUX ex: ${ex.message} body: ${ex.responseBodyAsString}")
+            } catch(ex: Exception) {
+                logger.error("En feil oppstod under henting av SED fra EUX ex: $ex")
+                throw RuntimeException("En feil oppstod under henting av SED fra EUX ex: ${ex.message}")
             }
         }
     }
@@ -52,18 +52,16 @@ class EuxService(
 
             try {
                 logger.info("Setter BUC som sensitiv /${builder.toUriString()}")
-                val resp = euxOidcRestTemplate.exchange(builder.toUriString(),
+                euxOidcRestTemplate.exchange(builder.toUriString(),
                         HttpMethod.PUT,
                         null,
-                        String::class.java)
-                if(resp.statusCode.isError) {
-                    logger.error("En feil oppstod under setting av sensitiv sak: status: ${resp.statusCode} + ${resp.statusCodeValue} body: ${resp.body}")
-                }
-
-                resp.body
-            } catch( ex: Exception) {
-                logger.error("En feil oppstod under henting av SED fra EUX", ex)
-                throw ex
+                        String::class.java).body
+            } catch(ex: HttpStatusCodeException) {
+                logger.error("En feil oppstod under markering av sensitiv sak ex: $ex body: ${ex.responseBodyAsString}")
+                throw RuntimeException("En feil oppstod under markering av sensitiv sak ex: ${ex.message} body: ${ex.responseBodyAsString}")
+            } catch(ex: Exception) {
+                logger.error("En feil oppstod under markering av sensitiv sak ex: $ex")
+                throw RuntimeException("En feil oppstod under markering av sensitiv sak ex: ${ex.message}")
             }
         }
     }
