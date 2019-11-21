@@ -6,8 +6,6 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
-import org.springframework.util.StreamUtils
-import java.nio.charset.Charset
 
 class RequestResponseLoggerInterceptor : ClientHttpRequestInterceptor {
 
@@ -23,23 +21,38 @@ class RequestResponseLoggerInterceptor : ClientHttpRequestInterceptor {
 
     private fun logRequest(request: HttpRequest, body: ByteArray) {
         if (log.isDebugEnabled) {
-            log.debug("\n===========================request begin================================================\n"
-                    + "URI         : " + request.uri + "\n"
-                    + "Method      : " + request.method + "\n"
-                    + "Headers     : " + request.headers + "\n"
-                    + "Request body: " + String(body) + "\n"
-                    + "==========================request end================================================")
+            val requestLog = StringBuffer()
+
+            requestLog.append("\n===========================request begin================================================")
+            requestLog.append("\nURI            :  ${request.uri}")
+            requestLog.append("\nMethod         :  ${request.method}")
+            requestLog.append("\nHeaders        :  ${request.headers}")
+            requestLog.append(trunkerBodyHvisDenErStor(body))
+            requestLog.append("\n==========================request end================================================")
+            log.debug(requestLog.toString())
         }
     }
 
     private fun logResponse(response: ClientHttpResponse) {
         if (log.isDebugEnabled) {
-            log.debug("\n===========================response begin================================================\n"
-                    + "Status code  : " + response.statusCode + "\n"
-                    + "Status text  : " + response.statusText + "\n"
-                    + "Headers      : " + response.headers + "\n"
-                    + "Response body: " + StreamUtils.copyToString(response.body, Charset.defaultCharset()) + "\n"
-                    + "==========================response end================================================")
+            val responseLog = StringBuilder()
+
+            responseLog.append("\n===========================response begin================================================")
+            responseLog.append("\nStatus code    : ${response.statusCode}")
+            responseLog.append("\nStatus text    : ${response.statusText}")
+            responseLog.append("\nHeaders        : ${response.headers}")
+            responseLog.append(trunkerBodyHvisDenErStor(response.body.readBytes()))
+            responseLog.append("\n==========================response end================================================")
+            log.debug(responseLog.toString())
+        }
+    }
+
+    private fun trunkerBodyHvisDenErStor(body: ByteArray) : String {
+        // Korter ned body dersom den er veldig stor ( ofte ved binærinnhold )
+        return if (body.size > 5000) {
+            "\nTruncated body :  ${String(body.copyOfRange(0, 5000))}"
+        } else {
+            "\nComplete body  :  ${String(body)}"
         }
     }
 }

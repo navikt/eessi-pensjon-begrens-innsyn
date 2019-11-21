@@ -61,8 +61,8 @@ class STSService(
     fun discoverEndpoints() {
         metricsHelper.measure("disoverSTS") {
             try {
-                logger.info("Henter STS endepunkter fra well.known " + discoveryUrl)
-                wellKnownSTS = RestTemplate().exchange(discoveryUrl,
+                logger.info("Henter STS endepunkter fra well.known $discoveryUrl")
+                wellKnownSTS = securityTokenExchangeBasicAuthRestTemplate.exchange(discoveryUrl,
                         HttpMethod.GET,
                         null,
                         typeRef<WellKnownSTS>()).body!!
