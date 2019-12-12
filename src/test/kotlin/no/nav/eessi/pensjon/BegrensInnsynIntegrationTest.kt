@@ -39,13 +39,14 @@ import java.util.concurrent.TimeUnit
 import javax.ws.rs.HttpMethod
 
 private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
+private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
 @SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
-@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC])
+@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC])
 class BegrensInnsynIntegrationTest {
 
     @Autowired
