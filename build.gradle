@@ -5,7 +5,7 @@ buildscript {
 		springBootVersion = '2.2.2.RELEASE'
 		cxfVersion = '3.3.4'
 		oidcTokenSupportVersion = '0.2.9'
-		logstashLogbackVersion = '6.1'
+		logstashLogbackVersion = '6.3'
 		pensjonInformasjonVersion = '9.4.10'
 		personV3Version = '3.6.1'
 	}
