@@ -11,6 +11,7 @@ spring:
   kafka:
     listener:
       ack-mode: manual
+      missingTopicsFatal: true  # app will not start if topics don't exist
     consumer:
       enable-auto-commit: false
       max-poll-records: 1
