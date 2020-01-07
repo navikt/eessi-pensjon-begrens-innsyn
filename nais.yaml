@@ -1,32 +1,92 @@
-name: eessi-pensjon-begrens-innsyn
-image: repo.adeo.no:5443/eessi-pensjon-begrens-innsyn
-team: eessipensjon
-
-replicas:
-  min: 1
-  max: 1
-  cpuThresholdPercentage: 50
-
-prometheus:
-  enabled: true
-  path: /actuator/prometheus
-
-port: 8080
-healthcheck:
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: eessi-pensjon-begrens-innsyn
+  namespace: default
+  labels:
+    team: eessi-pensjon #was eessipensjon in previous nais.yaml...
+spec:
+  image: repo.adeo.no:5443/eessi-pensjon-begrens-innsyn
+  port: 8080
+  strategy:
+    type: RollingUpdate
   liveness:
-    initialDelay: 20
-    path: /internal/isalive
-  readiness:
-    initialDelay: 20
-    path: /internal/isready
-resources:
+    path: isalive
+    port: http
+    initialDelay: 20 #default
+    timeout: 1 #default
+    periodSeconds: 5 #default
+    failureThreshold: 3 #default
+  readyness:
+    path: isready
+    port: http
+    initialDelay: 20 #default
+    timeout: 1 #default
+  replicas:
+    min: 1 #default 2
+    max: 1 #default 4
+    cpuThresholdPercentage: 50 #previous nais.yaml
+  prometheus:
+    enabled: true #default false
+    #port: 8080 #default .spec.port
+    path: /actuator/prometheus #default /metrics
+  resources:
   limits:
-    cpu: 4
-    memory: 4096Mi
+    cpu: 500m #previous nais.yaml 400m
+    memory: 4096Mi #default 512Mi
   requests:
-    cpu: 400m
-    memory: 1024Mi
+    cpu: 400m #default 200m
+    memory: 1024Mi #default 256Mi
+  ingresses:
+    - "https://eessi-pensjon-begrens-innsyn.nais.preprod.local/"
+  vault:
+    enabled: true #If set to true, fetch secrets from Vault and inject into the pods
+    sidecar: fault #If set to true, will extend tokens time to live
+    paths:
+      - mountPath: /var/run/secrets/nais.io/vault #default
+        kvPath: /kv/environment/zone/application/namespace #default
+  # Kopiert fra: https://doc.nais.io/nais-application/manifest
+  env:
+    - name: MY_CUSTOM_VAR
+      value: some_value
+  preStopHookPath: "/stop"
+  leaderElection: false
+  webproxy: false
+  logformat: accesslog
+  logtransform: http_loglevel
+  secureLogs:
+    enabled: false
+  service:
+    port: 80
+  skipCaBundle: false
+  # Se: https://doc.nais.io/nais-application/manifest Muligens kun nødvendig for GCP.
+  # envFrom:
+  #  - secret: my-secret
+  # filesFrom:
+  #  - configmap: #example: example_files_configmap
+  #    mountPath: /var/run/configmaps #Default (configmap): /var/run/configmaps/<configmap-name> Default (secret): /var/run/secrets
+  # gcp:
+  #  buckets:
+  #    - name: my-cloud-storage-bucket
+  #  accessPolicy:
+  #    inbound:
+  #      rules:
+  #        - application: app1
+  #        - application: app2
+  #         namespace: q1
+  #        - application: *
+  #          namespace: t1
+  #    outbound:
+  #      rules:
+  #        - application: app4
+  #        - application: app1
+  #          namespace: q1
+  #        - application: *
+  #          namespace: t1
+  #      external:
+  #        - host: www.external-application.com
 
+# fra gammel nais.yaml
 fasitResources:
   used:
     - alias: eessi-pensjon-active-profiles
