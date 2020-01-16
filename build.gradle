@@ -127,7 +127,9 @@ compileTestKotlin {
 }
 
 repositories {
-	mavenCentral()
+	maven {
+		url "https://maven.pkg.github.com/navikt/maven-release"
+	}
 
 	maven {
 		credentials {
