@@ -133,8 +133,8 @@ repositories {
 
 	maven {
 		credentials {
-			username = project
-			password = project
+			username = "token"
+			password = "$System.env.GITHUB_TOKEN"
 		}
 
 		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
