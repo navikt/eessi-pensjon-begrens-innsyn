@@ -140,6 +140,8 @@ repositories {
 		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
 	}
 }
+printf("--------------")
+printf("$System.env.GITHUB_TOKEN")
 
 //repositories {
 //	maven {
