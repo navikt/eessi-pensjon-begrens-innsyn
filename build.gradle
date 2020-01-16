@@ -126,8 +126,8 @@ compileTestKotlin {
 	}
 }
 
-val githubUser: String by project
-val githubPassword: String by project
+username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
 
 repositories {
 	mavenCentral()
@@ -135,8 +135,8 @@ repositories {
 	maven {
 		credentials {
 			credentials {
-				username = githubUser
-				password = githubPassword
+				username
+				password
 			}
 		}
 
