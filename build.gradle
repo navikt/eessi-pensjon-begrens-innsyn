@@ -13,9 +13,9 @@ buildscript {
 		maven {
 			url "https://plugins.gradle.org/m2/"
 		}
-		maven {
-			url "https://repo.adeo.no/repository/maven-central"
-		}
+//		maven {
+//			url "https://repo.adeo.no/repository/maven-central"
+//		}
 	}
 
 	dependencies {
@@ -125,14 +125,14 @@ compileTestKotlin {
 	}
 }
 
-repositories {
-	maven {
-		url "https://repo.adeo.no/repository/maven-central"
-	}
-	maven {
-		url "https://repo.adeo.no/repository/maven-releases"
-	}
-}
+//repositories {
+//	maven {
+//		url "https://repo.adeo.no/repository/maven-central"
+//	}
+//	maven {
+//		url "https://repo.adeo.no/repository/maven-releases"
+//	}
+//}
 
 wrapper {
 	distributionType = Wrapper.DistributionType.ALL
