@@ -125,6 +125,10 @@ compileTestKotlin {
 	}
 }
 
+repositories {
+	mavenCentral()
+}
+
 //repositories {
 //	maven {
 //		url "https://repo.adeo.no/repository/maven-central"
