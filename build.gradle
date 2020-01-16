@@ -126,17 +126,14 @@ compileTestKotlin {
 	}
 }
 
-username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
-
 repositories {
 	mavenCentral()
 
 	maven {
 		credentials {
 			credentials {
-				username
-				password
+				username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+				password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
 			}
 		}
 
