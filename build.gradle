@@ -126,16 +126,21 @@ compileTestKotlin {
 	}
 }
 
+val githubUser: String by project
+val githubPassword: String by project
+
 repositories {
 	mavenCentral()
 
 	maven {
-		name = "GitHubPackages"
-		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner/")
 		credentials {
-			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-			password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
+			credentials {
+				username = githubUser
+				password = githubPassword
+			}
 		}
+
+		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
 	}
 }
 
