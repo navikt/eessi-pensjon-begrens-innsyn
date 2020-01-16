@@ -129,6 +129,10 @@ compileTestKotlin {
 repositories {
 	maven {
 		url "https://maven.pkg.github.com/navikt/maven-release"
+		credentials {
+			username = "token"
+			password = "$System.env.GITHUB_TOKEN"
+		}
 	}
 
 	maven {
