@@ -21,6 +21,15 @@ buildscript {
 			}
 		}
 
+		maven {
+			credentials {
+				username = "token"
+				password = "$System.env.GITHUB_TOKEN"
+			}
+
+			setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+		}
+
 //		maven {
 //			url "https://plugins.gradle.org/m2/"
 //		}
@@ -157,8 +166,6 @@ repositories {
 		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
 	}
 }
-printf("--------------")
-printf("$System.env.GITHUB_TOKEN")
 
 //repositories {
 //	maven {
