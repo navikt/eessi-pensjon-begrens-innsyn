@@ -60,5 +60,3 @@ spec:
     paths:
       - kvPath: /serviceuser/data/dev/srveessi-pensjon-b
         mountPath: /var/run/secrets/nais.io/srveessi-pensjon-begrens-innsyn
-      - kvPath: /kv/preprod/fss/eessi-pensjon-begrens-innsyn/default
-        mountPath: /var/run/secrets/nais.io/vault
