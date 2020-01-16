@@ -129,11 +129,6 @@ compileTestKotlin {
 repositories {
 	mavenCentral()
 
-
-
-}
-
-repositories {
 	maven {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner/")
@@ -141,11 +136,6 @@ repositories {
 			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
 			password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
 		}
-	}
-}
-publications {
-	gpr(MavenPublication) {
-		from(components.java)
 	}
 }
 
