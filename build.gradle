@@ -131,10 +131,8 @@ repositories {
 
 	maven {
 		credentials {
-			credentials {
-				username = project
-				password = project
-			}
+			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
 		}
 
 		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
