@@ -10,9 +10,20 @@ buildscript {
 		personV3Version = '3.6.1'
 	}
 	repositories {
+
+		mavenCentral()
+
 		maven {
-			url "https://plugins.gradle.org/m2/"
+			url "https://maven.pkg.github.com/navikt/maven-release"
+			credentials {
+				username = "token"
+				password = "$System.env.GITHUB_TOKEN"
+			}
 		}
+
+//		maven {
+//			url "https://plugins.gradle.org/m2/"
+//		}
 //		maven {
 //			url "https://repo.adeo.no/repository/maven-central"
 //		}
@@ -99,7 +110,7 @@ dependencies {
 	// Tjenestespesifikasjoner
 	//implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
 	implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.13-12.13-a8a32ba1c072")
-	xsd("no.nav.pensjon:pensjonsinformasjon-xsd")
+	xsd("no.nav.pensjon:pensjonsinformasjon-xsd:${pensjonInformasjonVersion}")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
