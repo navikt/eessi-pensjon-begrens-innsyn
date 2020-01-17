@@ -21,8 +21,8 @@ securityTokenService:
 
 EUX_RINA_API_V1_URL: http://localhost:${mockServerport}
 securitytokenservice.url: http://someurl
-srvusername: someuser
-srvpassword: somepass
+username: someuser
+password: somepass
 virksomhet.person.v3:
   endpointurl: http://localhost:${mockServerport}
 eessifagmodulservice_URL: http://localhost:${mockServerport}

@@ -23,10 +23,10 @@ class RestTemplateConfig(private val securityTokenExchangeService: STSService, p
     @Value("\${eessifagmodulservice_URL}")
     lateinit var fagmodulUrl: String
 
-    @Value("\${srvusername}")
+    @Value("\${username}")
     lateinit var username: String
 
-    @Value("\${srvpassword}")
+    @Value("\${password}")
     lateinit var password: String
 
     @Bean

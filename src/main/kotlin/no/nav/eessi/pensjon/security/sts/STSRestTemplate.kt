@@ -24,10 +24,10 @@ class STSRestTemplate {
 
     private val logger = LoggerFactory.getLogger(STSRestTemplate::class.java)
 
-    @Value("\${srvusername}")
+    @Value("\${username}")
     lateinit var username: String
 
-    @Value("\${srvpassword}")
+    @Value("\${password}")
     lateinit var password: String
 
     @Autowired
