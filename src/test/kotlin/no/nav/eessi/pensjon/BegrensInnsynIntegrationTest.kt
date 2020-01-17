@@ -244,5 +244,4 @@ class BegrensInnsynIntegrationTest {
             return spyk(PersonV3Service(personV3))
         }
     }
-
 }
