@@ -55,3 +55,6 @@ spec:
       memory: 1024Mi
   vault:
     enabled: true
+    paths:
+      - kvPath: {{serviceuserkv}}
+        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-j
