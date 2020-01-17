@@ -57,6 +57,3 @@ spec:
       memory: 1024Mi
   vault:
     enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srveessi-pensjon-b
-        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-begrens-innsyn
