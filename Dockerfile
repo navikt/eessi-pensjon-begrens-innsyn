@@ -1,4 +1,4 @@
-FROM navikt/java:8
+FROM navikt/java:11-appdynamics
 
 COPY build/libs/eessi-pensjon-begrens-innsyn-*.jar /app/app.jar
 
