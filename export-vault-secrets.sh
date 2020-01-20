@@ -4,12 +4,12 @@ echo "Sjekker eessi-pensjon-begrens-innsyn srvPassord"
 if test -f /var/run/secrets/nais.io/srveessi-pensjon-journalforing/password;
 then
   echo "Setter eessi-pensjon-begrens-innsyn srvPassord"
-    export  username=$(cat /var/run/secrets/nais.io/srveessi-pensjon-journalforing/password)
+    export password=$(cat /var/run/secrets/nais.io/srveessi-pensjon-journalforing/password)
 fi
 
 echo "Sjekker eessi-pensjon-begrens-innsyn srvUsername"
 if test -f /var/run/secrets/nais.io/srveessi-pensjon-journalforing/username;
 then
     echo "Setter eessi-pensjon-begrens-innsyn srvUsername"
-    export  password=$(cat /var/run/secrets/nais.io/srveessi-pensjon-journalforing/username)
+    export username=$(cat /var/run/secrets/nais.io/srveessi-pensjon-journalforing/username)
 fi
