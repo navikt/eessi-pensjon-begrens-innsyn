@@ -2,12 +2,12 @@
 
 if test -f /var/run/secrets/nais.io/srveessi-pensjon-j/password;
 then
-    export  SYSTEMBRUKER_PASSWORD=$(cat /var/run/secrets/nais.io/srveessi-pensjon-j/password)
     echo "Setting SYSTEMBRUKER_PASSWORD"
+    export  SYSTEMBRUKER_PASSWORD=$(cat /var/run/secrets/nais.io/srveessi-pensjon-j/password)
 fi
 
 if test -f /var/run/secrets/nais.io/srveessi-pensjon-j/username;
 then
-    export  SYSTEMBRUKER_USERNAME=$(cat /var/run/secrets/nais.io/srveessi-pensjon-j/username)
     echo "Setting SYSTEMBRUKER_USERNAME"
+    export  SYSTEMBRUKER_USERNAME=$(cat /var/run/secrets/nais.io/srveessi-pensjon-j/username)
 fi
