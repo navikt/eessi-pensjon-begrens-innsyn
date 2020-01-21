@@ -3,7 +3,7 @@ name: Build, push, and deploy
 on: [push]
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn/:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.sha }}
 
 jobs:
 
