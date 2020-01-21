@@ -9,25 +9,32 @@ buildscript {
 		pensjonInformasjonVersion = '9.4.10'
 		personV3Version = '3.6.1'
 	}
+
 	repositories {
 
-		mavenCentral()
+		if (project.hasProperty('github')) {
+			mavenCentral()
 
-		maven {
-			url "https://maven.pkg.github.com/navikt/maven-release"
-			credentials {
-				username = "token"
-				password = "$System.env.GITHUB_TOKEN"
-			}
-		}
-
-		maven {
-			credentials {
-				username = "token"
-				password = "$System.env.GITHUB_TOKEN"
+			maven {
+				url "https://maven.pkg.github.com/navikt/maven-release"
+				credentials {
+					username = "token"
+					password = "$System.env.GITHUB_TOKEN"
+				}
 			}
 
-			setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+			maven {
+				credentials {
+					username = "token"
+					password = "$System.env.GITHUB_TOKEN"
+				}
+
+				setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+			}
+		} else {
+			maven {
+				url "https://repo.adeo.no/repository/maven-central"
+			}
 		}
 	}
 
@@ -110,8 +117,12 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	// Tjenestespesifikasjoner
-	//implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
-	compile("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.13-12.13-a8a32ba1c072")
+	if (project.hasProperty('github')) {
+		compile("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.13-12.13-a8a32ba1c072")
+	} else {
+		implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
+	}
+
 	xsd("no.nav.pensjon:pensjonsinformasjon-xsd:${pensjonInformasjonVersion}")
 
 	// Logging
@@ -140,23 +151,33 @@ compileTestKotlin {
 }
 
 repositories {
-	mavenCentral()
 
-	maven {
-		url "https://maven.pkg.github.com/navikt/maven-release"
-		credentials {
-			username = "token"
-			password = "$System.env.GITHUB_TOKEN"
-		}
-	}
+	if (project.hasProperty('github')) {
+		mavenCentral()
 
-	maven {
-		credentials {
-			username = "token"
-			password = "$System.env.GITHUB_TOKEN"
+		maven {
+			url "https://maven.pkg.github.com/navikt/maven-release"
+			credentials {
+				username = "token"
+				password = "$System.env.GITHUB_TOKEN"
+			}
 		}
 
-		setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+		maven {
+			credentials {
+				username = "token"
+				password = "$System.env.GITHUB_TOKEN"
+			}
+
+			setUrl("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+		}
+	} else {
+		maven {
+			url "https://repo.adeo.no/repository/maven-central"
+		}
+		maven {
+			url "https://repo.adeo.no/repository/maven-releases"
+		}
 	}
 }
 
