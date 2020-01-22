@@ -23,7 +23,11 @@ jobs:
     name: Build and push Docker container
     needs: tag
     runs-on: ubuntu-latest
+
     steps:
+      - uses: actions/checkout@master
+      - name: Set env
+        run: echo ::set-env name=VERSION::$(git describe --tags `git rev-list --tags --max-count=1`)
       - uses: actions/checkout@v1
       - name: Build and publish Docker image
         env:
