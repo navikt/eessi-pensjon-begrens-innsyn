@@ -31,10 +31,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v1
+      - name: 'Set Image'
+      - run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
+      - uses: actions/checkout@v1
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
+          #IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
         run: |
           ./gradlew -Pgithub test build
           docker build --tag ${IMAGE} .
@@ -52,4 +55,4 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: nais-q2.yml
           VARS: dev-fss-q2.json
-          IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
+          #IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
