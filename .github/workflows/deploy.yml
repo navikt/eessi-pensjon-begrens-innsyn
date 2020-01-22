@@ -58,7 +58,7 @@ jobs:
       - name: 'Set Image'
         run: |
         echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
-        echo ${IMAGE}
+        echo "${IMAGE}"
       - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
