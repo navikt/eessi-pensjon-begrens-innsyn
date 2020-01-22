@@ -5,8 +5,8 @@ on:
     branches:
       - feature/naisYaml
 
-#env:
-#  IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.sha }}
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.sha }}
 
 jobs:
   tag:
