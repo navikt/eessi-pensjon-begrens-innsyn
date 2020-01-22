@@ -52,3 +52,4 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: nais-q2.yml
           VARS: dev-fss-q2.json
+          IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}
