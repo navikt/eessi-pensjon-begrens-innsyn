@@ -1,11 +1,26 @@
 name: Build, push, and deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - feature/naisYaml
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.sha }}
 
 jobs:
+
+  tag:
+    name: Tag
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
 
   build:
     name: Build and push Docker container
@@ -24,7 +39,6 @@ jobs:
   deploy:
     name: Deploy to NAIS
     needs: build
-    if: github.ref == 'refs/heads/feature/naisYaml'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -34,16 +48,3 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: nais-q2.yml
           VARS: dev-fss-q2.json
-
-  tag:
-    name: Tag
-    needs: deploy
-    if: github.ref == 'refs/heads/feature/naisYaml'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: .*
