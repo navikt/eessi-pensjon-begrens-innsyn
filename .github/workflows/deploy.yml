@@ -12,8 +12,7 @@ jobs:
       # PULLER REPO
       - name: 'Pull repo'
         uses: actions/checkout@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git fetch --prune --unshallow
 
       # OPPRETTER GIT TAG
       - name: 'Bump version and push tag'
