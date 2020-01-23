@@ -44,8 +44,9 @@ jobs:
           docker build --tag ${{ env.IMAGE }} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${{ env.IMAGE }}
+
       # DEPLOYER TIL NAIS
-      - name: 'Deploy to NAIS'
+      - name: Deploy to NAIS
       - uses: actions/checkout@v1
                 - uses: nais/deploy/actions/deploy@v1
                 env:
