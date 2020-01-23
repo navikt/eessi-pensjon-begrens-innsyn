@@ -31,7 +31,6 @@ jobs:
 
       # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
       - name: 'Set Image'
-        uses: actions/checkout@v1
         run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
 
 #      # BYGGER DOCKER CONTAINER
