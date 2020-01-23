@@ -15,12 +15,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      # OPPRETTER GIT TAG
-#      - name: Bump version and push tag
-#        uses: anothrNick/github-tag-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          RELEASE_BRANCHES: .*
+      # OPPRETTER GIT TAG
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
 #
 #      # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
 #      - name: 'Get Previous tag'
