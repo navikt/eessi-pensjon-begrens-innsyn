@@ -29,22 +29,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
-#      - uses: actions/checkout@v1
-#      - name: 'Set Image'
-#        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
-#
-#      # BYGGER DOCKER CONTAINER
-#      - uses: actions/checkout@v1
-#      - name: Build and publish Docker image
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          ./gradlew -Pgithub test build
-#          docker build --tag ${{ env.IMAGE }} .
-#          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-#          docker push ${{ env.IMAGE }}
-#
+      # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
+      - uses: actions/checkout@v1
+      - name: 'Set Image'
+        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
+
+      # BYGGER DOCKER CONTAINER
+      - uses: actions/checkout@v1
+      - name: Build and publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew -Pgithub test build
+          docker build --tag ${{ env.IMAGE }} .
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${{ env.IMAGE }}
+
 #      # DEPLOYER TIL NAIS
 #      - uses: actions/checkout@v1
 #      - uses: nais/deploy/actions/deploy@v1
