@@ -11,5 +11,5 @@ jobs:
           with:
             token: ${{ secrets.DISPATCH_TOKEN }}
             reaction-token: ${{ secrets.DISPATCH_TOKEN }}
-            commands: deploy, integration-test, build-docs
+            commands: prodsett
 
