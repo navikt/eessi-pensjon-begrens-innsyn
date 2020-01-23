@@ -46,7 +46,6 @@ jobs:
           docker push ${{ env.IMAGE }}
 
       # DEPLOYER TIL NAIS
-      - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
       - name: Deploy to NAIS
         env:
