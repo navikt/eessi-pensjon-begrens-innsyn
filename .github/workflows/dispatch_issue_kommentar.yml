@@ -6,12 +6,10 @@ jobs:
   dispatcher:
     runs-on: ubuntu-latest
     steps:
-      - name: Slash command dispatch
-        uses: peter-evans/slash-command-dispatch@v1
-        with:
-          reaction-token: ${{ secrets.GITHUB_TOKEN }}
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          commands: prodsett
-          issue-type: issue
-          allow_edits: true
-          reactions: false     
+      - name: Slash Command Dispatch
+          uses: peter-evans/slash-command-dispatch@v1
+          with:
+            token: ${{ secrets.DISPATCH_TOKEN }}
+            reaction-token: ${{ secrets.DISPATCH_TOKEN }}
+            commands: deploy, integration-test, build-docs
+
