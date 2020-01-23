@@ -42,7 +42,7 @@ jobs:
           ./gradlew -Pgithub test build
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker push ${env.IMAGE}
   deploy:
     name: Deploy to NAIS
     needs: build
@@ -58,7 +58,7 @@ jobs:
       - name: 'Set Image'
         run: |
           echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
-          echo "the image: $IMAGE"
+          echo "the image: ${env.IMAGE}"
       - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
@@ -66,4 +66,4 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: nais-q2.yml
           VARS: dev-fss-q2.json
-          IMAGE: ${IMAGE}
+          IMAGE: ${env.IMAGE}
