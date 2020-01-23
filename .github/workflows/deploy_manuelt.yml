@@ -5,7 +5,7 @@ on:
     types: [prodsett-command]
 
 jobs:
-  tag_build_and_deploy:
+  deploy_manuelt:
     name: 'Build, push, and deploy'
     runs-on: ubuntu-latest
     steps:
@@ -16,5 +16,5 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: nais-q2.yml
-          VARS: {{ github.event.client_payload.slash_command.arg1 }}-{{ github.event.client_payload.slash_command.arg2 }}.json
-          IMAGE: ${{ github.event.client_payload.slash_command.arg1 }}
+          VARS: dev-fss-q2.json
+          IMAGE: ${{ env.IMAGE }}
