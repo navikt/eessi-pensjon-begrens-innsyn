@@ -21,13 +21,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: .*
-#
-#      # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
-#      - name: 'Get Previous tag'
-#        id: previoustag
-#        uses: WyriHaximus/github-action-get-previous-tag@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #
 #      # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
 #      - uses: actions/checkout@v1
