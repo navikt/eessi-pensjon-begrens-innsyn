@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slash Command Dispatch
-          uses: peter-evans/slash-command-dispatch@v1
-          with:
-            token: ${{ secrets.DISPATCH_TOKEN }}
-            reaction-token: ${{ secrets.DISPATCH_TOKEN }}
-            commands: prodsett
+        uses: peter-evans/slash-command-dispatch@v1
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          reaction-token: ${{ secrets.DISPATCH_TOKEN }}
+          commands: prodsett
 
