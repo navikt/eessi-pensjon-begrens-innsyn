@@ -10,10 +10,16 @@ jobs:
     needs: tag
     runs-on: ubuntu-latest
     steps:
-      # OPPRETTER GIT TAG
+      # PULLER REPO
       - name: Bump version and push tag
       - uses: actions/checkout@v1
-      - uses: anothrNick/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
+
+      # OPPRETTER GIT TAG
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: .*
