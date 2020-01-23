@@ -4,25 +4,21 @@ on:
   push:
     branches:
       - feature/naisYaml
-
-jobs:
-  tag:
-    name: Tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: .*
-  build_and_deploy:
+obs:
+  tag_build_and_deploy:
     name: Build and push Docker container
     needs: tag
     runs-on: ubuntu-latest
     steps:
-      # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
+      # OPPRETTER GIT TAG
+      - name: Bump version and push tag
       - uses: actions/checkout@v1
+      - uses: anothrNick/github-tag-action@master
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            RELEASE_BRANCHES: .*
+
+      # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
       - name: 'Get Previous tag'
         id: previoustag
         uses: WyriHaximus/github-action-get-previous-tag@master
@@ -35,8 +31,8 @@ jobs:
         run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ steps.previoustag.outputs.tag }}"
 
       # BYGGER DOCKER CONTAINER
-      - uses: actions/checkout@v1
       - name: Build and publish Docker image
+        uses: actions/checkout@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
