@@ -11,4 +11,6 @@ jobs:
         with:
           token: ${{ secrets.NOTIFICATION }}
           commands: prodsett
-          repository: navikt/eessi-pensjon-begrens-innsyn
+          issue-type: issue
+          allow_edits: true
+          reactions: false
