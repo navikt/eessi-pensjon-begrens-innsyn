@@ -1,0 +1,20 @@
+name: Build, push, and deploy
+
+on:
+  repository_dispatch:
+    types: [prodsett-command]
+
+jobs:
+  tag_build_and_deploy:
+    name: 'Build, push, and deploy'
+    runs-on: ubuntu-latest
+    steps:
+      # DEPLOYER TIL NAIS
+      - name: 'Deploy to NAIS'
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: ${{ github.event.client_payload.slash_command.arg1 }}
+          RESOURCE: nais-${{ github.event.client_payload.slash_command.arg2 }}.yml
+          VARS: {{ github.event.client_payload.slash_command.arg1 }}-{{ github.event.client_payload.slash_command.arg2 }}.json
+          IMAGE: ${{ github.event.client_payload.slash_command.arg1 }}
