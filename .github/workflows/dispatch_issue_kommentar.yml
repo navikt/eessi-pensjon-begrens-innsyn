@@ -1,31 +1,16 @@
-#name: Slash command dispatch
-#on:
-#  issue_comment:
-#    types: [created]
-#jobs:
-#  dispatcher:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Slash command dispatch
-#        uses: peter-evans/slash-command-dispatch@v1
-#        with:
-#          token: ${{ secrets.NOTIFICATION }}
-#          commands: prodsett
-#          issue-type: issue
-#          allow_edits: true
-#          reactions: false
-name: example-command
+name: Slash command dispatch
 on:
-repository_dispatch:
-  types: [prodsett-command]
+  issue_comment:
+    types: [created]
 jobs:
-  example:
+  dispatcher:
     runs-on: ubuntu-latest
     steps:
-      - name: Add reaction
-        uses: peter-evans/create-or-update-comment@v1
+      - name: Slash command dispatch
+        uses: peter-evans/slash-command-dispatch@v1
         with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
-          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
-          reaction-type: hooray
+          token: ${{ secrets.NOTIFICATION }}
+          commands: prodsett
+          issue-type: issue
+          allow_edits: true
+          reactions: false
