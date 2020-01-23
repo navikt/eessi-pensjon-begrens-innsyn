@@ -14,9 +14,9 @@ obs:
       - name: Bump version and push tag
       - uses: actions/checkout@v1
       - uses: anothrNick/github-tag-action@master
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            RELEASE_BRANCHES: .*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
 
       # HENTER NYESTE TAG FOR Å BRUKE DET SOM VERSJONSNUMMER
       - name: 'Get Previous tag'
