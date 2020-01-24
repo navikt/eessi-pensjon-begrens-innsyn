@@ -10,6 +10,6 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.DISPATCH_TOKEN }}
-          reaction-token: ${{ secrets.DISPATCH_TOKEN }}
           commands: prodsett
+          repository: navikt/eessi-pensjon-begrens-innsyn
 
