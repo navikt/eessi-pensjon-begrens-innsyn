@@ -8,6 +8,10 @@ jobs:
     name: 'Build, push, and deploy'
     runs-on: ubuntu-latest
     steps:
+      # PULLER REPO
+      - name: 'Pull repo'
+        uses: actions/checkout@v1
+      - run: git fetch --prune
       # DEPLOYER TIL NAIS
       - name: 'Deploy to NAIS'
         uses: nais/deploy/actions/deploy@v1
