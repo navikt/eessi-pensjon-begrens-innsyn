@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew -Pgithub test build
+          ./gradlew -s -i -Pgithub test build
           docker build --tag ${{ env.IMAGE }} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${{ env.IMAGE }}
