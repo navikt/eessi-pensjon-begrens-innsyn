@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.services.personv3
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
+import io.mocck.mockk
 import io.mockk.spyk
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
@@ -30,7 +31,7 @@ class PersonV3ServiceTest {
 
     @BeforeEach
     fun setup() {
-        personV3 = spyk()
+        personV3 = mockk()
         personV3Service = spyk(PersonV3Service(personV3))
 
         every { personV3Service.konfigurerSamlToken() } just Runs
