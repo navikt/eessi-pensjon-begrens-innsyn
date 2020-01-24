@@ -12,9 +12,10 @@ jobs:
       - name: 'Pull repo'
         uses: actions/checkout@v1
       - run: |
-          echo "cluster: dev-fss"
-          echo "resource: dev-fss-q2.yml"
-          echo "vars: dev-fss-q2.json"
+          echo "versjon: ${{ github.event.client_payload.slash_command.arg1 }}"
+          echo "cluster: ${{ github.event.client_payload.slash_command.arg2 }}"
+          echo "resource: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.yml"
+          echo "vars: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.json"
           echo "image: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.event.client_payload.slash_command.arg1 }}"
 
       # PULLER REPO
@@ -26,7 +27,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: dev-fss-q2.yml
-          VARS: dev-fss-q2.json
+          CLUSTER: ${{ github.event.client_payload.slash_command.arg2 }}
+          RESOURCE: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.yml
+          VARS: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.json
           IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.event.client_payload.slash_command.arg1 }}
