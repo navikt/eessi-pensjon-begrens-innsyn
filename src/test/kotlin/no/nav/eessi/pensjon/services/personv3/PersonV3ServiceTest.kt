@@ -1,10 +1,6 @@
 package no.nav.eessi.pensjon.services.personv3
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mocck.mockk
-import io.mockk.spyk
+import io.mockk.*
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
