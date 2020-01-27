@@ -28,6 +28,6 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ github.event.client_payload.slash_command.arg2 }}
-          RESOURCE: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.yml
-          VARS: ${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.json
+          RESOURCE: nais/${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.yml
+          VARS: nais/${{ github.event.client_payload.slash_command.arg2 }}-${{ github.event.client_payload.slash_command.arg3 }}.json
           IMAGE: docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ github.event.client_payload.slash_command.arg1 }}
