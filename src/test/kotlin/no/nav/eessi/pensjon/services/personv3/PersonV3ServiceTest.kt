@@ -14,7 +14,9 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
+@Disabled
 class PersonV3ServiceTest {
 
     private lateinit var personV3 : PersonV3
