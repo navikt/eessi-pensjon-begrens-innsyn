@@ -26,7 +26,7 @@ spec:
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api-q2.nais.preprod.local/cpi
     - name: EESSIFAGMODULSERVICE_URL
-      value: https://eessi-fagmodul-q2.nais.preprod.local/
+      value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-begrens-innsyn.nais.preprod.local
