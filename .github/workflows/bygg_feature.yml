@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN:  ${{ secrets.DISPATCH_TOKEN }}
         with:
           tag_name: ${{ env.IMAGE }}
-          release_name: ${{ env.IMAGE }}
+          release_name: Release ${{ env.IMAGE }}
           body: |
             release
           draft: false
