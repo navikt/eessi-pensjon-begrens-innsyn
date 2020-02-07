@@ -41,8 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN:  ${{ secrets.DISPATCH_TOKEN }}
         with:
-          tag_name: {{ env.DATE }}---${{ env.COMMIT_HASH }}
-          release_name: Release {{ env.DATE }}---${{ env.COMMIT_HASH }}"
+          tag_name: ${{ env.DATE }}---${{ env.COMMIT_HASH }}
+          release_name: Release ${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           body: release
           draft: false
           prerelease: false
