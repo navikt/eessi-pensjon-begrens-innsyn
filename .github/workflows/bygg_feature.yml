@@ -17,7 +17,7 @@ jobs:
       - name: 'Create version number'
         run: |
           export TZ=CET
-          echo "::set-env name=DATE::$(date "+%Y-%m-%d-%H:%M:%S")"
+          echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
           echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
 
       # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
