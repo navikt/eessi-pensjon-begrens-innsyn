@@ -14,6 +14,7 @@ jobs:
         run: |
          export TZ=CET
          git clone https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
+         cd eessi-pensjon-begrens-innsyn
          echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
          echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
 
