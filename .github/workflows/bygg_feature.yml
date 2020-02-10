@@ -21,8 +21,8 @@ jobs:
       - name: 'Create version number'
         run: |
           curl -v -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
-          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}" https://${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
-          git push origin --tags https://${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
+          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
+          git push origin --tags
 #
 #      # LAGER VERSJONSNUMMER
 #      - name: 'Create tag'
