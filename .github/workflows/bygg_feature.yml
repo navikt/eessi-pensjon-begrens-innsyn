@@ -20,6 +20,8 @@ jobs:
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         run: |
+          git config --global user.email "dummy@nav.no"
+          git config --global user.name "Github action"
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           git -c http.extraheader="AUTHORIZATION: basic ${{ secrets.DISPATCH_TOKEN }}" push origin --tags
 #
