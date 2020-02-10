@@ -19,12 +19,7 @@ jobs:
 
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
-        run: |
-#          git config --global user.email "dummy@nav.no"
-#          git config --global user.name "Github action"
-#          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-#          curl -H 'Authorization: token ${{ secrets.DISPATCH_TOKEN }}' push origin --tags
-           git clone https://oauth2:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
+        run: git clone https://oauth2:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
 #
 #      # LAGER VERSJONSNUMMER
 #      - name: 'Create tag'
