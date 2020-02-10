@@ -15,11 +15,11 @@ jobs:
          export TZ=CET
          echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
          echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
-         git clone https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
 
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         run: |
+          git clone https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
           git config --global user.email "dummy@nav.no"
           git config --global user.name "GithubActions"
           curl -v -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
