@@ -25,7 +25,8 @@ jobs:
           git config --global user.email "dummy@nav.no"
           git config --global user.name "Github actions continous deploy"
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-          git push origin --tags
+          git push origin --tags https://navikt:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
+
 #
 #      # LAGER VERSJONSNUMMER
 #      - name: 'Create tag'
