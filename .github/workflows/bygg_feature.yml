@@ -20,12 +20,14 @@ jobs:
           export TZ=CET
           echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
           echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
-
-      # LAGER VERSJONSNUMMER
-      - name: 'Create tag'
-        run: |
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           git push origin --tags
+#
+#      # LAGER VERSJONSNUMMER
+#      - name: 'Create tag'
+#        run: |
+#          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
+#          git push origin --tags
 
 #      # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
 #      - name: 'Set Image'
