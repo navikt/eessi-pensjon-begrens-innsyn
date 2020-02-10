@@ -19,16 +19,10 @@ jobs:
 
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
-   #     uses: actions/checkout@v1
       - run: |
-#          git config --global github.token ${{ secrets.DISPATCH_TOKEN }}
-#          git config --global user.email "dummy@nav.no"
-#          git config --global user.name "Github actions continous deploy"
-          #git init
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           git -c http.extraheader="AUTHORIZATION: basic ${{ secrets.DISPATCH_TOKEN }}" push origin --tags
-          #git push origin --tags https://navikt:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
-
+´
 #
 #      # LAGER VERSJONSNUMMER
 #      - name: 'Create tag'
