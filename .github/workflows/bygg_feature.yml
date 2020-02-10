@@ -20,9 +20,10 @@ jobs:
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         uses: actions/checkout@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - run: |
-          git config --global user.email "dummy@email.com"
-          git config --global user.name "Github action CD"
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           git push origin --tags
 #
