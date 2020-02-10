@@ -24,7 +24,7 @@ jobs:
           git config --global user.email "dummy@nav.no"
           git config --global user.name "GithubActions"
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-          curl -s -X POST https://github.com/navikt/eessi-pensjon-begrens-innsyn.git -H "Authorization: token ${{ secrets.GITHUB_TOKEN }} -d {"ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}", "sha": "${{ env.COMMIT_HASH }}"}
+          curl -s -X POST https://github.com/navikt/eessi-pensjon-begrens-innsyn.git -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d {"ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}", "sha": "${{ env.COMMIT_HASH }}"}
 
   #        git push origin --tags
 #
