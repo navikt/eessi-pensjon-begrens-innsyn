@@ -33,7 +33,6 @@ jobs:
           docker build --tag ${{ env.IMAGE }} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.DISPATCH_TOKEN }}
           docker push ${{ env.IMAGE }}
-
       # OPPRETTER GIT TAG
       - name: 'Opprett git tag'
         run: |
