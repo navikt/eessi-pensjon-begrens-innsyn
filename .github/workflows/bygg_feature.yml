@@ -23,7 +23,7 @@ jobs:
           cd eessi-pensjon-begrens-innsyn
           git config --global user.email "dummy@nav.no"
           git config --global user.name "GithubActions"
-          curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-begrens-innsyn/git/tags -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d { "tag": "xxx", "message": "my tag\n",  "object": ${{ env.COMMIT_HASH }},
+          curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-begrens-innsyn/git/tags -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d { "tag": "xxx", "message": "my tag\n",  "object": ${{ env.COMMIT_HASH }}"
   #        git push origin --tags
 #
 #      # LAGER VERSJONSNUMMER
