@@ -20,7 +20,7 @@ jobs:
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         run: |
-          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}" https://oauth2:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
+          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}" https://${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
           git push origin --tags https://${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
 #
 #      # LAGER VERSJONSNUMMER
