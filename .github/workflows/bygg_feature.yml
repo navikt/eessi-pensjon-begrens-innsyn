@@ -15,6 +15,7 @@ jobs:
 
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
+        uses: actions/checkout@v1
         run: |
           export TZ=CET
           echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
