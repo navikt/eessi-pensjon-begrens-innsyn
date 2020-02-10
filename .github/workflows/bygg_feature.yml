@@ -6,11 +6,11 @@ on:
       - feature/nyTagRutine
 jobs:
   tag_build_and_deploy:
-    name: 'Build, push, and deploy'
+    name: 'Build, deploy and tag'
     runs-on: ubuntu-latest
     steps:
       # PULLER REPO
-      - name: 'Pull repo'
+      - name: 'Pull repo og setter variable'
         run: |
          export TZ=CET
          git clone https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
@@ -18,45 +18,21 @@ jobs:
          echo "::set-env name=DATE::$(date "+%Y-%m-%d--%H-%M-%S")"
          echo "::set-env name=COMMIT_HASH::$(git rev-parse HEAD)"
 
+      # OPPRETTER IMAGE VARIABEL
+      - name: 'Set Image'
+        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ env.DATE }}---${{ env.COMMIT_HASH }}"
+
+      # BYGGER DOCKER CONTAINER
+      - name: 'Build and publish Docker image'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew -Pgithub clean build
+          docker build --tag ${{ env.IMAGE }} .
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.DISPATCH_TOKEN }}
+          docker push ${{ env.IMAGE }}
+
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         run: |
-          cd eessi-pensjon-begrens-innsyn
-          git config --global user.email "dummy@nav.no"
-          git config --global user.name "GithubActions"
           curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-begrens-innsyn/git/refs -H "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" -d '{ "ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}",  "sha": "${{ env.COMMIT_HASH }}" }'
-  #        curl -v -s -X POST https://api.github.com/repos/navikt/eessi-pensjon-begrens-innsyn/git/tags -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d { "tag": "xxx", "message": "my tag\n",  "object": ${{ env.COMMIT_HASH }}"
-  #        git push origin --tags
-#
-#      # LAGER VERSJONSNUMMER
-#      - name: 'Create tag'
-#        run: |
-#          git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-#          git push origin --tags
-
-#      # OPPRETTER IMAGE VARIABEL MED VERSJONSNUMMER
-#      - name: 'Set Image'
-#        run: echo "::set-env name=IMAGE::docker.pkg.github.com/${{ github.repository }}/eessi-pensjon-begrens-innsyn:${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-#
-#      # BYGGER DOCKER CONTAINER
-#      - name: 'Build and publish Docker image'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          ./gradlew -Pgithub clean build
-#          docker build --tag ${{ env.IMAGE }} .
-#          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${{ secrets.DISPATCH_TOKEN }}
-#          docker push ${{ env.IMAGE }}
-#
-#      # TAGGER OG RELEASER
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN:  ${{ secrets.DISPATCH_TOKEN }}
-#        with:
-#          tag_name: ${{ env.DATE }}---${{ env.COMMIT_HASH }}
-#          release_name: Release ${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-#          body: release
-#          draft: false
-#          prerelease: false
