@@ -22,7 +22,6 @@ jobs:
       - run: |
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           git -c http.extraheader="AUTHORIZATION: basic ${{ secrets.DISPATCH_TOKEN }}" push origin --tags
-´
 #
 #      # LAGER VERSJONSNUMMER
 #      - name: 'Create tag'
