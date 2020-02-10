@@ -26,7 +26,7 @@ jobs:
 #          git config --global user.name "Github actions continous deploy"
           #git init
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
-          git -c http.extraheader="AUTHORIZATION: basic ${{ secrets.DISPATCH_TOKEN }} push origin --tags
+          git -c http.extraheader="AUTHORIZATION: basic ${{ secrets.DISPATCH_TOKEN }}" push origin --tags
           #git push origin --tags https://navikt:${{ secrets.DISPATCH_TOKEN }}@github.com/navikt/eessi-pensjon-begrens-innsyn.git
 
 #
