@@ -119,7 +119,7 @@ dependencies {
 
 	// Tjenestespesifikasjoner
 	if (project.hasProperty('github')) {
-		compile("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.13-12.13-a8a32ba1c072")
+		compile("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon")
 	} else {
 		implementation("no.nav.tjenester:nav-person-v3-tjenestespesifikasjon:${personV3Version}")
 	}
