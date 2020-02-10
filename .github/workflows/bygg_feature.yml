@@ -19,6 +19,8 @@ jobs:
       # LAGER VERSJONSNUMMER
       - name: 'Create version number'
         run: |
+          git clone https://github.com/navikt/eessi-pensjon-begrens-innsyn.git
+          cd eessi-pensjon-begrens-innsyn
           git tag -a ${{ env.DATE }}---${{ env.COMMIT_HASH }} -m "${{ env.DATE }}---${{ env.COMMIT_HASH }}"
           curl -s -X POST https://github.com/navikt/eessi-pensjon-begrens-innsyn.git -H "Authorization: token ${{ secrets.GITHUB_TOKEN }} -d {"ref": "refs/tags/${{ env.DATE }}---${{ env.COMMIT_HASH }}", "sha": "${{ env.COMMIT_HASH }}"}
 
