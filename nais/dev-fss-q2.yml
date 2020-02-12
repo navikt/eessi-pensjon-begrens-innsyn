@@ -7,18 +7,12 @@ metadata:
     team: eessipensjon
 spec:
   env:
-    - name: NAV_TRUSTSTORE_KEYSTOREALIAS
-      value: na
     - name: SPRING_PROFILES_ACTIVE
       value: test
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
-    - name: VIRKSOMHET_PERSON_V3_SECURITYTOKEN
-      value: SAML
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://wasapp-q2.adeo.no/tpsws/ws/Person/v3
-    - name: VIRKSOMHET_PERSON_V3_WSDLURL
-      value: http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/nav-person-v3-tjenestespesifikasjon/3.6.1/nav-person-v3-tjenestespesifikasjon-3.6.1.zip
     - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
     - name: SECURITYTOKENSERVICE_URL
