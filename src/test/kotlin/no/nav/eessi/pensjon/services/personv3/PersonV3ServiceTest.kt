@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.remoting.soap.SoapFaultException
 
 
 @Disabled
@@ -27,6 +28,8 @@ class PersonV3ServiceTest {
     private val subject = "23037329381"
     private val ikkeFunnetSubject = "33037329381"
     private val sikkerhetsbegrensingSubject = "43037329381"
+    private val ugyldigIdSubject = "121212 4545"
+    private val annenSoapIssueSubject = "annen soap issue"
 
     @BeforeEach
     fun setup() {
@@ -40,6 +43,12 @@ class PersonV3ServiceTest {
 
         every { personV3.hentPerson(requestBuilder(ikkeFunnetSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 HentPersonPersonIkkeFunnet("$ikkeFunnetSubject ikke funnet", PersonIkkeFunnet())
+
+        every { personV3.hentPerson(requestBuilder(ugyldigIdSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
+                DummySoapFaultException("F002001F")
+
+        every { personV3.hentPerson(requestBuilder(annenSoapIssueSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
+                DummySoapFaultException("some other code")
 
         every { personV3.hentPerson(requestBuilder(sikkerhetsbegrensingSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 HentPersonSikkerhetsbegrensning("$sikkerhetsbegrensingSubject har sikkerhetsbegrensning", Sikkerhetsbegrensning())
@@ -70,11 +79,31 @@ class PersonV3ServiceTest {
         }
     }
 
+    @Test
+    fun `Kaller hentPerson med ugyldig input (i følge TPS) - vi oppfører oss som om vi ikke finner svar`() {
+        assertNull(personV3Service.hentPerson(ugyldigIdSubject))
+    }
+
+    @Test
+    fun `Kaller hentPerson med annen soap-feil`() {
+        assertThrows(SoapFaultException::class.java) {
+            personV3Service.hentPerson(annenSoapIssueSubject)
+        }
+    }
+
+
     fun requestBuilder(norskIdent: String, informasjonsbehov: List<Informasjonsbehov>): HentPersonRequest{
         return HentPersonRequest().apply {
             withAktoer(PersonIdent().withIdent(NorskIdent().withIdent(norskIdent)))
             withInformasjonsbehov(informasjonsbehov)
         }
+    }
+
+    class DummySoapFaultException(val code: String) : SoapFaultException(null, null) {
+        override fun getFaultActor() = "FaultActor"
+        override fun getFaultCodeAsQName() = null
+        override fun getFaultString() = "FaultString"
+        override fun getFaultCode() = code
     }
 
 }

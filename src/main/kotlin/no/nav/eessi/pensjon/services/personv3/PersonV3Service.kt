@@ -13,6 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.remoting.soap.SoapFaultException
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
 import java.lang.RuntimeException
@@ -39,12 +40,20 @@ class PersonV3Service(
             } catch (pif: HentPersonPersonIkkeFunnet) {
                 logger.warn("PersonV3: Kunne ikke hente person, ikke funnet", pif)
                 null
+            } catch (sfe: SoapFaultException) {
+                if (sfe.faultCode == "F002001F") {
+                    logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
+                    null
+                } else {
+                    logger.error("PersonV3: Ukjent SoapFaultException", sfe)
+                    throw sfe
+                }
             } catch (sb: HentPersonSikkerhetsbegrensning) {
                 logger.error("PersonV3: Kunne ikke hente person, sikkerhetsbegrensning", sb)
                 throw PersonV3SikkerhetsbegrensningException(sb.message)
             } catch (ex: Exception) {
                 logger.error("PersonV3: Kunne ikke hente person", ex)
-                throw RuntimeException(ex.message)
+                throw ex
             }
         }
     }
