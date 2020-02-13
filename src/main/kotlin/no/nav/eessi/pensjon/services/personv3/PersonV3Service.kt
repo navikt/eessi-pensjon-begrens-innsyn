@@ -13,10 +13,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.remoting.soap.SoapFaultException
+import javax.xml.ws.soap.SOAPFaultException
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
-import java.lang.RuntimeException
 
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
@@ -40,8 +39,8 @@ class PersonV3Service(
             } catch (pif: HentPersonPersonIkkeFunnet) {
                 logger.warn("PersonV3: Kunne ikke hente person, ikke funnet", pif)
                 null
-            } catch (sfe: SoapFaultException) {
-                if (sfe.faultCode == "F002001F") {
+            } catch (sfe: SOAPFaultException) {
+                if (sfe.fault.faultCode == "F002001F") {
                     logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
                     null
                 } else {

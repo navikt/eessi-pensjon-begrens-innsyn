@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.services.personv3
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.*
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
@@ -15,7 +17,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.remoting.soap.SoapFaultException
+import javax.xml.soap.SOAPFault
+import javax.xml.ws.soap.SOAPFaultException
 
 
 @Disabled
@@ -44,11 +47,15 @@ class PersonV3ServiceTest {
         every { personV3.hentPerson(requestBuilder(ikkeFunnetSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 HentPersonPersonIkkeFunnet("$ikkeFunnetSubject ikke funnet", PersonIkkeFunnet())
 
+        val soapFaultF002001F = mock<SOAPFault>()
+        whenever(soapFaultF002001F.faultCode).thenReturn("F002001F")
         every { personV3.hentPerson(requestBuilder(ugyldigIdSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
-                DummySoapFaultException("F002001F")
+                SOAPFaultException(soapFaultF002001F)
 
+        val soapFaultOther = mock<SOAPFault>()
+        whenever(soapFaultOther.faultCode).thenReturn("other")
         every { personV3.hentPerson(requestBuilder(annenSoapIssueSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
-                DummySoapFaultException("some other code")
+                SOAPFaultException(soapFaultOther)
 
         every { personV3.hentPerson(requestBuilder(sikkerhetsbegrensingSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 HentPersonSikkerhetsbegrensning("$sikkerhetsbegrensingSubject har sikkerhetsbegrensning", Sikkerhetsbegrensning())
@@ -86,24 +93,17 @@ class PersonV3ServiceTest {
 
     @Test
     fun `Kaller hentPerson med annen soap-feil`() {
-        assertThrows(SoapFaultException::class.java) {
+        assertThrows(SOAPFaultException::class.java) {
             personV3Service.hentPerson(annenSoapIssueSubject)
         }
     }
 
 
-    fun requestBuilder(norskIdent: String, informasjonsbehov: List<Informasjonsbehov>): HentPersonRequest{
+    fun requestBuilder(norskIdent: String, informasjonsbehov: List<Informasjonsbehov>): HentPersonRequest {
         return HentPersonRequest().apply {
             withAktoer(PersonIdent().withIdent(NorskIdent().withIdent(norskIdent)))
             withInformasjonsbehov(informasjonsbehov)
         }
-    }
-
-    class DummySoapFaultException(val code: String) : SoapFaultException(null, null) {
-        override fun getFaultActor() = "FaultActor"
-        override fun getFaultCodeAsQName() = null
-        override fun getFaultString() = "FaultString"
-        override fun getFaultCode() = code
     }
 
 }
