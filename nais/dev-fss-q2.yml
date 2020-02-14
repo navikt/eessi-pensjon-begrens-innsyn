@@ -21,6 +21,10 @@ spec:
       value: https://eux-rina-api-q2.nais.preprod.local/cpi
     - name: EESSIFAGMODULSERVICE_URL
       value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessi-basis-sedSendt-v1-q2
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessi-basis-sedMottatt-v1-q2
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-begrens-innsyn.nais.preprod.local
