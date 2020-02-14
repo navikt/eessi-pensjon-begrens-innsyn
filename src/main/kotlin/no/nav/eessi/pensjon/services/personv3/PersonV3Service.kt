@@ -40,6 +40,9 @@ class PersonV3Service(
                 logger.warn("PersonV3: Kunne ikke hente person, ikke funnet", pif)
                 null
             } catch (sfe: SOAPFaultException) {
+                logger.warn("PersonV3: faultCode: ${sfe.fault.faultCode}")
+                logger.warn("PersonV3: faultString: ${sfe.fault.faultString}")
+                logger.warn("PersonV3: faultCodeAsName: ${sfe.fault.faultCodeAsName}")
                 if (sfe.fault.faultCode == "F002001F") {
                     logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
                     null
