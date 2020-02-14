@@ -21,6 +21,10 @@ spec:
       value: https://eux-rina-api.nais.adeo.no/cpi
     - name: EESSIFAGMODULSERVICE_URL
       value: https://eessi-fagmodul.nais.adeo.no/
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessi-basis-sedSendt-v1
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessi-basis-sedMottatt-v1
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-begrens-innsyn.nais.adeo.no
