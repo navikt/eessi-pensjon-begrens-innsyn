@@ -26,7 +26,7 @@ class PersonV3ServiceTest {
 
     private lateinit var personV3 : PersonV3
 
-    lateinit var personV3Service : PersonV3Service
+    private lateinit var personV3Service : PersonV3Service
 
     private val subject = "23037329381"
     private val ikkeFunnetSubject = "33037329381"
@@ -48,12 +48,12 @@ class PersonV3ServiceTest {
                 HentPersonPersonIkkeFunnet("$ikkeFunnetSubject ikke funnet", PersonIkkeFunnet())
 
         val soapFaultF002001F = mock<SOAPFault>()
-        whenever(soapFaultF002001F.faultCode).thenReturn("F002001F")
+        whenever(soapFaultF002001F.faultString).thenReturn("PersonV3: faultString: TPS svarte med FEIL, folgende status: F002001F og folgende melding: UGYLDIG VERDI I INPUT FNR")
         every { personV3.hentPerson(requestBuilder(ugyldigIdSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 SOAPFaultException(soapFaultF002001F)
 
         val soapFaultOther = mock<SOAPFault>()
-        whenever(soapFaultOther.faultCode).thenReturn("other")
+        whenever(soapFaultOther.faultString).thenReturn("other")
         every { personV3.hentPerson(requestBuilder(annenSoapIssueSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
                 SOAPFaultException(soapFaultOther)
 
