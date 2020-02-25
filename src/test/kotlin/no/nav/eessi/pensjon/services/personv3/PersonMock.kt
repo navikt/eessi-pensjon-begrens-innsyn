@@ -3,9 +3,14 @@ package no.nav.eessi.pensjon.services.personv3
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*
 
 object PersonMock {
-    internal fun createWith(landkoder: Boolean = true, fornavn: String = "Test", etternavn: String = "Testesen", diskresjonskode: Diskresjonskoder? = null):
+    internal fun createWith(fnr: String? = null,
+                            landkoder: Boolean = true,
+                            fornavn: String = "Test",
+                            etternavn: String = "Testesen",
+                            diskresjonskode: Diskresjonskoder? = null):
             Person? = Person()
-                    .withPersonnavn(Personnavn()
+            .withAktoer(PersonIdent().withIdent(NorskIdent().withIdent(fnr)))
+            .withPersonnavn(Personnavn()
                             .withEtternavn(etternavn)
                             .withFornavn(fornavn)
                             .withSammensattNavn("$fornavn $etternavn"))
