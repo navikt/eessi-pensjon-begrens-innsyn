@@ -4,10 +4,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.*
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -39,17 +36,6 @@ class PersonV3ServiceTest {
 
         every { personV3Service.hentPerson(sikkerhetsbegrensingSubject) } throws
                 PersonV3SikkerhetsbegrensningException("$sikkerhetsbegrensingSubject har sikkerhetsbegrensning")
-
-
-        val soapFaultF002001F = mock<SOAPFault>()
-        whenever(soapFaultF002001F.faultString).thenReturn("PersonV3: faultString: TPS svarte med FEIL, folgende status: F002001F og folgende melding: UGYLDIG VERDI I INPUT FNR")
-        every { personV3.hentPerson(requestBuilder(ugyldigIdSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
-                SOAPFaultException(soapFaultF002001F)
-
-        val soapFaultOther = mock<SOAPFault>()
-        whenever(soapFaultOther.faultString).thenReturn("other")
-        every { personV3.hentPerson(requestBuilder(annenSoapIssueSubject, listOf(Informasjonsbehov.ADRESSE))) } throws
-                SOAPFaultException(soapFaultOther)
     }
 
     @Test
@@ -80,22 +66,25 @@ class PersonV3ServiceTest {
 
     @Test
     fun `Kaller hentPerson med ugyldig input (i følge TPS) - vi oppfører oss som om vi ikke finner svar`() {
+        val soapFaultF002001F = mock<SOAPFault>()
+        whenever(soapFaultF002001F.faultString).thenReturn("PersonV3: faultString: TPS svarte med FEIL, folgende status: F002001F og folgende melding: UGYLDIG VERDI I INPUT FNR")
+
+        every { personV3.hentPerson(any()) } throws
+                SOAPFaultException(soapFaultF002001F)
+
         assertNull(personV3Service.hentPerson(ugyldigIdSubject))
     }
 
     @Test
     fun `Kaller hentPerson med annen soap-feil`() {
+        val soapFaultOther = mock<SOAPFault>()
+        whenever(soapFaultOther.faultString).thenReturn("other")
+
+        every { personV3.hentPerson(any()) } throws
+                SOAPFaultException(soapFaultOther)
+
         assertThrows(SOAPFaultException::class.java) {
             personV3Service.hentPerson(annenSoapIssueSubject)
         }
     }
-
-
-    fun requestBuilder(norskIdent: String, informasjonsbehov: List<Informasjonsbehov>): HentPersonRequest {
-        return HentPersonRequest().apply {
-            withAktoer(PersonIdent().withIdent(NorskIdent().withIdent(norskIdent)))
-            withInformasjonsbehov(informasjonsbehov)
-        }
-    }
-
 }
