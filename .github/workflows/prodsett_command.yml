@@ -1,16 +1,15 @@
-name: Build, push, and deploy
+name: Manuell deploy
 on:
   repository_dispatch:
     types: [prodsett-command]
 
 jobs:
   deploy_manuelt:
-    name: 'Build, push, and deploy'
+    name: 'Manuell deploy'
     runs-on: ubuntu-latest
     steps:
-      # LOGGER VARIABLE
-      - name: 'Pull repo'
-        uses: actions/checkout@v1
+      # OPPERTTER DEPLOY VARIABLE
+      - name: 'Opprett nais variable'
       - run: |
           echo "versjon: ${{ github.event.client_payload.slash_command.arg1 }}"
           echo "cluster: ${{ github.event.client_payload.slash_command.arg2 }}"
