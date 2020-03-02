@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Bygg alle brancher
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - '!master'
 
 jobs:
-  tag_build_and_deploy:
+  bygg:
     name: 'Bygg alle brancher'
     runs-on: ubuntu-latest
     steps:
