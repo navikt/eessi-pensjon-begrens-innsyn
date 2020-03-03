@@ -1,3 +1,6 @@
+![](https://github.com/navikt/eessi-pensjon-begrens-innsyn/workflows/Bygg%20og%20deploy%20Q2/badge.svg)
+![](https://github.com/navikt/eessi-pensjon-begrens-innsyn/workflows/Manuell%20deploy/badge.svg)
+
 # eessi-pensjon-begrens-innsyn
 
 # Utvikling
