@@ -21,6 +21,7 @@ Sjekke om man har utdaterte avhengigheter (forsøker å unngå milestones og bet
 
 Dersom du er supertrygg på testene kan du forsøke en oppdatering av alle avhengighetene:
 
+
 ```
 ./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck
 ```
