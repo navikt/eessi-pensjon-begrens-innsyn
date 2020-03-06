@@ -31,7 +31,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             metricsHelper.measure("consumeOutgoingSed") {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                logger.debug(hendelse)
+                logger.debug(vask11sifre(hendelse))
                 try {
                     val sedHendelse = SedHendelseModel.fromJson(hendelse)
                     if(sedHendelse.sektorKode != "P") {
@@ -44,7 +44,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                         latch.countDown()
                     }
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n $hendelse \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
@@ -56,7 +56,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             metricsHelper.measure("consumeIncomingSed") {
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                logger.debug(hendelse)
+                logger.debug(vask11sifre(hendelse))
                 try {
                     val sedHendelse = SedHendelseModel.fromJson(hendelse)
                     if(sedHendelse.sektorKode != "P") {
@@ -68,10 +68,13 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                         logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     }
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n $hendelse \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
         }
     }
+
+    // TODO Finn gjerne en bedre måte
+    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "***")
 }
