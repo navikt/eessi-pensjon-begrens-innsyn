@@ -34,9 +34,12 @@ class KafkaErrorHandler : ContainerAwareErrorHandler {
         var meldinger = ""
         records?.forEach { it ->
             meldinger += "--------------------------------------------------------------------------------\n"
-            meldinger += it.toString()
+            meldinger += vask11sifre(it.toString())
             meldinger += "\n"
         }
         return meldinger
     }
+
+    // TODO Finn gjerne en bedre måte
+    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "***")
 }
