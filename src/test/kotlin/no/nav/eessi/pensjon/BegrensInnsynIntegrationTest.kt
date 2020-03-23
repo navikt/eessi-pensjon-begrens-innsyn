@@ -30,6 +30,7 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker
 import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.kafka.test.utils.KafkaTestUtils
+import org.springframework.retry.annotation.EnableRetry
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import java.nio.file.Files
@@ -46,6 +47,7 @@ private lateinit var mockServer : ClientAndServer
 @SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
+@EnableRetry
 @EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC])
 class BegrensInnsynIntegrationTest {
 

@@ -6,7 +6,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -22,25 +25,18 @@ class EuxService(
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxService::class.java) }
 
+    @Retryable(include = [HttpServerErrorException::class, HttpClientErrorException.Unauthorized::class])
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return metricsHelper.measure("hentSed") {
             val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
             val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
-            try {
-                logger.info("Henter SED fra EUX /${builder.toUriString()}")
-                euxOidcRestTemplate.exchange(builder.toUriString(),
-                        HttpMethod.GET,
-                        null,
-                        String::class.java).body
-            } catch(ex: HttpStatusCodeException) {
-                logger.error("En feil oppstod under henting av SED fra EUX ex: $ex body: ${ex.responseBodyAsString}")
-                throw RuntimeException("En feil oppstod under henting av SED fra EUX ex: ${ex.message} body: ${ex.responseBodyAsString}")
-            } catch(ex: Exception) {
-                logger.error("En feil oppstod under henting av SED fra EUX ex: $ex")
-                throw RuntimeException("En feil oppstod under henting av SED fra EUX ex: ${ex.message}")
-            }
+            logger.info("Henter SED fra EUX /${builder.toUriString()}")
+            euxOidcRestTemplate.exchange(builder.toUriString(),
+                    HttpMethod.GET,
+                    null,
+                    String::class.java).body
         }
     }
 
