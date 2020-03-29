@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.eessi.pensjon.sed.SedFnrSøk
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
 import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
@@ -13,14 +12,20 @@ import org.springframework.stereotype.Service
 class BegrensInnsynService(private val euxService: EuxService,
                            private val fagmodulService: FagmodulService,
                            private val personV3Service: PersonV3Service,
-                           private val sedFnrSøk: SedFnrSøk)  {
+                           private val sedFnrSoek: SedFnrSoek)  {
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
     private val mapper = jacksonObjectMapper()
 
+    fun begrensInnsyn(hendelse: String) {
+        val sedHendelse = SedHendelseModel.fromJson(hendelse)
+        if (sedHendelse.sektorKode == "P") {
+            begrensInnsyn(sedHendelse)
+        }
+    }
 
-    fun begrensInnsyn(sedHendelse: SedHendelseModel) {
+    private fun begrensInnsyn(sedHendelse: SedHendelseModel) {
 
         val diskresjonskode = finnDiskresjonkode(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
 
@@ -44,7 +49,7 @@ class BegrensInnsynService(private val euxService: EuxService,
         logger.debug("Henter Sed dokument for å lete igjennom FNR for diskresjonkode")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
-        val fnre = sedFnrSøk.finnAlleFnrDnrISed(sed!!)
+        val fnre = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
         fnre.forEach { fnr ->
             val person = personV3Service.hentPerson(fnr)
             person?.diskresjonskode?.value?.let { kode ->

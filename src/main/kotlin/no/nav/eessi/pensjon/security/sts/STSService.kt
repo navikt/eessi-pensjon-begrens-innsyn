@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import javax.annotation.PostConstruct
-import no.nav.eessi.pensjon.json.mapAnyToJson
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.client.HttpStatusCodeException
@@ -90,7 +89,7 @@ class STSService(
                         null,
                         typeRef<SecurityTokenResponse>())
 
-                logger.debug("SecurityTokenResponse ${mapAnyToJson(responseEntity)} ")
+                logger.debug("SecurityTokenResponse $responseEntity")
                 responseEntity.body!!.accessToken
             } catch(ex: HttpStatusCodeException) {
                 logger.error("En feil oppstod under bytting av username/password til OIDC token ex: $ex body: ${ex.responseBodyAsString}")

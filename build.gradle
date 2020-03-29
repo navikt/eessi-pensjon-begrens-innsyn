@@ -113,6 +113,7 @@ dependencies {
 
 	// Architecture tests
 	testImplementation 'com.tngtech.archunit:archunit:0.13.1'
+	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")

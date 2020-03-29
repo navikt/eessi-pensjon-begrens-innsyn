@@ -1,7 +1,6 @@
-package no.nav.eessi.pensjon
+package no.nav.eessi.pensjon.begrens.innsyn
 
 import io.mockk.*
-import no.nav.eessi.pensjon.listeners.SedListener
 import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service

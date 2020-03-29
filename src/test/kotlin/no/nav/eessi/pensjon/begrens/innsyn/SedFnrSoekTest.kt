@@ -1,13 +1,13 @@
-package no.nav.eessi.pensjon.sed
+package no.nav.eessi.pensjon.begrens.innsyn
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
-internal class SedFnrSøkTest {
+internal class SedFnrSoekTest {
 
-    val sedFnrSøk = SedFnrSøk()
+    val sedFnrSøk = SedFnrSoek()
 
     @Test
     fun `Gitt en SED med flere norske fnr i Pin-identifikator feltet når det søkes etter fnr i SED så returner alle norske fnr`() {
