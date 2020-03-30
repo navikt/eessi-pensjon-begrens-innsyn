@@ -1,16 +1,18 @@
-package no.nav.eessi.pensjon.listeners
+package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.nhaarman.mockitokotlin2.*
-import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.exceptions.base.MockitoException
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.kafka.support.Acknowledgment
+import java.io.IOException
+import java.io.UncheckedIOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -48,16 +50,20 @@ class SedListenerTest {
 
     @Test
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
+        `when`(begrensInnsynService.begrensInnsyn(anyString())).thenThrow(UncheckedIOException(IOException("JSON-issue")))
+
         assertThrows<RuntimeException> {
-            sedListener.consumeSedSendt("Explode!",cr, acknowledgment)
+            sedListener.consumeSedSendt("SomeSEDAsString", cr, acknowledgment)
         }
         verify(acknowledgment, times(0)).acknowledge()
     }
 
     @Test
     fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
+        `when`(begrensInnsynService.begrensInnsyn(anyString())).thenThrow(UncheckedIOException(IOException("JSON-issue")))
+
         assertThrows<RuntimeException> {
-            sedListener.consumeSedMottatt("Explode!",cr, acknowledgment)
+            sedListener.consumeSedMottatt("SomeSEDAsString", cr, acknowledgment)
         }
         verify(acknowledgment, times(0)).acknowledge()
     }

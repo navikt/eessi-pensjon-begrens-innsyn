@@ -1,27 +1,15 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.eessi.pensjon.models.BucType
-import no.nav.eessi.pensjon.models.SedType
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 class SedHendelseModel (
-        val id: Long? = 0,
-        val sedId: String? = null,
         val sektorKode: String,
-        val bucType: BucType?,
         val rinaSakId: String,
-        val avsenderId: String?,
-        val avsenderNavn: String?,
-        val avsenderLand: String? = null,
-        val mottakerId: String?,
-        val mottakerNavn: String?,
-        val mottakerLand: String? = null,
-        val rinaDokumentId: String,
-        val rinaDokumentVersjon: String? = null,
-        val sedType: SedType?,
-        val navBruker: String? = null
+        val rinaDokumentId: String
 ) {
     companion object {
         private val sedMapper: ObjectMapper = jacksonObjectMapper().configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)

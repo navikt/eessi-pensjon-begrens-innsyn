@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.sed
+package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component
  *
  */
 @Component
-class SedFnrSøk {
+class SedFnrSoek {
 
     private val mapper = jacksonObjectMapper()
-    private val logger = LoggerFactory.getLogger(SedFnrSøk::class.java)
+    private val logger = LoggerFactory.getLogger(SedFnrSoek::class.java)
 
     /**
      * Finner alle fnr i SED
