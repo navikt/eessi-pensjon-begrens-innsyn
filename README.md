@@ -3,6 +3,11 @@
 
 # eessi-pensjon-begrens-innsyn
 
+## Komponentstruktur
+
+![](./components.svg)
+<img src="./components.svg">
+
 # Utvikling
 
 ## Komme i gang

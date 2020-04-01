@@ -1,0 +1,46 @@
+@startuml
+!pragma graphviz_dot jdot
+
+package "Setup" {
+    [Application] <<no.nav.eessi.pensjon>>
+    [Health] <<..health..>>
+}
+
+[Begrens Innsyn] <<..begrens.innsyn..>> as begrensinnsyn
+
+[Application] ~~> begrensinnsyn :uses
+
+[Metrics] <<..metrics..>>
+
+package "Support" {
+    [Config] <<..config..>>
+    [Security] <<..security..>>
+    [Logging] <<..logging..>>
+
+    [Security] --> [Metrics]
+    [Security] -> [Logging]
+    [Config] --> [Metrics]
+}
+
+[Config] --> [Security]
+[Config] --> [Logging]
+
+
+package "Services" {
+  [Person] <<..services.personv3..>>
+  [Person]  --> [Metrics]
+  [Person]  --> [Security]
+  [EUX] <<..services.eux..>>
+  [EUX] -> [Metrics]
+  [Fagmodul] <<..services.fagmodul..>>
+  [Fagmodul] --> [Metrics]
+}
+
+begrensinnsyn --> [EUX]
+begrensinnsyn --> [Fagmodul]
+begrensinnsyn --> [Person]
+begrensinnsyn -> [Metrics]
+
+
+
+@enduml

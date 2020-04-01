@@ -2,13 +2,13 @@ package no.nav.eessi.pensjon
 
 import com.tngtech.archunit.core.domain.JavaClasses
 import com.tngtech.archunit.core.domain.JavaMethod
-import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.junit.AnalyzeClasses
 import com.tngtech.archunit.junit.ArchTest
 import com.tngtech.archunit.lang.ArchCondition
 import com.tngtech.archunit.lang.ArchRule
 import com.tngtech.archunit.lang.ConditionEvents
 import com.tngtech.archunit.lang.SimpleConditionEvent
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods
@@ -16,6 +16,9 @@ import com.tngtech.archunit.lang.syntax.elements.MethodsShouldConjunction
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
 import com.tngtech.archunit.library.dependencies.SliceRule
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
+import com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.Configurations.consideringAllDependencies
+import com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.Configurations.consideringOnlyDependenciesInAnyPackage
+import com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.adhereToPlantUmlDiagram
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,35 +34,10 @@ class ArchitectureTest {
             slices().matching("..services.(**)").should().notDependOnEachOther()
 
     @ArchTest
-    fun `Check architecture`(importedClasses: JavaClasses) {
-
-        val root = EessiPensjonBegrensInnsynApplication::class.qualifiedName!!
-                .replace("." + EessiPensjonBegrensInnsynApplication::class.simpleName, "")
-
-        layeredArchitecture()
-                //Define components
-                .layer("App").definedBy(root)
-                .layer("Begrens Innsyn").definedBy("$root.begrens.innsyn..")
-                .layer("Config").definedBy("$root.config..")
-                .layer("Health").definedBy("$root.health..")
-                .layer("Logging").definedBy("$root.logging..")
-                .layer("Metrics").definedBy("$root.metrics..")
-                .layer("Security STS").definedBy("$root.security.sts..")
-                .layer("Service EUX").definedBy("$root.services.eux..")
-                .layer("Service PersonV3").definedBy("$root.services.personv3..")
-                //define rules
-                .whereLayer("App").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Config").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Health").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Begrens Innsyn").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Service EUX").mayOnlyBeAccessedByLayers("Begrens Innsyn")
-                .whereLayer("Service PersonV3").mayOnlyBeAccessedByLayers("Begrens Innsyn")
-                .whereLayer("Logging").mayOnlyBeAccessedByLayers("Config", "Security STS")
-                .whereLayer("Security STS").mayOnlyBeAccessedByLayers("Config", "Service PersonV3")
-
-                //Verify rules
-                .check(importedClasses)
-    }
+    val componentDiagramCheck: ArchRule =
+            classes().should(
+                    adhereToPlantUmlDiagram(this::class.java.getResource("/components.puml"),
+                            consideringOnlyDependenciesInAnyPackage("no.nav.eessi.pensjon..")))
 
     @ArchTest
     fun `avoid JUnit4-classes`(importedClasses: JavaClasses) {
