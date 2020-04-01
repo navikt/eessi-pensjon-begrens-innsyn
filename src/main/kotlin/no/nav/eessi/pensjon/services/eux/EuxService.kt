@@ -33,10 +33,15 @@ class EuxService(
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
 
             logger.info("Henter SED fra EUX /${builder.toUriString()}")
-            euxOidcRestTemplate.exchange(builder.toUriString(),
-                    HttpMethod.GET,
-                    null,
-                    String::class.java).body
+            try {
+                euxOidcRestTemplate.exchange(builder.toUriString(),
+                        HttpMethod.GET,
+                        null,
+                        String::class.java).body
+            } catch (ex: Exception) {
+                logger.warn("Feil ved henting av SED fra EUX /${builder.toUriString()}", ex) // warn because retry
+                throw ex
+            }
         }
     }
 
