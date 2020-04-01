@@ -5,8 +5,7 @@
 
 ## Komponentstruktur
 
-![](./components.svg)
-<img src="./components.svg">
+![Komponentstruktur-diagram](./components.svg)
 
 # Utvikling
 
