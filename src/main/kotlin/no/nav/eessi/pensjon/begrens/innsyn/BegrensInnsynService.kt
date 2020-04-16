@@ -45,12 +45,17 @@ class BegrensInnsynService(private val euxService: EuxService,
         }
     }
 
+    companion object {
+        fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
+    }
+
+
     private fun finnDiskresjonkode(rinaNr: String, sedDokumentId: String): Diskresjonskode? {
         logger.debug("Henter Sed dokument for å lete igjennom FNR for diskresjonkode")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
         val fnre = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
-        fnre.forEach { fnr ->
+        fnre.map(::trimFnrString).filter{!it.isBlank()}.forEach { fnr -> // TODO find a better place to filter.
             val person = personV3Service.hentPerson(fnr)
             person?.diskresjonskode?.value?.let { kode ->
                 logger.debug("Diskresjonskode: $kode")
