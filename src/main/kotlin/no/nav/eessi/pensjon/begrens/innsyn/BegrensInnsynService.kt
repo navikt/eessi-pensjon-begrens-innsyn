@@ -55,7 +55,13 @@ class BegrensInnsynService(private val euxService: EuxService,
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
         val fnre = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
-        fnre.map(::trimFnrString).filter{!it.isBlank()}.forEach { fnr -> // TODO find a better place to filter.
+        fnre.map { fnr -> // TODO find a better place to filter.
+            val trimmed = trimFnrString(fnr)
+            if (trimmed.isBlank()) {
+                logger.warn("FNR trimmet til ingenting: $fnr")
+            }
+            trimmed
+        }.filter{!it.isBlank()}.forEach { fnr ->
             val person = personV3Service.hentPerson(fnr)
             person?.diskresjonskode?.value?.let { kode ->
                 logger.debug("Diskresjonskode: $kode")
