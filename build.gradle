@@ -188,7 +188,8 @@ wrapper {
 	distributionType = Wrapper.DistributionType.ALL
 }
 
-tasks.check.dependsOn tasks.named("plantUml")
+// FIXME - det er noe som tryner i bygget knyttet til genereringen av svg fra plantuml
+//tasks.check.dependsOn tasks.named("plantUml")
 
 // https://github.com/cosminpolifronie/gradle-plantuml-plugin
 plantUml {
