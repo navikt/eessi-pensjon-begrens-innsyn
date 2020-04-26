@@ -93,6 +93,7 @@ dependencies {
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("no.nav.eessi.pensjon:eessi-pensjon-metrics:0.1.0")
 
 	// Tjenestespesifikasjoner
 	implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1+")
@@ -127,7 +128,7 @@ compileTestKotlin {
 repositories {
 	mavenCentral()
 
-	["maven-release","tjenestespesifikasjoner"].each { repo ->
+	["maven-release","tjenestespesifikasjoner","eessi-pensjon-metrics"].each { repo ->
 		String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
 		if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
 		maven {
@@ -181,4 +182,3 @@ dependencyUpdates {
 	}
 	revision = 'release'
 }
-
