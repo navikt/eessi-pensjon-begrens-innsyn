@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import java.lang.RuntimeException
+import javax.annotation.PostConstruct
 
 
 /**
@@ -21,9 +22,15 @@ class FagmodulService(
         @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(FagmodulService::class.java) }
+    private lateinit var hentSeds: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentSeds = metricsHelper.init("hentSeds")
+    }
 
     fun hentAlleDokumenterFraRinaSak(rinaNr: String): String? {
-        return metricsHelper.measure("hentSeds") {
+        return hentSeds.measure {
             val path = "/buc/$rinaNr/allDocuments"
             try {
                 logger.info("Henter jsondata for alle sed for rinaNr: $rinaNr")

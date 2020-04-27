@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus
 import javax.xml.ws.soap.SOAPFaultException
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
+import javax.annotation.PostConstruct
 
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
@@ -28,8 +29,15 @@ class PersonV3Service(
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(PersonV3Service::class.java) }
 
+    private lateinit var hentPerson: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentPerson = metricsHelper.init("hentperson")
+    }
+
     fun hentPerson(fnr: String): Person? {
-        return metricsHelper.measure("hentperson") {
+        return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
 
             try {

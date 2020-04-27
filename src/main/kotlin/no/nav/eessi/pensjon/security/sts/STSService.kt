@@ -56,9 +56,14 @@ class STSService(
 
     lateinit var wellKnownSTS: WellKnownSTS
 
+    lateinit var discoverSTS: MetricsHelper.Metric
+    lateinit var getSystemOidcToken: MetricsHelper.Metric
+
     @PostConstruct
     fun discoverEndpoints() {
-        metricsHelper.measure("disoverSTS") {
+        discoverSTS = metricsHelper.init("disoverSTS")
+        getSystemOidcToken = metricsHelper.init("getSystemOidcToken")
+        discoverSTS.measure {
             try {
                 logger.info("Henter STS endepunkter fra well.known $discoveryUrl")
                 wellKnownSTS = securityTokenExchangeBasicAuthRestTemplate.exchange(discoveryUrl,
@@ -76,7 +81,7 @@ class STSService(
     }
 
     fun getSystemOidcToken(): String {
-        return metricsHelper.measure("getSystemOidcToken") {
+        return getSystemOidcToken.measure {
             try {
                 val uri = UriComponentsBuilder.fromUriString(wellKnownSTS.tokenEndpoint)
                         .queryParam("grant_type", "client_credentials")

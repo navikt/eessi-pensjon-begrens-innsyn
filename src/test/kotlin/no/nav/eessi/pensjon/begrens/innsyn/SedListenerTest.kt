@@ -33,6 +33,7 @@ class SedListenerTest {
     @BeforeEach
     fun setup() {
         sedListener = SedListener(begrensInnsynService)
+        sedListener.initMetrics()
     }
 
     @Test

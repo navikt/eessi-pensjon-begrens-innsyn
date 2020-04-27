@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
+import javax.annotation.PostConstruct
 
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
@@ -25,9 +26,18 @@ class EuxService(
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxService::class.java) }
 
+    private lateinit var hentSed: MetricsHelper.Metric
+    private lateinit var settSensitiv: MetricsHelper.Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentSed = metricsHelper.init("hentSed")
+        settSensitiv = metricsHelper.init("settSensitiv")
+    }
+
     @Retryable(include = [HttpServerErrorException::class, HttpClientErrorException.Unauthorized::class])
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
-        return metricsHelper.measure("hentSed") {
+        return hentSed.measure {
             val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
             val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
@@ -46,7 +56,7 @@ class EuxService(
     }
 
     fun settSensitivSak(rinaSakId: String) : String? {
-        return metricsHelper.measure("settSensitiv") {
+        return settSensitiv.measure {
             val path = "/buc/$rinaSakId/sensitivsak"
             val uriParams = mapOf("RinaSakId" to rinaSakId)
             val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
