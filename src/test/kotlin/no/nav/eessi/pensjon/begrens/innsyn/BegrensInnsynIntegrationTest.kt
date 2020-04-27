@@ -47,7 +47,7 @@ private lateinit var mockServer : ClientAndServer
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry
-@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC])
+@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC], brokerProperties= ["log.dir=out/embedded-kafka"])
 class BegrensInnsynIntegrationTest {
 
     @Autowired
