@@ -26,7 +26,9 @@ class PersonV3ServiceTest {
     @BeforeEach
     fun setup() {
         personV3 = mockk()
-        personV3Service = spyk(PersonV3Service(personV3))
+        val pv3s = PersonV3Service(personV3)
+        pv3s.initMetrics()
+        personV3Service = spyk(pv3s)
 
         every { personV3Service.konfigurerSamlToken() } just Runs
 
