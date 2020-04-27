@@ -30,6 +30,8 @@ plugins {
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
 }
 
+assert JavaVersion.current().isJava11Compatible(): "Java 11 or newer is required"
+
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
 apply plugin: 'org.springframework.boot'
@@ -71,6 +73,8 @@ dependencies {
 	// Apache CXF
 	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
 	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
+	implementation("com.sun.xml.ws:jaxws-ri:2.3.2")
+
 	implementation("commons-io:commons-io:2.6")
 
 	// Allows for variable expiration-date of each cache-entry
@@ -111,17 +115,21 @@ test {
 	useJUnitPlatform()
 }
 
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
 compileKotlin {
 	kotlinOptions {
 		freeCompilerArgs = ["-Xjsr305=strict"]
-		jvmTarget = "1.8"
+		jvmTarget = "11"
 	}
 }
 
 compileTestKotlin {
 	kotlinOptions {
 		freeCompilerArgs = ['-Xjsr305=strict']
-		jvmTarget = '1.8'
+		jvmTarget = '11'
 	}
 }
 
