@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.services.personv3
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.*
+import no.nav.eessi.pensjon.security.sts.STSClientConfig
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import org.junit.jupiter.api.Assertions.*
@@ -14,6 +15,7 @@ import javax.xml.ws.soap.SOAPFaultException
 class PersonV3ServiceTest {
 
     private lateinit var personV3 : PersonV3
+    private lateinit var stsClientConfig : STSClientConfig
 
     private lateinit var personV3Service : PersonV3Service
 
@@ -25,8 +27,10 @@ class PersonV3ServiceTest {
 
     @BeforeEach
     fun setup() {
+        stsClientConfig = mockk()
         personV3 = mockk()
-        val pv3s = PersonV3Service(personV3)
+
+        val pv3s = PersonV3Service(personV3, stsClientConfig)
         pv3s.initMetrics()
         personV3Service = spyk(pv3s)
 

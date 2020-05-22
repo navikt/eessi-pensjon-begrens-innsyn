@@ -67,6 +67,8 @@ dependencies {
 		because "spring-kafka-test needs it - but we should not use it in our code"
 	}
 
+	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.3")
+
 	// Apache CXF
 	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
 	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")

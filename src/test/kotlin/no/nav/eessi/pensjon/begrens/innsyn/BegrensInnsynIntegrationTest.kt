@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import io.mockk.*
-import no.nav.eessi.pensjon.metrics.HTTP_METHOD_TAG
 import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
@@ -242,7 +241,7 @@ class BegrensInnsynIntegrationTest {
 
         @Bean
         fun personV3Service(personV3: PersonV3): PersonV3Service {
-            return spyk(PersonV3Service(personV3))
+            return spyk(PersonV3Service(personV3, mockk()))
         }
     }
 }
