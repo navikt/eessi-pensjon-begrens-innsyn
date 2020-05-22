@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import io.mockk.*
+import no.nav.eessi.pensjon.metrics.HTTP_METHOD_TAG
 import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
@@ -36,7 +37,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.ws.rs.HttpMethod
 
 private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
@@ -137,7 +137,7 @@ class BegrensInnsynIntegrationTest {
             // Mocker STS
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.GET)
+                            .withMethod("GET")
                             .withQueryStringParameter("grant_type", "client_credentials"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -147,7 +147,7 @@ class BegrensInnsynIntegrationTest {
             // Mocker STS service discovery
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.GET)
+                            .withMethod("GET")
                             .withPath("/.well-known/openid-configuration"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -166,7 +166,7 @@ class BegrensInnsynIntegrationTest {
             // Mocker EUX sensitiv sak
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.PUT)
+                            .withMethod("PUT")
                             .withPath("/buc/147729/sensitivsak"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -174,7 +174,7 @@ class BegrensInnsynIntegrationTest {
 
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.GET)
+                            .withMethod("GET")
                             .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -183,7 +183,7 @@ class BegrensInnsynIntegrationTest {
                     )
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.GET)
+                            .withMethod("GET")
                             .withPath("/buc/147729/sed/02249d3f5bdd4336999ccfbf7bb13c64"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -194,7 +194,7 @@ class BegrensInnsynIntegrationTest {
             // Mocker Fagmodul allDocuments
             mockServer.`when`(
                     HttpRequest.request()
-                            .withMethod(HttpMethod.GET)
+                            .withMethod("GET")
                             .withPath("/buc/147729/allDocuments"))
                     .respond(HttpResponse.response()
                             .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
@@ -216,7 +216,7 @@ class BegrensInnsynIntegrationTest {
         // Verifiserer at SED har blitt hentet
         mockServer.verify(
                 HttpRequest.request()
-                        .withMethod(HttpMethod.GET)
+                        .withMethod("GET")
                         .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"),
                 VerificationTimes.exactly(2)
         )
@@ -225,7 +225,7 @@ class BegrensInnsynIntegrationTest {
         // Verifiserer at det har blitt forsøkt å sette en sak til sensitiv
         mockServer.verify(
                 HttpRequest.request()
-                        .withMethod(HttpMethod.PUT)
+                        .withMethod("PUT")
                         .withPath("/buc/147729/sensitivsak"),
                 VerificationTimes.exactly(1)
         )
