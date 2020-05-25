@@ -13,6 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.retry.annotation.Retryable
 import javax.xml.ws.soap.SOAPFaultException
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -37,6 +38,7 @@ class PersonV3Service(
         hentPerson = metricsHelper.init("hentperson")
     }
 
+    @Retryable(include = [SOAPFaultException::class])
     fun hentPerson(fnr: String): Person? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
