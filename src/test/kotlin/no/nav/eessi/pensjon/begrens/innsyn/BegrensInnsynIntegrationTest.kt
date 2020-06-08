@@ -97,7 +97,7 @@ class BegrensInnsynIntegrationTest {
     }
 
     private fun settOppProducerTemplate(topicNavn: String): KafkaTemplate<Int, String> {
-        val senderProps = KafkaTestUtils.senderProps(embeddedKafka.brokersAsString)
+        val senderProps = KafkaTestUtils.producerProps(embeddedKafka.brokersAsString)
         val pf = DefaultKafkaProducerFactory<Int, String>(senderProps)
         val template = KafkaTemplate(pf)
         template.defaultTopic = topicNavn
