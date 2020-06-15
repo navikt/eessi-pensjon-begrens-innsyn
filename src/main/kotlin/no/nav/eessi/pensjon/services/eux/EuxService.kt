@@ -36,7 +36,11 @@ class EuxService(
         settSensitiv = metricsHelper.init("settSensitiv")
     }
 
-    @Retryable(include = [HttpServerErrorException::class, HttpClientErrorException.Unauthorized::class], backoff = Backoff(delay = 5000L, multiplier = 3.0))
+    @Retryable(include = [
+        HttpServerErrorException::class
+        , HttpClientErrorException.Unauthorized::class
+        , HttpClientErrorException.NotFound::class]
+        , backoff = Backoff(delay = 30000L, multiplier = 3.0))
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return hentSed.measure {
             val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
