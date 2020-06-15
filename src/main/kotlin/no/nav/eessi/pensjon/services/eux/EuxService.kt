@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
+import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -35,7 +36,7 @@ class EuxService(
         settSensitiv = metricsHelper.init("settSensitiv")
     }
 
-    @Retryable(include = [HttpServerErrorException::class, HttpClientErrorException.Unauthorized::class])
+    @Retryable(include = [HttpServerErrorException::class, HttpClientErrorException.Unauthorized::class], backoff = Backoff(delay = 2000L, multiplier = 2.0))
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return hentSed.measure {
             val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
