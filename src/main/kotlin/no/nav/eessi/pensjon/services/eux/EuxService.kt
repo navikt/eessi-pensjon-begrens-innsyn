@@ -9,8 +9,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -36,10 +34,7 @@ class EuxService(
         settSensitiv = metricsHelper.init("settSensitiv")
     }
 
-    @Retryable(include = [
-        HttpServerErrorException::class
-        , HttpClientErrorException.Unauthorized::class
-        , HttpClientErrorException.NotFound::class]
+    @Retryable(include = [HttpStatusCodeException::class]
         , backoff = Backoff(delay = 30000L, multiplier = 3.0))
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
         return hentSed.measure {

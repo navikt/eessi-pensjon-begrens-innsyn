@@ -5,7 +5,6 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -73,35 +72,7 @@ internal class EuxServiceTest {
         assertEquals(sedAsJsonString, euxService.getSed(rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId))
     }
 
-    @Test
-    fun `getSed feiler hver gang med Unauthorized - det kastes til slutt exception`() {
-        every {
-            restTemplate.exchange("/buc/$rinaSakId/sed/$rinaDokumentId", HttpMethod.GET, null, String::class.java)
-        }.throws(UnauthorizedException())
-
-        assertThrows<HttpClientErrorException.Unauthorized> {
-            euxService.getSed(rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId)
-        }
-    }
-
-    @Test
-    fun `getSed feiler med en annen HttpClientError - det kastes exception med en gang`() {
-
-        every {
-            restTemplate.exchange("/buc/$rinaSakId/sed/$rinaDokumentId", HttpMethod.GET, null, String::class.java)
-        }.throws(BadRequestException())
-                .andThen(ResponseEntity(sedAsJsonString, HttpStatus.OK))
-
-        assertThrows<HttpClientErrorException.BadRequest> {
-            euxService.getSed(rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId)
-        }
-    }
-
     private fun UnauthorizedException() =
             HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name, HttpHeaders.EMPTY, "{}".toByteArray(), null)
-
-    private fun BadRequestException() =
-            HttpClientErrorException.create(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name, HttpHeaders.EMPTY, "{}".toByteArray(), null)
-
 }
 
