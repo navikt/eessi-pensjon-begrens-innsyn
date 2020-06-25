@@ -83,9 +83,10 @@ class BegrensInnsynService(private val euxService: EuxService,
 
     fun hentSedDocumentsIds(sedJson: String?): List<String> {
         val sedRootNode = mapper.readTree(sedJson)
-        return sedRootNode
-                .filterNot { it.get("status").textValue() =="empty" }
-                .map { it.get("id").textValue() }
-                .toList()
+
+        val resultater = BucHelper.filterUtGyldigSedId(sedRootNode)
+        println("Resultater av filtert liste sed på buc: $resultater")
+        return resultater.map { it.first }
+
     }
 }

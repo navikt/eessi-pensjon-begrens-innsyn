@@ -1,6 +1,9 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.personv3.PersonMock
 import no.nav.eessi.pensjon.services.personv3.PersonV3Service
@@ -46,7 +49,7 @@ private lateinit var mockServer : ClientAndServer
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry
-@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC], brokerProperties= ["log.dir=out/embedded-kafka"])
+@EmbeddedKafka(count = 1, controlledShutdown = true, topics = [SED_SENDT_TOPIC, SED_MOTTATT_TOPIC], brokerProperties= ["log.dir=out/embedded-kafkainnsyn"])
 class BegrensInnsynIntegrationTest {
 
     @Autowired
@@ -217,9 +220,16 @@ class BegrensInnsynIntegrationTest {
                 HttpRequest.request()
                         .withMethod("GET")
                         .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"),
-                VerificationTimes.exactly(2)
+                VerificationTimes.exactly(1)
         )
 
+        // Verifiserer at SED har blitt hentet
+        mockServer.verify(
+                HttpRequest.request()
+                        .withMethod("GET")
+                        .withPath("/buc/147729/sed/02249d3f5bdd4336999ccfbf7bb13c64"),
+                VerificationTimes.exactly(1)
+        )
 
         // Verifiserer at det har blitt forsøkt å sette en sak til sensitiv
         mockServer.verify(
@@ -230,7 +240,7 @@ class BegrensInnsynIntegrationTest {
         )
 
         // Verifiser at det har blitt forsøkt å hente person fra tps
-        verify(exactly = 6) { personV3Service.hentPerson(any()) }
+        verify(exactly = 4) { personV3Service.hentPerson(any()) }
     }
     // Mocks the PersonV3 Service so we don't have to deal with SOAP
     @TestConfiguration
