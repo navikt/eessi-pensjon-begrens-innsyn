@@ -85,7 +85,6 @@ class BegrensInnsynService(private val euxService: EuxService,
         val sedRootNode = mapper.readTree(sedJson)
 
         val resultater = BucHelper.filterUtGyldigSedId(sedRootNode)
-        println("Resultater av filtert liste sed på buc: $resultater")
         return resultater.map { it.first }
 
     }
