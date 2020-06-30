@@ -4,9 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import no.nav.eessi.pensjon.services.personv3.Diskresjonskode
-import no.nav.eessi.pensjon.services.personv3.PersonMock
-import no.nav.eessi.pensjon.services.personv3.PersonV3Service
+import no.nav.eessi.pensjon.personoppslag.PersonMock
+import no.nav.eessi.pensjon.personoppslag.PersonV3Service
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder
 import org.junit.jupiter.api.Assertions
