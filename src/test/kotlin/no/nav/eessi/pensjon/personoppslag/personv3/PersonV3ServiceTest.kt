@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.personoppslag
+package no.nav.eessi.pensjon.personoppslag.personv3
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
