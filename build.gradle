@@ -68,7 +68,7 @@ dependencies {
 		because "spring-kafka-test needs it - but we should not use it in our code"
 	}
 
-	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.8")
+	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.10")
 
 	// Apache CXF
 	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
@@ -98,17 +98,17 @@ dependencies {
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")
-	implementation("no.nav.eessi.pensjon:ep-metrics:0.3.8")
+	implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
 
-	// Tjenestespesifikasjoner
+	// Personoppslag
 	implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1+")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:3.2.0")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
 	implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-	implementation("no.nav.eessi.pensjon:ep-logging:0.0.16")
-
+	implementation("no.nav.eessi.pensjon:ep-logging:0.0.17")
 }
 
 test {

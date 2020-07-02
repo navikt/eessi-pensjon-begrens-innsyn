@@ -29,6 +29,7 @@ package "Support" {
 package "Services" {
   [Person] <<..personoppslag..>>
   [Person]  --> [Metrics]
+  [Person]  --> [Logging]
   [Person]  --> [Security]
   [EUX] <<..services.eux..>>
   [EUX] -> [Metrics]

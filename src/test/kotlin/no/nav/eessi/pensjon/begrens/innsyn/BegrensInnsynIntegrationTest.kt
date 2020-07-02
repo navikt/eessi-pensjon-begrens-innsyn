@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import no.nav.eessi.pensjon.personoppslag.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.personoppslag.personv3.PersonMock
 import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
@@ -58,7 +59,7 @@ class BegrensInnsynIntegrationTest {
     lateinit var sedListener: SedListener
 
     @Autowired
-    lateinit var  personV3Service: PersonV3Service
+    lateinit var personV3Service: PersonV3Service
 
     @Test
     fun `Gitt en sedSendt hendelse med KODE6 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {

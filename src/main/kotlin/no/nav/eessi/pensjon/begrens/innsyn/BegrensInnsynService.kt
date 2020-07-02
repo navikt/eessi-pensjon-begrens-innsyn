@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.eessi.pensjon.personoppslag.personv3.Diskresjonskode
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
 import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
