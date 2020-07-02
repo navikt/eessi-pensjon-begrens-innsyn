@@ -8,7 +8,7 @@ object PersonMock {
                             fornavn: String = "Test",
                             etternavn: String = "Testesen",
                             diskresjonskode: Diskresjonskoder? = null):
-            Person? = Person()
+            Bruker? = Bruker()
             .withAktoer(PersonIdent().withIdent(NorskIdent().withIdent(fnr)))
             .withPersonnavn(Personnavn()
                             .withEtternavn(etternavn)
