@@ -102,7 +102,7 @@ dependencies {
 
 	// Personoppslag
 	implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1+")
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:3.3.0")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:5.0.0")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
