@@ -69,14 +69,7 @@ dependencies {
 
 	// Apache CXF
 	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-
-	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}") {
-		exclude module: 'wss4j-ws-security-dom'
-	}
-
-	// Forced version due to Insecure Encryption error in Apache CXF above ( Snyk ): wss4j-ws-security-dom:2.5 spring-boot-starter-web, legger til wss4j-ws-security-dom:2.3.0
-	implementation("org.apache.wss4j:wss4j-ws-security-dom:2.3.0")
-
+	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 	implementation("com.sun.xml.ws:jaxws-ri:2.3.3")
 	implementation("org.hibernate:hibernate-validator:6.1.5.Final")
 
