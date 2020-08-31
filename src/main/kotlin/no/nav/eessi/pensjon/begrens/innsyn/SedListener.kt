@@ -34,7 +34,11 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
     }
 
 
-    @KafkaListener(topics = ["\${kafka.sedSendt.topic}"], groupId = "\${kafka.sedSendt.groupid}")
+    @KafkaListener(id="sedSendtListener",
+            idIsGroup = false,
+            topics = ["\${kafka.sedSendt.topic}"],
+            groupId = "\${kafka.sedSendt.groupid}",
+            autoStartup = "false")
     fun consumeSedSendt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeOutgoingSed.measure {
@@ -53,7 +57,11 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         }
     }
 
-    @KafkaListener(topics = ["\${kafka.sedMottatt.topic}"], groupId = "\${kafka.sedMottatt.groupid}")
+    @KafkaListener(id="sedMottattListener",
+            idIsGroup = false,
+            topics = ["\${kafka.sedMottatt.topic}"],
+            groupId = "\${kafka.sedMottatt.groupid}",
+            autoStartup = "false")
     fun consumeSedMottatt(hendelse: String, cr: ConsumerRecord<String, String>, acknowledgment: Acknowledgment) {
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeIncomingSed.measure {
