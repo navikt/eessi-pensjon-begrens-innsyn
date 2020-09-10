@@ -71,7 +71,6 @@ dependencies {
 	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
 	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 	implementation("com.sun.xml.ws:jaxws-ri:2.3.3")
-	implementation("org.hibernate:hibernate-validator:6.1.5.Final")
 
 	implementation("commons-io:commons-io:2.7")
 
