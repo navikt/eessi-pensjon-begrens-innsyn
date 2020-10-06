@@ -98,7 +98,7 @@ dependencies {
 
 	// Personoppslag
 	implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1+")
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.0.1")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.0.4")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
