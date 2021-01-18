@@ -1,17 +1,19 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.eessi.pensjon.personoppslag.personv3.Diskresjonskode
+import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
+import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class BegrensInnsynService(private val euxService: EuxService,
                            private val fagmodulService: FagmodulService,
-                           private val personV3Service: PersonV3Service,
+                           private val pernsonService: PersonService,
                            private val sedFnrSoek: SedFnrSoek)  {
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
@@ -27,9 +29,9 @@ class BegrensInnsynService(private val euxService: EuxService,
 
     private fun begrensInnsyn(sedHendelse: SedHendelseModel) {
 
-        val diskresjonskode = finnDiskresjonkode(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
+        val harAdressebeskyttelse = harAdressebeskyttelse(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
 
-        if (diskresjonskode != null) {
+        if (harAdressebeskyttelse) {
             euxService.settSensitivSak(sedHendelse.rinaSakId)
             return
         } else {
@@ -37,7 +39,7 @@ class BegrensInnsynService(private val euxService: EuxService,
             val documentsIds = hentSedDocumentsIds(hentSedsIdfraRina(sedHendelse.rinaSakId))
 
             documentsIds.forEach { documentId ->
-                finnDiskresjonkode(sedHendelse.rinaSakId, documentId)?.let {
+                if(harAdressebeskyttelse(sedHendelse.rinaSakId, documentId)) {
                     euxService.settSensitivSak(sedHendelse.rinaSakId)
                     return
                 }
@@ -50,29 +52,17 @@ class BegrensInnsynService(private val euxService: EuxService,
     }
 
 
-    private fun finnDiskresjonkode(rinaNr: String, sedDokumentId: String): Diskresjonskode? {
-        logger.debug("Henter Sed dokument for å lete igjennom FNR for diskresjonkode")
+    private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
+        logger.debug("Henter Sed dokument for å lete igjennom FNR for å sjekke adressebeskyttelse")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
-        val fnre = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
-        fnre.map { fnr -> // TODO find a better place to filter.
-            val trimmed = trimFnrString(fnr)
-            if (trimmed.isBlank()) {
-                logger.warn("FNR trimmet til ingenting: $fnr")
-            }
-            trimmed
-        }.filter{!it.isBlank()}.forEach { fnr ->
-            val person = personV3Service.hentPerson(fnr)
-            person?.diskresjonskode?.value?.let { kode ->
-                logger.debug("Diskresjonskode: $kode")
-                val diskresjonskode = Diskresjonskode.valueOf(kode)
-                if (diskresjonskode == Diskresjonskode.SPSF) {
-                    logger.debug("Personen har diskret adresse")
-                    return diskresjonskode
-                }
-            }
-        }
-        return null
+        return sedFnrSoek.finnAlleFnrDnrISed(sed!!)
+            .map { trimFnrString(it)}
+            .filter { it.isNotBlank() }
+            .mapNotNull { fnr -> pernsonService.hentPerson(NorskIdent(fnr))}
+            .mapNotNull { it.adressebeskyttelse }
+            .flatten()
+            .any{it == STRENGT_FORTROLIG || it == STRENGT_FORTROLIG_UTLAND }
     }
 
     fun hentSedsIdfraRina(rinaNr: String): String? {
