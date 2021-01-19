@@ -26,7 +26,6 @@ object PersonMock {
 
         val identer = listOfNotNull(
             fnr?.let { IdentInformasjon(ident = it, gruppe = IdentGruppe.FOLKEREGISTERIDENT) }
-
         )
 
         val adressebeskyttelse = listOfNotNull(
@@ -45,7 +44,11 @@ object PersonMock {
             oppholdsadresse = null,
             statsborgerskap = emptyList(),
             foedsel = Foedsel(foedselsdato, null),
-            geografiskTilknytning = null
+            geografiskTilknytning = null,
+            kjoenn = null,
+            doedsfall = null,
+            sivilstand = emptyList(),
+            familierelasjoner = emptyList()
         )
     }
 }

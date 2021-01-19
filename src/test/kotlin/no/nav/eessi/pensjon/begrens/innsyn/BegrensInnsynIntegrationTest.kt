@@ -4,9 +4,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.PersonMock
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
@@ -62,7 +59,7 @@ class BegrensInnsynIntegrationTest {
     fun `Gitt en sedSendt hendelse med KODE6 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
         // Mock person
-        capturePersonMock()
+        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
 
         // Vent til kafka er klar
         val container = settOppUtitlityConsumer(SED_SENDT_TOPIC)
@@ -76,7 +73,7 @@ class BegrensInnsynIntegrationTest {
         produserSedHendelser(sedSendtProducerTemplate)
 
         // Venter på at sedListener skal consumeSedSendt meldingene
-        sedListener.getLatch().await(15000, TimeUnit.MILLISECONDS)
+        sedListener.getLatch().await(15000, TimeUnit.SECONDS)
 
         // Verifiserer alle kall
         verifiser()
@@ -117,12 +114,6 @@ class BegrensInnsynIntegrationTest {
         container.setupMessageListener(messageListener)
 
         return container
-    }
-
-    private fun capturePersonMock() {
-        every { personService.hentPerson(NorskIdent("12345678910")) } answers { PersonMock.createWith("12345678910") }
-        every { personService.hentPerson(NorskIdent("99999999999")) } answers { PersonMock.createWith("99999999999") }
-        every { personService.hentPerson(NorskIdent("11111111111")) } answers { PersonMock.createWith("11111111111", harAdressebeskyttelse = true )}
     }
 
     companion object {
@@ -236,9 +227,10 @@ class BegrensInnsynIntegrationTest {
                 VerificationTimes.exactly(1)
         )
 
-        // Verifiser at person har blitt forsøkt å hente ut
-        verify(exactly = 4) { personService.hentPerson(any<Ident<*>>()) }
+        // Verifisert at den er kjørt én gang pr. unike dokument. 
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
     }
+
     // Mocks the PersonService
     @TestConfiguration
     class TestConfig{

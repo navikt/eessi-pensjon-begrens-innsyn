@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
 import org.slf4j.LoggerFactory
@@ -37,6 +36,7 @@ class BegrensInnsynService(private val euxService: EuxService,
         } else {
             //hvis null prøver vi samtlige SEDs på bucken
             hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
+                    .filterNot { it == sedHendelse.rinaDokumentId } // Denne er allerede sjekket over
                     .firstOrNull { docId -> harAdressebeskyttelse(rinaSakId, docId) }
                     ?.run { euxService.settSensitivSak(rinaSakId) }
         }
