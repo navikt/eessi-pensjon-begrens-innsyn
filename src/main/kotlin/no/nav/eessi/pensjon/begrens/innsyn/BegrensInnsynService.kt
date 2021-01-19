@@ -49,7 +49,9 @@ class BegrensInnsynService(private val euxService: EuxService,
         val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
                 .map { trimFnrString(it) }
                 .filter { it.isBlank() }
+                .distinct()
 
+        logger.debug("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
         return pernsonService.harAdressebeskyttelse(fnrListe, gradering)
     }
 
