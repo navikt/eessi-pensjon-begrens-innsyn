@@ -20,6 +20,8 @@ class BegrensInnsynService(private val euxService: EuxService,
 
     private val mapper = jacksonObjectMapper()
 
+    private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
+
     fun begrensInnsyn(hendelse: String) {
         val sedHendelse = SedHendelseModel.fromJson(hendelse)
         if (sedHendelse.sektorKode == "P") {
@@ -28,54 +30,40 @@ class BegrensInnsynService(private val euxService: EuxService,
     }
 
     private fun begrensInnsyn(sedHendelse: SedHendelseModel) {
+        val rinaSakId = sedHendelse.rinaSakId
 
-        val harAdressebeskyttelse = harAdressebeskyttelse(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
-
-        if (harAdressebeskyttelse) {
-            euxService.settSensitivSak(sedHendelse.rinaSakId)
-            return
+        if (harAdressebeskyttelse(rinaSakId, sedHendelse.rinaDokumentId)) {
+            euxService.settSensitivSak(rinaSakId)
         } else {
             //hvis null prøver vi samtlige SEDs på bucken
-            val documentsIds = hentSedDocumentsIds(hentSedsIdfraRina(sedHendelse.rinaSakId))
-
-            documentsIds.forEach { documentId ->
-                if(harAdressebeskyttelse(sedHendelse.rinaSakId, documentId)) {
-                    euxService.settSensitivSak(sedHendelse.rinaSakId)
-                    return
-                }
-            }
+            hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
+                    .firstOrNull { docId -> harAdressebeskyttelse(rinaSakId, docId) }
+                    ?.run { euxService.settSensitivSak(rinaSakId) }
         }
     }
 
-    companion object {
-        fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
-    }
-
-
     private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
-        logger.debug("Henter Sed dokument for å lete igjennom FNR for å sjekke adressebeskyttelse")
+        logger.debug("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
-        return sedFnrSoek.finnAlleFnrDnrISed(sed!!)
-            .map { trimFnrString(it)}
-            .filter { it.isNotBlank() }
-            .mapNotNull { fnr -> pernsonService.hentPerson(NorskIdent(fnr))}
-            .mapNotNull { it.adressebeskyttelse }
-            .flatten()
-            .any{it == STRENGT_FORTROLIG || it == STRENGT_FORTROLIG_UTLAND }
+        val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
+                .map { trimFnrString(it) }
+                .filter { it.isBlank() }
+
+        return pernsonService.harAdressebeskyttelse(fnrListe, gradering)
     }
 
-    fun hentSedsIdfraRina(rinaNr: String): String? {
+    private fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
+
+    private fun hentSedsIdfraRina(rinaNr: String): String? {
         logger.debug("Prøver å Henter nødvendige Rina documentid fra rinasaknr: $rinaNr")
         return fagmodulService.hentAlleDokumenterFraRinaSak(rinaNr)
     }
 
-
-    fun hentSedDocumentsIds(sedJson: String?): List<String> {
+    private fun hentSedDocumentsIds(sedJson: String?): List<String> {
         val sedRootNode = mapper.readTree(sedJson)
 
-        val resultater = BucHelper.filterUtGyldigSedId(sedRootNode)
-        return resultater.map { it.first }
-
+        return BucHelper.filterUtGyldigSedId(sedRootNode)
+                .map { (id, _) -> id }
     }
 }
