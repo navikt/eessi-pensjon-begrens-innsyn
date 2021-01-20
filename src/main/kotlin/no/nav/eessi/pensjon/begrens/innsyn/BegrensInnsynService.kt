@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class BegrensInnsynService(private val euxService: EuxService,
                            private val fagmodulService: FagmodulService,
-                           private val pernsonService: PersonService,
+                           private val personService: PersonService,
                            private val sedFnrSoek: SedFnrSoek)  {
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
@@ -48,11 +48,11 @@ class BegrensInnsynService(private val euxService: EuxService,
 
         val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
                 .map { trimFnrString(it) }
-                .filter { it.isBlank() }
+                .filter { it.isNotBlank() }
                 .distinct()
 
         logger.debug("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
-        return pernsonService.harAdressebeskyttelse(fnrListe, gradering)
+        return personService.harAdressebeskyttelse(fnrListe, gradering)
     }
 
     private fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
