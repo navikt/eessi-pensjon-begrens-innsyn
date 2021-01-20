@@ -35,10 +35,16 @@ class BegrensInnsynService(private val euxService: EuxService,
             euxService.settSensitivSak(rinaSakId)
         } else {
             //hvis null prøver vi samtlige SEDs på bucken
-            hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
+            val documentIds = hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
+
+            logger.debug("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
+
+            val beskyttet = documentIds
                     .filterNot { it == sedHendelse.rinaDokumentId } // Denne er allerede sjekket over
-                    .firstOrNull { docId -> harAdressebeskyttelse(rinaSakId, docId) }
-                    ?.run { euxService.settSensitivSak(rinaSakId) }
+                    .any { docId -> harAdressebeskyttelse(rinaSakId, docId) }
+
+            if (beskyttet)
+                euxService.settSensitivSak(rinaSakId)
         }
     }
 
