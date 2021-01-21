@@ -34,7 +34,7 @@ class BegrensInnsynService(private val euxService: EuxService,
         if (harAdressebeskyttelse(rinaSakId, sedHendelse.rinaDokumentId)) {
             euxService.settSensitivSak(rinaSakId)
         } else {
-            //hvis null prøver vi samtlige SEDs på bucken
+            //hvis null prøver vi samtlige SEDs på bucen
             val documentIds = hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
 
             logger.debug("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
