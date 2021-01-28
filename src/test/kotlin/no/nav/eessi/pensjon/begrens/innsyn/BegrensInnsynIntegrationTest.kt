@@ -73,7 +73,7 @@ class BegrensInnsynIntegrationTest {
         produserSedHendelser(sedSendtProducerTemplate)
 
         // Venter på at sedListener skal consumeSedSendt meldingene
-        sedListener.getLatch().await(15000, TimeUnit.SECONDS)
+        sedListener.getLatch().await(15000, TimeUnit.MILLISECONDS)
 
         // Verifiserer alle kall
         verifiser()
