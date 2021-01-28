@@ -13,6 +13,8 @@ spec:
       value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://app.adeo.no/tpsws-aura/ws/Person/v3
+    - name: PDL_URL
+      value: https://pdl-api.nais.adeo.no/graphql
     - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
       value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
     - name: SECURITYTOKENSERVICE_URL

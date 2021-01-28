@@ -1,22 +1,25 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.eessi.pensjon.personoppslag.personv3.Diskresjonskode
+import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
 import no.nav.eessi.pensjon.services.eux.EuxService
 import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class BegrensInnsynService(private val euxService: EuxService,
                            private val fagmodulService: FagmodulService,
-                           private val personV3Service: PersonV3Service,
+                           private val personService: PersonService,
                            private val sedFnrSoek: SedFnrSoek)  {
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
     private val mapper = jacksonObjectMapper()
+
+    private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
     fun begrensInnsyn(hendelse: String) {
         val sedHendelse = SedHendelseModel.fromJson(hendelse)
@@ -26,66 +29,49 @@ class BegrensInnsynService(private val euxService: EuxService,
     }
 
     private fun begrensInnsyn(sedHendelse: SedHendelseModel) {
+        val rinaSakId = sedHendelse.rinaSakId
 
-        val diskresjonskode = finnDiskresjonkode(sedHendelse.rinaSakId, sedHendelse.rinaDokumentId)
-
-        if (diskresjonskode != null) {
-            euxService.settSensitivSak(sedHendelse.rinaSakId)
-            return
+        if (harAdressebeskyttelse(rinaSakId, sedHendelse.rinaDokumentId)) {
+            euxService.settSensitivSak(rinaSakId)
         } else {
-            //hvis null prøver vi samtlige SEDs på bucken
-            val documentsIds = hentSedDocumentsIds(hentSedsIdfraRina(sedHendelse.rinaSakId))
+            //hvis null prøver vi samtlige SEDs på bucen
+            val documentIds = hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
 
-            documentsIds.forEach { documentId ->
-                finnDiskresjonkode(sedHendelse.rinaSakId, documentId)?.let {
-                    euxService.settSensitivSak(sedHendelse.rinaSakId)
-                    return
-                }
-            }
+            logger.debug("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
+
+            val beskyttet = documentIds
+                    .filterNot { it == sedHendelse.rinaDokumentId } // Denne er allerede sjekket over
+                    .any { docId -> harAdressebeskyttelse(rinaSakId, docId) }
+
+            if (beskyttet)
+                euxService.settSensitivSak(rinaSakId)
         }
     }
 
-    companion object {
-        fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
-    }
-
-
-    private fun finnDiskresjonkode(rinaNr: String, sedDokumentId: String): Diskresjonskode? {
-        logger.debug("Henter Sed dokument for å lete igjennom FNR for diskresjonkode")
+    private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
+        logger.debug("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
-        val fnre = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
-        fnre.map { fnr -> // TODO find a better place to filter.
-            val trimmed = trimFnrString(fnr)
-            if (trimmed.isBlank()) {
-                logger.warn("FNR trimmet til ingenting: $fnr")
-            }
-            trimmed
-        }.filter{!it.isBlank()}.forEach { fnr ->
-            val person = personV3Service.hentPerson(fnr)
-            person?.diskresjonskode?.value?.let { kode ->
-                logger.debug("Diskresjonskode: $kode")
-                val diskresjonskode = Diskresjonskode.valueOf(kode)
-                if (diskresjonskode == Diskresjonskode.SPSF) {
-                    logger.debug("Personen har diskret adresse")
-                    return diskresjonskode
-                }
-            }
-        }
-        return null
+        val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
+                .map { trimFnrString(it) }
+                .filter { it.isNotBlank() }
+                .distinct()
+
+        logger.debug("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
+        return personService.harAdressebeskyttelse(fnrListe, gradering)
     }
 
-    fun hentSedsIdfraRina(rinaNr: String): String? {
+    private fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
+
+    private fun hentSedsIdfraRina(rinaNr: String): String? {
         logger.debug("Prøver å Henter nødvendige Rina documentid fra rinasaknr: $rinaNr")
         return fagmodulService.hentAlleDokumenterFraRinaSak(rinaNr)
     }
 
-
-    fun hentSedDocumentsIds(sedJson: String?): List<String> {
+    private fun hentSedDocumentsIds(sedJson: String?): List<String> {
         val sedRootNode = mapper.readTree(sedJson)
 
-        val resultater = BucHelper.filterUtGyldigSedId(sedRootNode)
-        return resultater.map { it.first }
-
+        return BucHelper.filterUtGyldigSedId(sedRootNode)
+                .map { (id, _) -> id }
     }
 }

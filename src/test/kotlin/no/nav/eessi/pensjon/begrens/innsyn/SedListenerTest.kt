@@ -1,71 +1,60 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import com.nhaarman.mockitokotlin2.*
+import io.mockk.every
+import io.mockk.mockk
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.kafka.support.Acknowledgment
 import java.io.IOException
 import java.io.UncheckedIOException
-import java.nio.file.Files
-import java.nio.file.Paths
+import io.mockk.verify
 
-@ExtendWith(MockitoExtension::class)
-class SedListenerTest {
+internal class SedListenerTest {
 
-    @Mock
-    lateinit var acknowledgment: Acknowledgment
+    private val acknowledgment = mockk<Acknowledgment>(relaxUnitFun = true)
+    private val cr = mockk<ConsumerRecord<String, String>>(relaxed = true)
+    private val begrensInnsynService = mockk<BegrensInnsynService>(relaxed = true)
 
-    @Mock
-    lateinit var cr: ConsumerRecord<String, String>
+    private val sedListener = SedListener(begrensInnsynService)
 
-    @Mock
-    lateinit var begrensInnsynService: BegrensInnsynService
-
-    lateinit var sedListener: SedListener
+    private val sedHendelse = javaClass.getResource("/sed/P_BUC_01.json").readText()
 
     @BeforeEach
     fun setup() {
-        sedListener = SedListener(begrensInnsynService)
         sedListener.initMetrics()
     }
 
     @Test
     fun `gitt en gyldig sedHendelse når sedSendt hendelse konsumeres så ack melding`() {
-        sedListener.consumeSedSendt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))),cr,  acknowledgment)
-        verify(acknowledgment).acknowledge()
+        sedListener.consumeSedSendt(sedHendelse, cr, acknowledgment)
+        verify(exactly = 1) { acknowledgment.acknowledge() }
     }
 
 
     @Test
     fun `gitt en gyldig sedHendelse når sedMottatt hendelse konsumeres så så ack melding`() {
-        sedListener.consumeSedMottatt(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json"))),cr, acknowledgment)
-        verify(acknowledgment).acknowledge()
+        sedListener.consumeSedMottatt(sedHendelse, cr, acknowledgment)
+        verify(exactly = 1) { acknowledgment.acknowledge() }
     }
 
     @Test
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-        `when`(begrensInnsynService.begrensInnsyn(anyString())).thenThrow(UncheckedIOException(IOException("JSON-issue")))
+        every { begrensInnsynService.begrensInnsyn(any()) } throws UncheckedIOException(IOException("JSON-issue"))
 
-        assertThrows<RuntimeException> {
-            sedListener.consumeSedSendt("SomeSEDAsString", cr, acknowledgment)
-        }
-        verify(acknowledgment, times(0)).acknowledge()
+        assertThrows<RuntimeException> { sedListener.consumeSedSendt("SomeSEDAsString", cr, acknowledgment) }
+
+        verify(exactly = 0) { acknowledgment.acknowledge() }
     }
 
     @Test
     fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
-        `when`(begrensInnsynService.begrensInnsyn(anyString())).thenThrow(UncheckedIOException(IOException("JSON-issue")))
+        every { begrensInnsynService.begrensInnsyn(any()) } throws  UncheckedIOException(IOException("JSON issue"))
 
-        assertThrows<RuntimeException> {
-            sedListener.consumeSedMottatt("SomeSEDAsString", cr, acknowledgment)
-        }
-        verify(acknowledgment, times(0)).acknowledge()
+        assertThrows<RuntimeException> { sedListener.consumeSedMottatt("SomeSEDAsString", cr, acknowledgment) }
+
+        verify(exactly = 0) { acknowledgment.acknowledge() }
+
     }
 }

@@ -2,13 +2,8 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
-import no.nav.eessi.pensjon.personoppslag.personv3.Diskresjonskode
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonMock
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
-import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder
+import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
@@ -21,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
@@ -59,13 +53,13 @@ class BegrensInnsynIntegrationTest {
     lateinit var sedListener: SedListener
 
     @Autowired
-    lateinit var personV3Service: PersonV3Service
+    lateinit var personService: PersonService
 
     @Test
     fun `Gitt en sedSendt hendelse med KODE6 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
 
-        // Mock personV3
-        capturePersonMock()
+        // Mock person
+        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
 
         // Vent til kafka er klar
         val container = settOppUtitlityConsumer(SED_SENDT_TOPIC)
@@ -120,12 +114,6 @@ class BegrensInnsynIntegrationTest {
         container.setupMessageListener(messageListener)
 
         return container
-    }
-
-    private fun capturePersonMock() {
-        every { personV3Service.hentPerson("12345678910") } answers { PersonMock.createWith()!! }
-        every { personV3Service.hentPerson("99999999999") } answers { PersonMock.createWith()!! }
-        every { personV3Service.hentPerson("11111111111") } answers { PersonMock.createWith(diskresjonskode = Diskresjonskoder().withValue(Diskresjonskode.SPSF.toString()))!! }
     }
 
     companion object {
@@ -239,19 +227,14 @@ class BegrensInnsynIntegrationTest {
                 VerificationTimes.exactly(1)
         )
 
-        // Verifiser at det har blitt forsøkt å hente person fra tps
-        verify(exactly = 4) { personV3Service.hentPerson(any()) }
+        // Verifisert at den er kjørt én gang pr. unike dokument. 
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
     }
-    // Mocks the PersonV3 Service so we don't have to deal with SOAP
+
+    // Mocks the PersonService
     @TestConfiguration
     class TestConfig{
         @Bean
-        @Primary
-        fun personV3(): PersonV3 = mockk()
-
-        @Bean
-        fun personV3Service(personV3: PersonV3): PersonV3Service {
-            return spyk(PersonV3Service(personV3, mockk()))
-        }
+        fun personService(): PersonService = mockk(relaxUnitFun = true)
     }
 }
