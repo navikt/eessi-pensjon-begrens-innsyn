@@ -95,7 +95,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.6")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.7")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
