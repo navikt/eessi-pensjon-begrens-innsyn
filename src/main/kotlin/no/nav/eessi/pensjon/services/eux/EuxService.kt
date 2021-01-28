@@ -37,19 +37,19 @@ class EuxService(
     @Retryable(include = [HttpStatusCodeException::class]
         , backoff = Backoff(delay = 30000L, multiplier = 3.0))
     fun getSed(rinaSakId: String, rinaDokumentId: String) : String? {
-        return hentSed.measure {
-            val path = "/buc/$rinaSakId/sed/$rinaDokumentId"
-            val uriParams = mapOf("RinaSakId" to rinaSakId, "DokumentId" to rinaDokumentId)
-            val builder = UriComponentsBuilder.fromUriString(path).buildAndExpand(uriParams)
+        val url = "/buc/$rinaSakId/sed/$rinaDokumentId"
 
-            logger.info("Henter SED fra EUX /${builder.toUriString()}")
+        logger.info("Henter SED fra EUX $url")
+
+        return hentSed.measure {
             try {
-                euxOidcRestTemplate.exchange(builder.toUriString(),
+                euxOidcRestTemplate.exchange(
+                        url,
                         HttpMethod.GET,
                         null,
                         String::class.java).body
             } catch (ex: Exception) {
-                logger.warn("Feil ved henting av SED fra EUX /${builder.toUriString()}", ex) // warn because retry
+                logger.warn("Feil ved henting av SED fra EUX $url", ex) // warn because retry
                 throw ex
             }
         }

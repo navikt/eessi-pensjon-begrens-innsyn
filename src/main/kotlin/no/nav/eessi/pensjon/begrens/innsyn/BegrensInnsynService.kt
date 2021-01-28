@@ -43,13 +43,17 @@ class BegrensInnsynService(private val euxService: EuxService,
                     .filterNot { it == sedHendelse.rinaDokumentId } // Denne er allerede sjekket over
                     .any { docId -> harAdressebeskyttelse(rinaSakId, docId) }
 
-            if (beskyttet)
+            if (beskyttet) {
+                logger.info("BEGRENSER INNSYN! RinaSakID $rinaSakId inneholder SED med adressebeskyttet person.")
                 euxService.settSensitivSak(rinaSakId)
+            } else {
+                logger.info("Fant ingen adressebeskyttet person i SEDer (RinaSakID: $rinaSakId)")
+            }
         }
     }
 
     private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
-        logger.debug("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
+        logger.info("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
         val sed = euxService.getSed(rinaNr, sedDokumentId)
 
         val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
@@ -57,7 +61,8 @@ class BegrensInnsynService(private val euxService: EuxService,
                 .filter { it.isNotBlank() }
                 .distinct()
 
-        logger.debug("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
+        logger.info("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
+
         return personService.harAdressebeskyttelse(fnrListe, gradering)
     }
 
