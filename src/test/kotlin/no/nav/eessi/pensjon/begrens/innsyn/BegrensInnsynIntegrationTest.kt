@@ -235,6 +235,6 @@ class BegrensInnsynIntegrationTest {
     @TestConfiguration
     class TestConfig{
         @Bean
-        fun personService(): PersonService = mockk()
+        fun personService(): PersonService = mockk(relaxUnitFun = true)
     }
 }
