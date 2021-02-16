@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component
  * Kjente keys: "Pin", "kompetenteuland"
  *
  */
-@Component
-class SedFnrSoek {
+object SedFnrSoek {
 
     private val mapper = jacksonObjectMapper()
     private val logger = LoggerFactory.getLogger(SedFnrSoek::class.java)

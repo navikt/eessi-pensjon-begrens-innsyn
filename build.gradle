@@ -97,6 +97,9 @@ dependencies {
 	// Personoppslag
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.8")
 
+	// Rina Eux API
+	implementation("no.nav.eessi.pensjon:ep-eux:1.0.6")
+
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
@@ -129,15 +132,14 @@ compileTestKotlin {
 repositories {
 	mavenCentral()
 
-	["maven-release","tjenestespesifikasjoner","ep-metrics", "ep-security-sts"].each { repo ->
-		String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-		if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-		maven {
-			url = uri("https://maven.pkg.github.com/navikt/$repo")
-			credentials {
-				username = "token"
-				password = token
-			}
+	String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+	if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+
+	maven {
+		url = uri("https://maven.pkg.github.com/navikt/maven-release")
+		credentials {
+			username = "token"
+			password = token
 		}
 	}
 }
@@ -145,14 +147,6 @@ repositories {
 wrapper {
 	distributionType = Wrapper.DistributionType.ALL
 }
-
-// FIXME - det er noe som tryner i bygget knyttet til genereringen av svg fra plantuml
-//tasks.check.dependsOn tasks.named("plantUml")
-
-// https://github.com/cosminpolifronie/gradle-plantuml-plugin
-//plantUml {
-//	render input: 'src/test/resources/components.puml', output: 'components.svg', format: 'svg', withMetadata: false
-//}
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
 jacoco {
