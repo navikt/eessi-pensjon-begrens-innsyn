@@ -31,7 +31,9 @@ class BegrensInnsynService(
             euxService.settSensitivSak(rinaSakId)
         } else {
             // Hvis vi ikke finner adressebeskyttelse på hoved-SED, prøver vi på samtlige SED i BUC
-            val documentIds = euxService.hentBucDokumenter(rinaSakId).map { it.id }
+            val documentIds = euxService.hentBucDokumenter(rinaSakId)
+                .filter { it.harGyldigStatus() }
+                .map { it.id }
 
             logger.debug("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
 
