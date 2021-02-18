@@ -1,8 +1,14 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.eessi.pensjon.eux.EuxService
+import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,7 +17,6 @@ import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import org.mockserver.model.HttpStatusCode
-import org.mockserver.verify.VerificationTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -55,11 +60,12 @@ class BegrensInnsynIntegrationTest {
     @Autowired
     lateinit var personService: PersonService
 
+    @Autowired
+    lateinit var euxService: EuxService
+
     @Test
     fun `Gitt en sedSendt hendelse med KODE6 person når begrens innsyn blir sjekket så settes BUC til sensitiv sak `() {
-
-        // Mock person
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
+        initMocks()
 
         // Vent til kafka er klar
         val container = settOppUtitlityConsumer(SED_SENDT_TOPIC)
@@ -80,6 +86,27 @@ class BegrensInnsynIntegrationTest {
 
         // Shutdown
         shutdown(container)
+    }
+
+    private fun initMocks() {
+
+        // Mock person
+        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
+
+        // Mocker EUX sensitiv sak
+        every { euxService.settSensitivSak("147729") } returns true
+
+        every { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
+            .answers { javaClass.getResource("/sed/P6000-NAV_uten_SPSF.json").readText() }
+
+        every { euxService.hentSedJson("147729", "02249d3f5bdd4336999ccfbf7bb13c64") }
+            .answers { javaClass.getResource("/sed/P2000-NAV_med_SPSF.json").readText() }
+
+        val documentsJson = javaClass.getResource("/sed/allDocuments.json").readText()
+        val documents = jacksonObjectMapper().readValue(documentsJson, object : TypeReference<List<ForenkletSED>>() {})
+
+        every { euxService.hentBucDokumenter("147729") }
+            .answers { documents }
     }
 
     private fun produserSedHendelser(sedSendtProducerTemplate: KafkaTemplate<Int, String>) {
@@ -153,45 +180,6 @@ class BegrensInnsynIntegrationTest {
                             )
                     )
 
-            // Mocker EUX sensitiv sak
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("PUT")
-                            .withPath("/buc/147729/sensitivsak"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code()))
-
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("GET")
-                            .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P6000-NAV_uten_SPSF.json"))))
-                    )
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("GET")
-                            .withPath("/buc/147729/sed/02249d3f5bdd4336999ccfbf7bb13c64"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/P2000-NAV_med_SPSF.json"))))
-                    )
-
-            // Mocker Fagmodul allDocuments
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("GET")
-                            .withPath("/buc/147729/allDocuments"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/allDocuments.json"))))
-                    )
-
         }
 
         private fun randomFrom(from: Int = 1024, to: Int = 65535): Int {
@@ -204,37 +192,29 @@ class BegrensInnsynIntegrationTest {
         Assertions.assertEquals(0, sedListener.getLatch().count, "Alle meldinger har ikke blitt konsumert")
 
         // Verifiserer at SED har blitt hentet
-        mockServer.verify(
-                HttpRequest.request()
-                        .withMethod("GET")
-                        .withPath("/buc/147729/sed/4338515b6bed451798ba478c835409a3"),
-                VerificationTimes.exactly(1)
-        )
+        verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
 
         // Verifiserer at SED har blitt hentet
-        mockServer.verify(
-                HttpRequest.request()
-                        .withMethod("GET")
-                        .withPath("/buc/147729/sed/02249d3f5bdd4336999ccfbf7bb13c64"),
-                VerificationTimes.exactly(1)
-        )
+        verify(exactly = 1) { euxService.hentSedJson("147729", "02249d3f5bdd4336999ccfbf7bb13c64") }
 
         // Verifiserer at det har blitt forsøkt å sette en sak til sensitiv
-        mockServer.verify(
-                HttpRequest.request()
-                        .withMethod("PUT")
-                        .withPath("/buc/147729/sensitivsak"),
-                VerificationTimes.exactly(1)
-        )
+        verify(exactly = 1) { euxService.settSensitivSak("147729") }
 
         // Verifisert at den er kjørt én gang pr. unike dokument. 
         verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
     }
 
-    // Mocks the PersonService
+    // Mocks the PersonService and EuxService
     @TestConfiguration
     class TestConfig{
         @Bean
-        fun personService(): PersonService = mockk(relaxUnitFun = true)
+        fun personService(): PersonService = mockk {
+            every { initMetrics() } just Runs
+        }
+
+        @Bean
+        fun euxService(): EuxService = mockk {
+            every { initMetrics() } just Runs
+        }
     }
 }

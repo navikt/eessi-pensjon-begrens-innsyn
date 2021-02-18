@@ -9,7 +9,7 @@ class SedHendelseModelTest {
 
     @Test
     fun `Gitt en gyldig SEDSendt json naar mapping saa skal nødvendige felter mappes`() {
-        val sedSendtJson = String(Files.readAllBytes(Paths.get("src/test/resources/sed/P_BUC_01.json")))
+        val sedSendtJson = javaClass.getResource("/sed/P_BUC_01.json").readText()
         val sedHendelse = SedHendelseModel.fromJson(sedSendtJson)
         assertEquals(sedHendelse.sektorKode, "P")
         assertEquals(sedHendelse.rinaSakId, "147729")

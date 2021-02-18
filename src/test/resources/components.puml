@@ -1,5 +1,5 @@
 @startuml
-!pragma graphviz_dot jdot
+!pragma graphviz_dot smetana
 
 package "Setup" {
     [Application] <<no.nav.eessi.pensjon>>
@@ -25,20 +25,19 @@ package "Support" {
 [Config] --> [Security]
 [Config] --> [Logging]
 
-
 package "Services" {
   [Person] <<..personoppslag..>>
   [Person]  --> [Metrics]
   [Person]  --> [Logging]
   [Person]  --> [Security]
-  [EUX] <<..services.eux..>>
+
+  [EUX] <<..eux..>>
   [EUX] -> [Metrics]
-  [Fagmodul] <<..services.fagmodul..>>
-  [Fagmodul] --> [Metrics]
+  [EUX] -> [Logging]
+  [EUX] -> [Security]
 }
 
 begrensinnsyn --> [EUX]
-begrensinnsyn --> [Fagmodul]
 begrensinnsyn --> [Person]
 begrensinnsyn -> [Metrics]
 

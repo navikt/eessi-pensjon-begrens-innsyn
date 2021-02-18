@@ -1,23 +1,19 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.eessi.pensjon.services.eux.EuxService
-import no.nav.eessi.pensjon.services.fagmodul.FagmodulService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class BegrensInnsynService(private val euxService: EuxService,
-                           private val fagmodulService: FagmodulService,
-                           private val personService: PersonService,
-                           private val sedFnrSoek: SedFnrSoek)  {
+class BegrensInnsynService(
+    private val euxService: EuxService,
+    private val personService: PersonService
+) {
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
-
-    private val mapper = jacksonObjectMapper()
 
     private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
@@ -34,8 +30,10 @@ class BegrensInnsynService(private val euxService: EuxService,
         if (harAdressebeskyttelse(rinaSakId, sedHendelse.rinaDokumentId)) {
             euxService.settSensitivSak(rinaSakId)
         } else {
-            //hvis null prøver vi samtlige SEDs på bucen
-            val documentIds = hentSedDocumentsIds(hentSedsIdfraRina(rinaSakId))
+            // Hvis vi ikke finner adressebeskyttelse på hoved-SED, prøver vi på samtlige SED i BUC
+            val documentIds = euxService.hentBucDokumenter(rinaSakId)
+                .filter { it.harGyldigStatus() }
+                .map { it.id }
 
             logger.debug("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
 
@@ -54,9 +52,9 @@ class BegrensInnsynService(private val euxService: EuxService,
 
     private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
         logger.info("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
-        val sed = euxService.getSed(rinaNr, sedDokumentId)
+        val sed = euxService.hentSedJson(rinaNr, sedDokumentId)
 
-        val fnrListe = sedFnrSoek.finnAlleFnrDnrISed(sed!!)
+        val fnrListe = SedFnrSoek.finnAlleFnrDnrISed(sed!!)
                 .map { trimFnrString(it) }
                 .filter { it.isNotBlank() }
                 .distinct()
@@ -68,15 +66,4 @@ class BegrensInnsynService(private val euxService: EuxService,
 
     private fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")
 
-    private fun hentSedsIdfraRina(rinaNr: String): String? {
-        logger.debug("Prøver å Henter nødvendige Rina documentid fra rinasaknr: $rinaNr")
-        return fagmodulService.hentAlleDokumenterFraRinaSak(rinaNr)
-    }
-
-    private fun hentSedDocumentsIds(sedJson: String?): List<String> {
-        val sedRootNode = mapper.readTree(sedJson)
-
-        return BucHelper.filterUtGyldigSedId(sedRootNode)
-                .map { (id, _) -> id }
-    }
 }

@@ -17,31 +17,8 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class RestTemplateConfig(private val securityTokenExchangeService: STSService, private val meterRegistry: MeterRegistry) {
 
-    @Value("\${EUX_RINA_API_V1_URL}")
-    lateinit var euxUrl: String
-
     @Value("\${eessifagmodulservice_URL}")
     lateinit var fagmodulUrl: String
-
-    @Value("\${srvusername}")
-    lateinit var username: String
-
-    @Value("\${srvpassword}")
-    lateinit var password: String
-
-    @Bean
-    fun euxOidcRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
-        return templateBuilder
-                .rootUri(euxUrl)
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestResponseLoggerInterceptor(),
-                        UsernameToOidcInterceptor(securityTokenExchangeService))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
-    }
 
     @Bean
     fun fagmodulOidcRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
