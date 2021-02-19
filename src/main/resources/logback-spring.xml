@@ -15,6 +15,7 @@
         <logger name="com" level="ERROR"/>
         <logger name="no.nav" level="INFO"/>
         <logger name="no.nav.security" level="ERROR"/>
+        <logger name="no.nav.eessi.pensjon.security" level="ERROR"/>
         <logger name="no.nav.eessi" level="INFO"/>
         <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF"/>
 
