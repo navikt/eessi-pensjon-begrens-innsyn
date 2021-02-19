@@ -32,4 +32,19 @@ internal class SedFnrSoekTest {
         assertTrue(funnedeFnr.containsAll(listOf("12345678910", "12345678990")))
         assertEquals(funnedeFnr.size, 2)
     }
+
+    @Test
+    fun `Sjekk at to søk etter hverandre gir riktig resultat`() {
+        val sed1 = javaClass.getResource("/sed/P2000-NAV_med_flere_fnr.json").readText()
+        val sed2 = javaClass.getResource("/sed/H021-NAV.json").readText()
+
+        val sedListe = listOf(sed1, sed2)
+        assertEquals(2, sedListe.size)
+
+        val fnr: List<String> = sedListe
+            .flatMap { SedFnrSoek.finnAlleFnrDnrISed(it) }
+
+        val forventedeFnr = listOf("97097097000", "97097097001", "97097097002", "97097097003", "12345678910", "12345678990")
+        assertTrue(fnr.containsAll(forventedeFnr))
+    }
 }
