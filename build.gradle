@@ -5,8 +5,11 @@ buildscript {
 		springBootVersion = '2.3.0.RELEASE'
 		cxfVersion = '3.3.7'
 		oidcTokenSupportVersion = '0.2.9'
-		logstashLogbackVersion = '6.4'
+		logstashLogbackVersion = '6.6'
 		pensjonInformasjonVersion = '9.4.10'
+		mockserverVersion = '5.11.2'
+		junitVersion = '5.7.1'
+		archUnitVersion = '0.17.0'
 	}
 
 	repositories {
@@ -22,12 +25,10 @@ buildscript {
 }
 
 plugins {
-	id 'com.github.ben-manes.versions' version '0.28.0'
-	id 'se.patrikerdes.use-latest-versions' version '0.2.14'
-	id "org.owasp.dependencycheck" version "5.3.2.1"
-	id "org.sonarqube" version "3.0"
-	id 'jacoco'
-	id 'com.adarshr.test-logger' version '2.0.0'
+	id 'com.github.ben-manes.versions' version '0.36.0'
+	id 'se.patrikerdes.use-latest-versions' version '0.2.15'
+	id "org.owasp.dependencycheck" version "6.1.1"
+	id 'com.adarshr.test-logger' version '2.1.1'
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
 }
 
@@ -46,7 +47,7 @@ dependencies {
 
 	// Spring-boot
 	implementation("org.springframework.boot:spring-boot-starter-aop")
-	implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.35")
+	implementation("org.apache.tomcat.embed:tomcat-embed-core:10.0.2")
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-actuator")
@@ -69,23 +70,18 @@ dependencies {
 	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 	implementation("com.sun.xml.ws:jaxws-ri:2.3.3")
 
-	implementation("commons-io:commons-io:2.7")
-
-	// Allows for variable expiration-date of each cache-entry
-	implementation("net.jodah:expiringmap:0.5.9")
-
 	//mock - test
-	testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
-	testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.2")
-	testImplementation("org.mock-server:mockserver-netty:5.10.0") {
+	testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
+	testImplementation("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
+	testImplementation("org.mock-server:mockserver-netty:${mockserverVersion}") {
 		exclude module: 'junit'
 	}
-	testImplementation("org.mock-server:mockserver-client-java:5.10.0")
+	testImplementation("org.mock-server:mockserver-client-java:${mockserverVersion}")
 	testImplementation "io.mockk:mockk:1.10.0"
 
 	// Architecture tests
-	testImplementation 'com.tngtech.archunit:archunit:0.13.1'
-	testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.1'
+	testImplementation("com.tngtech.archunit:archunit:${archUnitVersion}")
+	testImplementation("com.tngtech.archunit:archunit-junit5:${archUnitVersion}")
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")
@@ -144,19 +140,6 @@ repositories {
 wrapper {
 	distributionType = Wrapper.DistributionType.ALL
 }
-
-// https://docs.gradle.org/current/userguide/jacoco_plugin.html
-jacoco {
-	toolVersion = "0.8.5"
-}
-
-jacocoTestReport {
-	reports {
-		xml.enabled true
-	}
-}
-
-tasks.sonarqube.dependsOn jacocoTestReport
 
 /* https://github.com/ben-manes/gradle-versions-plugin */
 dependencyUpdates {
