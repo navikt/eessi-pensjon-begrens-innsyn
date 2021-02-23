@@ -2,8 +2,7 @@ buildscript {
 
 	ext {
 		kotlinVersion = '1.4.30'
-		springBootVersion = '2.3.0.RELEASE'
-		cxfVersion = '3.3.7'
+		springBootVersion = '2.3.9.RELEASE'
 		oidcTokenSupportVersion = '0.2.9'
 		logstashLogbackVersion = '6.6'
 		pensjonInformasjonVersion = '9.4.10'
@@ -47,6 +46,7 @@ dependencies {
 
 	// Spring-boot
 	implementation("org.springframework.boot:spring-boot-starter-aop")
+	implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-actuator")
@@ -61,13 +61,11 @@ dependencies {
 		exclude module: "junit-vintage-engine"
 	}
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	// Denne fikser en transient breaking change i embedded kafka
+	testImplementation("org.scala-lang:scala-library:2.12.11")
 
-	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.10")
 
-	// Apache CXF
-	implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-	implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
-	implementation("com.sun.xml.ws:jaxws-ri:2.3.3")
+	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.15")
 
 	//mock - test
 	testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
@@ -84,19 +82,19 @@ dependencies {
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")
-	implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
+	implementation("no.nav.eessi.pensjon:ep-metrics:0.4.5")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.8")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.22")
 
 	// Rina Eux API
-	implementation("no.nav.eessi.pensjon:ep-eux:1.0.7")
+	implementation("no.nav.eessi.pensjon:ep-eux:1.0.10")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
 	implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-	implementation("no.nav.eessi.pensjon:ep-logging:0.0.17")
+	implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
 }
 
 test {
