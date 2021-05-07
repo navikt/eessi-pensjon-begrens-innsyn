@@ -88,7 +88,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:7.1.22")
 
 	// Rina Eux API
-	implementation("no.nav.eessi.pensjon:ep-eux:1.0.13")
+	implementation("no.nav.eessi.pensjon:ep-eux:1.0.40")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")

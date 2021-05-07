@@ -26,6 +26,8 @@ package "Support" {
 [Config] --> [Logging]
 
 package "Services" {
+  [UTILS] <<..utils..>>
+
   [Person] <<..personoppslag..>>
   [Person]  --> [Metrics]
   [Person]  --> [Logging]
@@ -35,6 +37,9 @@ package "Services" {
   [EUX] -> [Metrics]
   [EUX] -> [Logging]
   [EUX] -> [Security]
+  [EUX] -> [UTILS]
+
+
 }
 
 begrensinnsyn --> [EUX]
