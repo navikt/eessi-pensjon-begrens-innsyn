@@ -9,6 +9,7 @@ buildscript {
 		mockserverVersion = '5.11.2'
 		junitVersion = '5.7.1'
 		archUnitVersion = '0.17.0'
+		epeuxVersion = '1.1.48'
 	}
 
 	repositories {
@@ -88,7 +89,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.14")
 
 	// Rina Eux API
-	implementation("no.nav.eessi.pensjon:ep-eux:1.0.46")
+	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
