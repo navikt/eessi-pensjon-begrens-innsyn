@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService.SedTypeUtils.ugyldigeTyper
 import no.nav.eessi.pensjon.eux.EuxService
+import no.nav.eessi.pensjon.eux.model.buc.BucType
 import no.nav.eessi.pensjon.eux.model.sed.SedType
 import no.nav.eessi.pensjon.eux.model.sed.SedType.X001
 import no.nav.eessi.pensjon.eux.model.sed.SedType.X002
@@ -32,11 +33,14 @@ class BegrensInnsynService(
 
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
+    private val gyldigSektorKoder = listOf("P", "R", "H")
+    private val gyldigeBucTyper = listOf(BucType.H_BUC_07, BucType.R_BUC_02)
+
     private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
     fun begrensInnsyn(hendelse: String) {
         val sedHendelse = SedHendelseModel.fromJson(hendelse)
-        if (sedHendelse.sektorKode == "P") {
+        if (sedHendelse.sektorKode in gyldigSektorKoder|| sedHendelse.bucType in gyldigeBucTyper) {
             begrensInnsyn(sedHendelse)
         }
     }

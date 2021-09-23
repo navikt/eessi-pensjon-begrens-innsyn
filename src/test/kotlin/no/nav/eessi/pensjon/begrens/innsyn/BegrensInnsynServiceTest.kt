@@ -38,6 +38,42 @@ internal class BegrensInnsynServiceTest {
     }
 
     @Test
+    fun `Gitt at vi mottar en R_BUC med skjermede personer, så skal vi begrense innsyn i hele bucen`() {
+
+        val hendelse = javaClass.getResource("/sed/R_BUC_02.json").readText()
+        val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json").readText()
+
+        every { euxService.hentSedJson(any(), any()) } returns sedJson
+        every { personService.harAdressebeskyttelse(any(), any()) }.returns(true)
+
+        begrensInnsynService.begrensInnsyn(hendelse)
+
+        verify(exactly = 1) { euxService.hentSedJson("147710", "4338515b6bed451798ba478c835409a3") }
+        verify(exactly = 1) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 1) { euxService.settSensitivSak("147710") }
+        verify(exactly = 0) { euxService.hentBucDokumenter("147710") }
+    }
+
+    @Test
+    fun `Gitt at vi mottar en R_BUC uten skjermede personer, så skal vi returnere en liste over alle seder som skal sjekkes`() {
+
+        val hendelse = javaClass.getResource("/sed/R_BUC_02.json").readText()
+        val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json").readText()
+
+        every { euxService.hentSedJson(any(), any()) } returns sedJson
+        every { personService.harAdressebeskyttelse(any(), any()) }.returns(false)
+        every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
+
+        begrensInnsynService.begrensInnsyn(hendelse)
+
+        verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
+        verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 1) { euxService.hentBucDokumenter("147710") }
+    }
+
+
+    @Test
     fun `Gitt at vi mottar en sed uten skjermede personer, så skal vi få tilbake en liste over alle seder som skal sjekkes på bucen`() {
 
         val hendelse = javaClass.getResource("/sed/P_BUC_01.json").readText()
