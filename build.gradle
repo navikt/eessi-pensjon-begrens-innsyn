@@ -9,7 +9,7 @@ buildscript {
 		mockserverVersion = '5.11.2'
 		junitVersion = '5.7.1'
 		archUnitVersion = '0.17.0'
-		epeuxVersion = '1.1.48'
+		epeuxVersion = '1.1.54'
 	}
 
 	repositories {
