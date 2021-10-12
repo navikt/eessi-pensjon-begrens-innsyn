@@ -41,7 +41,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.openrepose.gradle.plugins.jaxb'
 
 group = 'no.nav.eessi.pensjon'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 dependencies {
 
