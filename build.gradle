@@ -10,6 +10,7 @@ buildscript {
 		junitVersion = '5.7.1'
 		archUnitVersion = '0.17.0'
 		epeuxVersion = '1.1.54'
+		epMetricsVersion = "0.4.12"
 	}
 
 	repositories {
@@ -83,7 +84,7 @@ dependencies {
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")
-	implementation("no.nav.eessi.pensjon:ep-metrics:0.4.9")
+	implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
 
 	// Personoppslag
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.21")
