@@ -111,6 +111,19 @@ internal class BegrensInnsynServiceTest {
     }
 
     @Test
+    fun `Gitt at vi får inn en X050 så skal vi returnere uten å gjøre noe `() {
+
+        val hendelse = javaClass.getResource("/sed/P_BUC_06_X050.json").readText()
+
+        every { personService.harAdressebeskyttelse(any(), any()) } returns false
+        begrensInnsynService.begrensInnsyn((hendelse))
+
+        verify(exactly = 0) { euxService.hentSedJson(any(), any()) }
+        verify(exactly = 0) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 0) { euxService.settSensitivSak(any()) }
+    }
+
+    @Test
     fun `Sjekk at ugyldige SEDer blir ignorert`() {
         val rinaSakId = "123"
         val rinaDokumentId = "456"

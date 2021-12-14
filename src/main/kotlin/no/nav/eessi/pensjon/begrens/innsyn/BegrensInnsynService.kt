@@ -40,6 +40,7 @@ class BegrensInnsynService(
 
     fun begrensInnsyn(hendelse: String) {
         val sedHendelse = SedHendelseModel.fromJson(hendelse)
+        if (sedHendelse.sedType in ugyldigeTyper) return
         if (sedHendelse.sektorKode in gyldigSektorKoder|| sedHendelse.bucType in gyldigeBucTyper) {
             begrensInnsyn(sedHendelse)
         }
