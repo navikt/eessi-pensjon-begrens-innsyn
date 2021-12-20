@@ -1,15 +1,15 @@
 buildscript {
 
 	ext {
-		kotlinVersion = '1.5.21'
-		springBootVersion = '2.5.6'
+		kotlinVersion = '1.6.10'
+		springBootVersion = '2.6.1'
 		oidcTokenSupportVersion = '0.2.9'
-		logstashLogbackVersion = '6.6'
+		logstashLogbackVersion = '7.0.1'
 		pensjonInformasjonVersion = '9.4.10'
 		mockserverVersion = '5.11.2'
-		junitVersion = '5.7.1'
-		archUnitVersion = '0.17.0'
-		epeuxVersion = '1.1.54'
+		junitVersion = '5.8.2'
+		archUnitVersion = '0.22.0'
+		epeuxVersion = '1.1.58'
 		epMetricsVersion = "0.4.12"
 	}
 
@@ -26,10 +26,10 @@ buildscript {
 }
 
 plugins {
-	id 'com.github.ben-manes.versions' version '0.36.0'
-	id 'se.patrikerdes.use-latest-versions' version '0.2.15'
-	id "org.owasp.dependencycheck" version "6.5.0.1"
-	id 'com.adarshr.test-logger' version '2.1.1'
+	id 'com.github.ben-manes.versions' version '0.39.0'
+	id 'se.patrikerdes.use-latest-versions' version '0.2.18'
+	id "org.owasp.dependencycheck" version "6.5.1"
+	id 'com.adarshr.test-logger' version '3.1.0'
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
 }
 
@@ -53,9 +53,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
 	implementation("org.springframework.boot:spring-boot-actuator:${springBootVersion}")
 
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect:1.5.21'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.10'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.10'
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude module: 'junit'
@@ -67,7 +67,7 @@ dependencies {
 	//testImplementation("org.scala-lang:scala-library:2.12.11")
 
 
-	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.17")
+	implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.21")
 
 	//mock - test
 	testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
@@ -76,18 +76,18 @@ dependencies {
 		exclude module: 'junit'
 	}
 	testImplementation("org.mock-server:mockserver-client-java:${mockserverVersion}")
-	testImplementation "io.mockk:mockk:1.10.0"
+	testImplementation "io.mockk:mockk:1.12.1"
 
 	// Architecture tests
 	testImplementation("com.tngtech.archunit:archunit:${archUnitVersion}")
 	testImplementation("com.tngtech.archunit:archunit-junit5:${archUnitVersion}")
 
 	// Micrometer
-	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("io.micrometer:micrometer-registry-prometheus:1.8.1")
 	implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:8.0.21")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:8.2.3")
 
 	// Rina Eux API
 	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}")
@@ -96,7 +96,7 @@ dependencies {
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
 	implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-	implementation("no.nav.eessi.pensjon:ep-logging:1.0.9")
+	implementation("no.nav.eessi.pensjon:ep-logging:1.0.15")
 }
 
 test {
