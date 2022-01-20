@@ -6,6 +6,10 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  azure:
+    application:
+      enabled: true
+  webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
