@@ -2,7 +2,11 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import no.nav.eessi.pensjon.config.KafkaConfig
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
@@ -10,10 +14,6 @@ import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
-import org.mockserver.model.Header
-import org.mockserver.model.HttpRequest
-import org.mockserver.model.HttpResponse
-import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -149,35 +149,6 @@ class BegrensInnsynIntegrationTest {
             val port = randomFrom()
             mockServer = ClientAndServer.startClientAndServer(port)
             System.setProperty("mockServerport", port.toString())
-
-            // Mocker STS
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("GET")
-                            .withQueryStringParameter("grant_type", "client_credentials"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(String(Files.readAllBytes(Paths.get("src/test/resources/sed/STStoken.json"))))
-                    )
-            // Mocker STS service discovery
-            mockServer.`when`(
-                    HttpRequest.request()
-                            .withMethod("GET")
-                            .withPath("/.well-known/openid-configuration"))
-                    .respond(HttpResponse.response()
-                            .withHeader(Header("Content-Type", "application/json; charset=utf-8"))
-                            .withStatusCode(HttpStatusCode.OK_200.code())
-                            .withBody(
-                                    "{\n" +
-                                            "  \"issuer\": \"http://localhost:$port\",\n" +
-                                            "  \"token_endpoint\": \"http://localhost:$port/rest/v1/sts/token\",\n" +
-                                            "  \"exchange_token_endpoint\": \"http://localhost:$port/rest/v1/sts/token/exchange\",\n" +
-                                            "  \"jwks_uri\": \"http://localhost:$port/rest/v1/sts/jwks\",\n" +
-                                            "  \"subject_types_supported\": [\"public\"]\n" +
-                                            "}"
-                            )
-                    )
 
         }
 
