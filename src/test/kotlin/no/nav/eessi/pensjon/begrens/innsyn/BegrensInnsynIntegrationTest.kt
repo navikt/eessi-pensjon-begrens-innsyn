@@ -2,11 +2,8 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
+import no.nav.eessi.pensjon.config.KafkaConfig
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
@@ -20,6 +17,7 @@ import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -34,6 +32,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.retry.annotation.EnableRetry
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.web.client.RestTemplate
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -44,7 +43,7 @@ private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
-@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class])
+@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, KafkaConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry
@@ -79,7 +78,7 @@ class BegrensInnsynIntegrationTest {
         produserSedHendelser(sedSendtProducerTemplate)
 
         // Venter på at sedListener skal consumeSedSendt meldingene
-        sedListener.getLatch().await(15000, TimeUnit.MILLISECONDS)
+        sedListener.getLatchSendt().await(15000, TimeUnit.MILLISECONDS)
 
         // Verifiserer alle kall
         verifiser()
@@ -189,7 +188,7 @@ class BegrensInnsynIntegrationTest {
     }
 
     private fun verifiser() {
-        Assertions.assertEquals(0, sedListener.getLatch().count, "Alle meldinger har ikke blitt konsumert")
+        Assertions.assertEquals(0, sedListener.getLatchSendt().count, "Alle meldinger har ikke blitt konsumert")
 
         // Verifiserer at SED har blitt hentet
         verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
@@ -215,6 +214,13 @@ class BegrensInnsynIntegrationTest {
         @Bean
         fun euxService(): EuxService = mockk {
             every { initMetrics() } just Runs
+        }
+
+        @Bean
+        fun downstreamClientCredentialsResourceRestTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate? {
+            return restTemplateBuilder
+                .rootUri("https://localhost:${mockServer.localPort}")
+                .build()
         }
     }
 }

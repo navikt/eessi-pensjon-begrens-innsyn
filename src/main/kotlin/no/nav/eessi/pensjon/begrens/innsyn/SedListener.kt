@@ -19,12 +19,17 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
 ) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
-    private val latch = CountDownLatch(1)
+    private val latchSendt = CountDownLatch(1)
+    private val latchMottatt = CountDownLatch(1)
+
     private lateinit var consumeOutgoingSed: MetricsHelper.Metric
     private lateinit var consumeIncomingSed: MetricsHelper.Metric
 
-    fun getLatch(): CountDownLatch {
-        return latch
+    fun getLatchSendt(): CountDownLatch {
+        return latchSendt
+    }
+    fun getLatchMottatt(): CountDownLatch {
+        return latchMottatt
     }
 
     @PostConstruct
@@ -48,7 +53,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
-                    latch.countDown()
+                    latchSendt.countDown()
                 } catch (ex: Exception) {
                     logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
@@ -78,6 +83,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     begrensInnsynService.begrensInnsyn(hendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
+                    latchMottatt.countDown()
                 } catch (ex: Exception) {
                     logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)

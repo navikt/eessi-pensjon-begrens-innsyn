@@ -13,7 +13,7 @@ import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 
 @Component
-class EuxKlient(private val euxOidcRestTemplate: RestTemplate) {
+class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: RestTemplate) {
 
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxKlient::class.java) }
 
@@ -27,7 +27,7 @@ class EuxKlient(private val euxOidcRestTemplate: RestTemplate) {
         logger.info("Henter SED for rinaSakId: $rinaSakId , dokumentId: $dokumentId")
 
         val response = execute {
-            euxOidcRestTemplate.exchange(
+            downstreamClientCredentialsResourceRestTemplate.exchange(
                 "/buc/$rinaSakId/sed/$dokumentId",
                 HttpMethod.GET,
                 null,
@@ -42,7 +42,7 @@ class EuxKlient(private val euxOidcRestTemplate: RestTemplate) {
         logger.info("Henter BUC (RinaSakId: $rinaSakId)")
 
         return execute {
-            euxOidcRestTemplate.getForObject(
+            downstreamClientCredentialsResourceRestTemplate.getForObject(
                 "/buc/$rinaSakId",
                 Buc::class.java
             )
@@ -53,7 +53,7 @@ class EuxKlient(private val euxOidcRestTemplate: RestTemplate) {
         logger.info("Setter BUC (RinaSakId: $rinaSakId) som sensitiv.")
 
         val response = execute {
-            euxOidcRestTemplate.exchange(
+            downstreamClientCredentialsResourceRestTemplate.exchange(
                 "/buc/$rinaSakId/sensitivsak",
                 HttpMethod.PUT,
                 null,
