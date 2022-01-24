@@ -45,6 +45,7 @@ package "Services" {
 begrensinnsyn --> [EUX]
 begrensinnsyn --> [Person]
 begrensinnsyn -> [Metrics]
+begrensinnsyn -> [Config]
 
 
 

@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.*
+import no.nav.eessi.pensjon.config.KafkaConfig
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
@@ -42,7 +43,7 @@ private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
-@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class])
+@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, KafkaConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry
@@ -77,7 +78,7 @@ class BegrensInnsynIntegrationTest {
         produserSedHendelser(sedSendtProducerTemplate)
 
         // Venter på at sedListener skal consumeSedSendt meldingene
-        sedListener.getLatch().await(15000, TimeUnit.MILLISECONDS)
+        sedListener.getLatchSendt().await(15000, TimeUnit.MILLISECONDS)
 
         // Verifiserer alle kall
         verifiser()
@@ -187,7 +188,7 @@ class BegrensInnsynIntegrationTest {
     }
 
     private fun verifiser() {
-        Assertions.assertEquals(0, sedListener.getLatch().count, "Alle meldinger har ikke blitt konsumert")
+        Assertions.assertEquals(0, sedListener.getLatchSendt().count, "Alle meldinger har ikke blitt konsumert")
 
         // Verifiserer at SED har blitt hentet
         verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
