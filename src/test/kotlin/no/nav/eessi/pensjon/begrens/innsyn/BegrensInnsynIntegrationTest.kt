@@ -2,11 +2,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
@@ -20,6 +16,7 @@ import org.mockserver.model.HttpStatusCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -34,6 +31,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.retry.annotation.EnableRetry
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.web.client.RestTemplate
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -44,7 +42,7 @@ private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
-@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class])
+@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry
@@ -215,6 +213,13 @@ class BegrensInnsynIntegrationTest {
         @Bean
         fun euxService(): EuxService = mockk {
             every { initMetrics() } just Runs
+        }
+
+        @Bean
+        fun downstreamClientCredentialsResourceRestTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate? {
+            return restTemplateBuilder
+                .rootUri("https://localhost:${mockServer.localPort}")
+                .build()
         }
     }
 }
