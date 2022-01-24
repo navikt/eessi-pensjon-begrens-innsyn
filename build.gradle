@@ -85,9 +85,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:8.2.3"){
-		exclude module: 'ep-security-sts'
-	}
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:9.0.0")
 
 	// Rina Eux API
 	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}") {
