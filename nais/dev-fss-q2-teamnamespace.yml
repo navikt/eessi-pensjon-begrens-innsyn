@@ -7,7 +7,7 @@ metadata:
     team: eessipensjon
 spec:
   envFrom:
-    - secret: srveessi-pensjon-b-2 # value is the secret name in Google Secret Manager
+    - secret: srveessi-pensjon-b-3 # value is the secret name in Google Secret Manager
   azure:
     application:
       enabled: true
