@@ -40,6 +40,7 @@
         <logger name="no.nav" level="DEBUG"/>
         <logger name="no.nav.security" level="DEBUG"/>
         <logger name="no.nav.eessi" level="DEBUG"/>
+        <logger name="no.nav.security.token.support.core.validation.JwtTokenAnnotationHandler" level="ERROR"/>
 
         <root level="info">
             <appender-ref ref="stdout_json"/>
