@@ -44,12 +44,9 @@ class OAuth2Configuration {
         oAuth2AccessTokenService: OAuth2AccessTokenService
     ): ClientHttpRequestInterceptor? {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
-            print("accesstoken før: ${request.headers}")
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
-            print("legger til accesstoken: ${response.accessToken}")
             execution.execute(request, body!!)
         }
     }
-
 }

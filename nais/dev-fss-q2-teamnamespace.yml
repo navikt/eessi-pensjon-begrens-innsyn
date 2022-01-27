@@ -11,6 +11,11 @@ spec:
   azure:
     application:
       enabled: true
+  spec:
+    accessPolicy:
+      outbound:
+        external:
+          - host: https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
@@ -33,7 +38,7 @@ spec:
       value: eessi-basis-sedMottatt-v1-q2
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-begrens-innsyn.nais.preprod.local
+    - https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
