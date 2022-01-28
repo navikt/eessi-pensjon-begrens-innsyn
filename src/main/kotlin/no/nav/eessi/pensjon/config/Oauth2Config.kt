@@ -49,7 +49,7 @@ class OAuth2Configuration {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
-            println("sub: ${JWTClaimsSet.parse(response.accessToken).subject}")
+            println("sub: ${JWTClaimsSet.parse(Base64.getDecoder().decode(response.accessToken).toString()).subject}")
             execution.execute(request, body!!)
         }
     }
