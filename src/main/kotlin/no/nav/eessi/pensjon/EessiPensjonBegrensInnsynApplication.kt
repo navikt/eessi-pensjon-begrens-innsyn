@@ -9,7 +9,7 @@ import org.springframework.retry.annotation.EnableRetry
 
 @Profile("prod", "test")
 @EnableJwtTokenValidation
-@EnableOAuth2Client(cacheEnabled = true)
+@EnableOAuth2Client(cacheEnabled = false)
 @SpringBootApplication
 @EnableRetry
 class EessiPensjonBegrensInnsynApplication
