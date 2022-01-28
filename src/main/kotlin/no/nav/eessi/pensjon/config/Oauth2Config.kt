@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.config;
 
-import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTClaimsSet
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
@@ -14,7 +13,6 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestTemplate
-import java.lang.Byte.decode
 import java.util.*
 
 
@@ -35,7 +33,7 @@ class OAuth2Configuration {
         oAuth2AccessTokenService: OAuth2AccessTokenService?
     ): RestTemplate? {
         val clientProperties =
-            Optional.ofNullable(clientConfigurationProperties.registration["begrens-innsyn-credentials"])
+            Optional.ofNullable(clientConfigurationProperties.registration["eux-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return restTemplateBuilder
             .rootUri(euxUrl)

@@ -30,6 +30,8 @@ spec:
       value: https://eux-rina-api-eessibasis.dev-fss-pub.nais.io/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
       value: ae915475-2c6d-49dd-a80b-52f634dbf781
+    - name: AZURE_APP_PDL_CLIENT_ID
+      value: dev-fss.pdl.pdl-api
     - name: EESSIFAGMODULSERVICE_URL
       value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
     - name: KAFKA_SEDSENDT_TOPIC
