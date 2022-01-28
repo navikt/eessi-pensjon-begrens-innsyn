@@ -25,7 +25,7 @@ spec:
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
       value: https://app-q2.adeo.no/tpsws-aura/ws/Person/v3
     - name: PDL_URL
-      value: https://pdl-api.dev-fss.nais.io/graphql
+      value: https://pdl-api.dev.intern.nav.no/graphql
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api-eessibasis.dev-fss-pub.nais.io/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
