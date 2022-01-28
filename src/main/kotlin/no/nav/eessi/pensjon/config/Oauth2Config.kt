@@ -48,9 +48,10 @@ class OAuth2Configuration {
         oAuth2AccessTokenService: OAuth2AccessTokenService): ClientHttpRequestInterceptor? {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
-            println("token: ${response.accessToken}")
             request.headers.setBearerAuth(response.accessToken)
-            println("sub: ${JWTClaimsSet.parse(Base64.getDecoder().decode(response.accessToken.split(".").first()).toString()).subject}")
+            val tokenChunks = response.accessToken.split(".")
+            val tokenBody =  tokenChunks[1]
+            println("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject)
             execution.execute(request, body!!)
         }
     }
