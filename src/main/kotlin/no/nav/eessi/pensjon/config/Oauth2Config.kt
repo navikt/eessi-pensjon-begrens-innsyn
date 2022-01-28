@@ -3,8 +3,6 @@ package no.nav.eessi.pensjon.config;
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
@@ -23,8 +21,6 @@ class OAuth2Configuration {
     @Value("\${EUX_RINA_API_V1_URL}")
     private lateinit var euxUrl: String
 
-    private val logger = LoggerFactory.getLogger(OAuth2Configuration::class.java)
-
     /**
      * Create one RestTemplate per OAuth2 client entry to separate between different scopes per API
      */
@@ -32,27 +28,23 @@ class OAuth2Configuration {
     fun downstreamClientCredentialsResourceRestTemplate(
         restTemplateBuilder: RestTemplateBuilder,
         clientConfigurationProperties: ClientConfigurationProperties,
-        oAuth2AccessTokenService: OAuth2AccessTokenService?,
-        oidcRequestContextHolder: TokenValidationContextHolder
+        oAuth2AccessTokenService: OAuth2AccessTokenService?
     ): RestTemplate? {
         val clientProperties =
             Optional.ofNullable(clientConfigurationProperties.registration["begrens-innsyn-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return restTemplateBuilder
             .rootUri(euxUrl)
-            .additionalInterceptors(bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!, oidcRequestContextHolder))
+            .additionalInterceptors(bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!))
             .build()
     }
 
     private fun bearerTokenInterceptor(
         clientProperties: ClientProperties,
-        oAuth2AccessTokenService: OAuth2AccessTokenService,
-        oidcRequestContextHolder: TokenValidationContextHolder
-    ): ClientHttpRequestInterceptor? {
+        oAuth2AccessTokenService: OAuth2AccessTokenService): ClientHttpRequestInterceptor? {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
-            logger.info("subject: ${oidcRequestContextHolder.tokenValidationContext.anyValidClaims.get().subject}")
             execution.execute(request, body!!)
         }
     }
