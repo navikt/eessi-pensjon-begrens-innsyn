@@ -50,7 +50,7 @@ class OAuth2Configuration {
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             println("token: ${response.accessToken}")
             request.headers.setBearerAuth(response.accessToken)
-            println("sub: ${JWTClaimsSet.parse(Base64.getDecoder().decode(response.accessToken).toString()).subject}")
+            println("sub: ${JWTClaimsSet.parse(Base64.getDecoder().decode(response.accessToken).toString().split(".").first()).subject}")
             execution.execute(request, body!!)
         }
     }
