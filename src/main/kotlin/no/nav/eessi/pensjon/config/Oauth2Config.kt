@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.config;
 
+import com.nimbusds.jwt.JWT
+import com.nimbusds.jwt.JWTClaimsSet
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
@@ -12,7 +14,9 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestTemplate
+import java.lang.Byte.decode
 import java.util.*
+
 
 @Profile("prod", "test")
 @Configuration
@@ -45,7 +49,7 @@ class OAuth2Configuration {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
-            println("params: ${response.additonalParameters.values}")
+            println("sub: ${JWTClaimsSet.parse(response.accessToken).subject}")
             execution.execute(request, body!!)
         }
     }
