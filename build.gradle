@@ -85,7 +85,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:9.0.2")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:9.0.3")
 
 	// Rina Eux API
 	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}") {
