@@ -45,6 +45,7 @@ class OAuth2Configuration {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
+            println("params: ${response.additonalParameters.values}")
             execution.execute(request, body!!)
         }
     }
