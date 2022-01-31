@@ -24,7 +24,7 @@ no.nav.security.jwt:
         authentication:
           client-id: ${AZURE_APP_CLIENT_ID}
           client-jwk: ${AZURE_APP_JWK}
-          client-auth-method: client_secret_basic
+          client-auth-method: private_key_jwt
 
 #Spring
 spring:
