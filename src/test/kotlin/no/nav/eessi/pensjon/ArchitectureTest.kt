@@ -8,15 +8,12 @@ import com.tngtech.archunit.lang.ArchCondition
 import com.tngtech.archunit.lang.ArchRule
 import com.tngtech.archunit.lang.ConditionEvents
 import com.tngtech.archunit.lang.SimpleConditionEvent
-import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods
 import com.tngtech.archunit.lang.syntax.elements.MethodsShouldConjunction
 import com.tngtech.archunit.library.dependencies.SliceRule
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
-import com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.Configurations.consideringOnlyDependenciesInAnyPackage
-import com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.adhereToPlantUmlDiagram
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,11 +28,11 @@ class ArchitectureTest {
     val servicesShouldNotDependOnEachOther: SliceRule =
             slices().matching("..services.(**)").should().notDependOnEachOther()
 
-    @ArchTest
-    val componentDiagramCheck: ArchRule =
-            classes().should(
-                    adhereToPlantUmlDiagram(this::class.java.getResource("/components.puml"),
-                            consideringOnlyDependenciesInAnyPackage("no.nav.eessi.pensjon..")))
+//    @ArchTest
+//    val componentDiagramCheck: ArchRule =
+//            classes().should(
+//                    adhereToPlantUmlDiagram(this::class.java.getResource("/components.puml"),
+//                            consideringOnlyDependenciesInAnyPackage("no.nav.eessi.pensjon..")))
 
     @ArchTest
     fun `avoid JUnit4-classes`(importedClasses: JavaClasses) {
