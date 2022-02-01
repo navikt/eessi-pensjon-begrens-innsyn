@@ -16,11 +16,10 @@ jobs:
         run: |
           echo "image-tag: ${{ github.event.client_payload.image }}"
 
-      - name: 'NAIS-deploy to Q1'
+      - name: 'NAIS-deploy to NAV GCP Q1'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: nais/dev-fss-q1-teamnamespace.yml
-          VARS: nais/dev-fss-q1.json
+          CLUSTER: dev-gcp
+          RESOURCE: nais/dev-gcp-q1.yml
           IMAGE: ${{ github.event.client_payload.image }}

@@ -45,8 +45,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: nais/dev-fss-q2-teamnamespace.yml
-          VARS: nais/dev-fss-q2.json
+          RESOURCE: nais/dev-gcp-q2.yml
           IMAGE: ${{ env.IMAGE }}
 
       # OPPRETTER GIT TAG

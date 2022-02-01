@@ -1,21 +1,20 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: eessi-pensjon-begrens-innsyn-q2
+  name: eessi-pensjon-begrens-innsyn-q1
   namespace: eessipensjon
   labels:
     team: eessipensjon
 spec:
   envFrom:
-    - secret: srveessi-pensjon-b-4 # value is the secret name in Google Secret Manager
+    - secret: begrens-innsyn # value is the secret name in Google Secret Manager
   azure:
     application:
       enabled: true
-  spec:
     accessPolicy:
       outbound:
         external:
-          - host: https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
+          - host: https://eessi-pensjon-begrens-innsyn-q1.dev.intern.nav.no
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
@@ -23,24 +22,22 @@ spec:
     - name: KAFKA_BOOTSTRAP_SERVERS_URL
       value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
     - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
-      value: https://app-q2.adeo.no/tpsws-aura/ws/Person/v3
+      value: https://app-q1.adeo.no/tpsws-aura/ws/Person/v3
     - name: PDL_URL
-      value: https://pdl-api.dev-fss-pub.nais.io/graphql
+      value: https://pdl-api-q1.dev-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api-eessibasis.dev-fss-pub.nais.io/cpi
+      value: https://eux-rina-api-q1.nais.preprod.local/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
-      value: ae915475-2c6d-49dd-a80b-52f634dbf781
+      value: dev-fss:eessibasis:eux-rina-api-q1
     - name: AZURE_APP_PDL_CLIENT_ID
-      value: dev-fss.pdl.pdl-api
-    - name: EESSIFAGMODULSERVICE_URL
-      value: https://eessi-pensjon-fagmodul-q2.nais.preprod.local/
+      value: dev-fss:pdl:pdl-api-q1
     - name: KAFKA_SEDSENDT_TOPIC
-      value: eessi-basis-sedSendt-v1-q2
+      value: eessi-basis-sedSendt-v1-q1
     - name: KAFKA_SEDMOTTATT_TOPIC
-      value: eessi-basis-sedMottatt-v1-q2
+      value: eessi-basis-sedMottatt-v1-q1
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
+    - https://eessi-pensjon-begrens-innsyn-q1.nais.preprod.local
   liveness:
     path: /internal/isalive
     port: 8080
@@ -64,10 +61,3 @@ spec:
     requests:
       cpu: 400m
       memory: 1024Mi
-#  vault:
-#    enabled: true
-#    paths:
-#      - kvPath: {{serviceuserkv}}
-#        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-begrens-innsyn
-#      - kvPath: /apikey/appdynamics/dev
-#        mountPath: /var/run/secrets/nais.io/vault

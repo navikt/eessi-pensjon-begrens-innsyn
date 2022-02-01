@@ -25,8 +25,10 @@ spec:
       value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api.nais.adeo.no/cpi
-    - name: EESSIFAGMODULSERVICE_URL
-      value: https://eessi-pensjon-fagmodul.nais.adeo.no/
+    - name: AZURE_APP_EUX_CLIENT_ID
+      value: ae915475-2c6d-49dd-a80b-52f634dbf781
+    - name: AZURE_APP_PDL_CLIENT_ID
+      value: prod-fss.pdl.pdl-api
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1
     - name: KAFKA_SEDMOTTATT_TOPIC
