@@ -1,9 +1,11 @@
 package no.nav.eessi.pensjon.config;
 
 import com.nimbusds.jwt.JWTClaimsSet
+import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
@@ -19,6 +21,8 @@ import java.util.*
 @Profile("prod", "test")
 @Configuration
 class OAuth2Configuration {
+
+    private val logger = LoggerFactory.getLogger(OAuth2Configuration::class.java)
 
     @Value("\${EUX_RINA_API_V1_URL}")
     private lateinit var euxUrl: String
@@ -49,7 +53,7 @@ class OAuth2Configuration {
             request.headers.setBearerAuth(response.accessToken)
             val tokenChunks = response.accessToken.split(".")
             val tokenBody =  tokenChunks[1]
-            println("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject)
+            logger.info("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject)
             execution.execute(request, body!!)
         }
     }
