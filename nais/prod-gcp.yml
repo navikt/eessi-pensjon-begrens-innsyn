@@ -30,7 +30,7 @@ spec:
     - name: SECURITYTOKENSERVICE_URL
       value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api.nais.adeo.no/cpi
+      value: https://eux-rina-api.prod-fss-pub.nais.io/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
       value: prod-fss.eessibasis.eux-rina-api
     - name: AZURE_APP_PDL_CLIENT_ID
