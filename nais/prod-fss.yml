@@ -1,0 +1,68 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: eessi-pensjon-begrens-innsyn
+  namespace: eessipensjon
+  labels:
+    team: eessipensjon
+spec:
+  azure:
+    application:
+      enabled: true
+  webproxy: true
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+    - name: KAFKA_BOOTSTRAP_SERVERS_URL
+      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
+    - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
+      value: https://app.adeo.no/tpsws-aura/ws/Person/v3
+    - name: PDL_URL
+      value: https://pdl-api.nais.adeo.no/graphql
+    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
+      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
+    - name: SECURITYTOKENSERVICE_URL
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
+    - name: EUX_RINA_API_V1_URL
+      value: https://eux-rina-api.nais.adeo.no/cpi
+    - name: AZURE_APP_EUX_CLIENT_ID
+      value: ae915475-2c6d-49dd-a80b-52f634dbf781
+    - name: AZURE_APP_PDL_CLIENT_ID
+      value: prod-fss.pdl.pdl-api
+    - name: KAFKA_SEDSENDT_TOPIC
+      value: eessi-basis-sedSendt-v1
+    - name: KAFKA_SEDMOTTATT_TOPIC
+      value: eessi-basis-sedMottatt-v1
+  image: {{ image }}
+  ingresses:
+    - https://eessi-pensjon-begrens-innsyn.nais.adeo.no
+  liveness:
+    path: /internal/isalive
+    port: 8080
+    initialDelay: 20
+  port: 8080
+  prometheus:
+    enabled: true
+    path: /actuator/prometheus
+  readiness:
+    path: /internal/isready
+    port: 8080
+    initialDelay: 20
+  replicas:
+    min: 1
+    max: 1
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: "4"
+      memory: 4096Mi
+    requests:
+      cpu: 400m
+      memory: 1024Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: {{serviceuserkv}}
+        mountPath: /var/run/secrets/nais.io/srveessi-pensjon-begrens-innsyn
+      - kvPath: /apikey/appdynamics/prod
+        mountPath: /var/run/secrets/nais.io/vault
