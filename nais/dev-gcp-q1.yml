@@ -30,7 +30,7 @@ spec:
     - name: AZURE_APP_EUX_CLIENT_ID
       value: dev-fss.eessibasis.eux-rina-api-q1
     - name: AZURE_APP_PDL_CLIENT_ID
-      value: dev-fss:pdl:pdl-api-q1
+      value: dev-fss.pdl.pdl-api-q1
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessi-basis-sedSendt-v1-q1
     - name: KAFKA_SEDMOTTATT_TOPIC
