@@ -22,8 +22,6 @@ import java.util.*
 @Configuration
 class OAuth2Configuration {
 
-    private val logger = LoggerFactory.getLogger(OAuth2Configuration::class.java)
-
     @Value("\${EUX_RINA_API_V1_URL}")
     private lateinit var euxUrl: String
 
@@ -51,9 +49,6 @@ class OAuth2Configuration {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
-            val tokenChunks = response.accessToken.split(".")
-            val tokenBody =  tokenChunks[1]
-            logger.info("subject: " + JWTClaimsSet.parse(Base64.getDecoder().decode(tokenBody).decodeToString()).subject)
             execution.execute(request, body!!)
         }
     }
