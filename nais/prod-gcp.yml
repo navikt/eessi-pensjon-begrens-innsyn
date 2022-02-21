@@ -41,7 +41,7 @@ spec:
       value: eessi-basis-sedMottatt-v1
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-begrens-innsyn.nais.adeo.no
+    - https://eessi-pensjon-begrens-innsyn.intern.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
