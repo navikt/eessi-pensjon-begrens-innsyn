@@ -11,10 +11,10 @@ spec:
   azure:
     application:
       enabled: true
-    accessPolicy:
-      outbound:
-        external:
-          - host: https://eessi-pensjon-begrens-innsyn.intern.nav.no
+  accessPolicy:
+    outbound:
+      external:
+        - host: https://eessi-pensjon-begrens-innsyn.intern.nav.no
   webproxy: true
   env:
     - name: SPRING_PROFILES_ACTIVE
