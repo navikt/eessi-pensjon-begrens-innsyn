@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
+import java.io.IOException
 
 @Component
 class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: RestTemplate) {
@@ -18,7 +19,7 @@ class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: Res
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxKlient::class.java) }
 
     @Retryable(
-        include = [HttpStatusCodeException::class],
+        include = [HttpStatusCodeException::class, IOException::class],
         exclude = [HttpClientErrorException.NotFound::class],
         backoff = Backoff(delay = 30000L, maxDelay = 3600000L, multiplier = 3.0)
     )
