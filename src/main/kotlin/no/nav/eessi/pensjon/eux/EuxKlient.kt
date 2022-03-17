@@ -19,7 +19,6 @@ class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: Res
     private val logger: Logger by lazy { LoggerFactory.getLogger(EuxKlient::class.java) }
 
     @Retryable(
-        include = [HttpStatusCodeException::class, IOException::class],
         exclude = [HttpClientErrorException.NotFound::class],
         backoff = Backoff(delay = 30000L, maxDelay = 3600000L, multiplier = 3.0)
     )
