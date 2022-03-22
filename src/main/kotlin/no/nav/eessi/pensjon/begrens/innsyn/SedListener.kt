@@ -80,7 +80,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 logger.debug(vask11sifre(hendelse))
 
-                val offsetToSkip = listOf(325513L, 325514L, 325515L, 376151L, 427538L, 427785L, 427842L)
+                val offsetToSkip = listOf(325513L, 325514L, 325515L, 376151L, 427538L, 427785L, 427842L, 434156L)
                 val offset = cr.offset()
                 if (offset in offsetToSkip) {
                     logger.warn("Hopper over offset: $offset grunnet feil.")
