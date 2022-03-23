@@ -6,6 +6,8 @@ kafka:
     topic: ${KAFKA_SEDMOTTATT_TOPIC}
     groupid: eessi-pensjon-begrens-innsyn-group
 
+METRICS_REQUESTFILTER_ENABLE: false
+
 no.nav.security.jwt:
   client:
     registration:
