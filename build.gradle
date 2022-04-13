@@ -3,12 +3,13 @@ buildscript {
 	ext {
 		kotlinVersion = '1.6.20'
 		springBootVersion = '2.6.6'
-		oidcTokenSupportVersion = '1.3.9'
+		oidcTokenSupportVersion = '2.0.14'
+		oidcTokenSupportTestVersion = '2.0.5'
 		logstashLogbackVersion = '7.1'
 		pensjonInformasjonVersion = '9.4.10'
 		mockserverVersion = '5.13.2'
 		junitVersion = '5.8.2'
-		archUnitVersion = '0.22.0'
+		archUnitVersion = '0.23.1'
 		epeuxVersion = '1.1.65'
 		epMetricsVersion = "0.4.17"
 		epLoggingVersion = "1.0.17"
@@ -80,7 +81,7 @@ dependencies {
 	// Architecture tests
 	testImplementation("com.tngtech.archunit:archunit:${archUnitVersion}")
 	testImplementation("com.tngtech.archunit:archunit-junit5:${archUnitVersion}")
-	implementation("com.squareup.okhttp3:mockwebserver:3.14.3")
+	implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus:1.8.4")
@@ -104,7 +105,7 @@ dependencies {
 	implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
 	implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
 	implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
-	implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportVersion}")
+	implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportTestVersion}")
 
 }
 
