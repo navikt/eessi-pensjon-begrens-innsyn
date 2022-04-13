@@ -1,16 +1,18 @@
 buildscript {
 
 	ext {
-		kotlinVersion = '1.6.10'
-		springBootVersion = '2.6.4'
+		kotlinVersion = '1.6.20'
+		springBootVersion = '2.6.6'
 		oidcTokenSupportVersion = '1.3.9'
-		logstashLogbackVersion = '7.0.1'
+		logstashLogbackVersion = '7.1'
 		pensjonInformasjonVersion = '9.4.10'
-		mockserverVersion = '5.13.0'
+		mockserverVersion = '5.13.2'
 		junitVersion = '5.8.2'
 		archUnitVersion = '0.22.0'
-		epeuxVersion = '1.1.63'
-		epMetricsVersion = "0.4.15"
+		epeuxVersion = '1.1.65'
+		epMetricsVersion = "0.4.17"
+		epLoggingVersion = "1.0.17"
+		epPersonoppslagVersion = "9.0.11"
 	}
 
 	repositories {
@@ -28,12 +30,12 @@ buildscript {
 plugins {
 	id 'com.github.ben-manes.versions' version '0.42.0'
 	id 'se.patrikerdes.use-latest-versions' version '0.2.18'
-	id "org.owasp.dependencycheck" version "7.0.0"
+	id "org.owasp.dependencycheck" version "7.0.4.1"
 	id 'com.adarshr.test-logger' version '3.2.0'
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
 }
 
-assert JavaVersion.current().isJava11Compatible(): "Java 11 or newer is required"
+assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17): "Java 17 or newer is required"
 
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
@@ -54,8 +56,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-actuator:${springBootVersion}")
 
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.10'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.10'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.20'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.20'
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude module: 'junit'
@@ -85,7 +87,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
 
 	// Personoppslag
-	implementation("no.nav.eessi.pensjon:ep-personoppslag:9.0.8")
+	implementation("no.nav.eessi.pensjon:ep-personoppslag:$epPersonoppslagVersion")
 
 	// Rina Eux API
 	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}") {
@@ -96,7 +98,7 @@ dependencies {
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
 	implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
-	implementation("no.nav.eessi.pensjon:ep-logging:1.0.16")
+	implementation("no.nav.eessi.pensjon:ep-logging:$epLoggingVersion")
 
 	//Auth
 	implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
@@ -111,20 +113,20 @@ test {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 compileKotlin {
 	kotlinOptions {
 		freeCompilerArgs = ["-Xjsr305=strict"]
-		jvmTarget = "11"
+		jvmTarget = "17"
 	}
 }
 
 compileTestKotlin {
 	kotlinOptions {
 		freeCompilerArgs = ['-Xjsr305=strict']
-		jvmTarget = '11'
+		jvmTarget = '17'
 	}
 }
 
