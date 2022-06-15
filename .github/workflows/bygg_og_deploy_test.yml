@@ -40,12 +40,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 'Deploy to NAIS GCP-Q2'
+      - name: 'Deploy to NAIS DEV-GCP'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: nais/dev-gcp-q2.yml
+          RESOURCE: nais/dev-gcp.yml
           IMAGE: ${{ env.IMAGE }}
 
       # OPPRETTER GIT TAG
