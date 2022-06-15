@@ -1,4 +1,9 @@
 kafka:
+  keystore.path: ${KAFKA_KEYSTORE_PATH:}
+  truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
+  credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
+  brokers: ${KAFKA_BROKERS:localhost:9092}
+  security.protocol: SSL
   sedSendt:
     topic: ${KAFKA_SEDSENDT_TOPIC}
     groupid: eessi-pensjon-begrens-innsyn-group
