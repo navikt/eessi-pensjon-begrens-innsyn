@@ -7,8 +7,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.eessi.pensjon.config.KafkaConfigAiven
-import no.nav.eessi.pensjon.config.KafkaConfigOnprem
+import no.nav.eessi.pensjon.config.KafkaConfig
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
@@ -44,7 +43,7 @@ private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
-@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, KafkaConfigOnprem::class])
+@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, KafkaConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry

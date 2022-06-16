@@ -10,6 +10,8 @@ kafka:
   truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
   credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
   brokers: ${KAFKA_BROKERS:localhost:9092}
+  onprem:
+    bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
 
 METRICS_REQUESTFILTER_ENABLE: false
 
@@ -33,23 +35,6 @@ no.nav.security.jwt:
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
 
-#Spring
-spring:
-  kafka:
-    listener:
-      ack-mode: manual
-      missingTopicsFatal: true  # app will not start if topics don't exist
-    consumer:
-      enable-auto-commit: false
-      max-poll-records: 1
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
-    properties:
-      security.protocol: SASL_SSL
-      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      sasl:
-        mechanism: PLAIN
-        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
 
 securityTokenService:
   discoveryUrl: ${SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL}
