@@ -23,31 +23,6 @@ class IntegrationtestConfig(
     @param:Value("\${spring.embedded.kafka.brokers}") private val bootstrapServers: String) {
 
     @Bean
-    fun aivenProducerFactory(): ProducerFactory<String, String> {
-        val configMap: MutableMap<String, Any> = HashMap()
-        populerCommonConfig(configMap)
-        configMap[ProducerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
-        configMap[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configMap[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configMap[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
-
-        return DefaultKafkaProducerFactory(configMap)
-    }
-
-    @Bean
-    fun kafkaConsumerFactory(): ConsumerFactory<String, String> {
-        val configMap: MutableMap<String, Any> = HashMap()
-        populerCommonConfig(configMap)
-        configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
-        configMap[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        configMap[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
-        configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-
-        return DefaultKafkaConsumerFactory(configMap)
-    }
-
-    @Bean
     fun sedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
         return ConcurrentKafkaListenerContainerFactory<String, String>().apply {
             consumerFactory = kafkaConsumerFactory()
@@ -56,18 +31,18 @@ class IntegrationtestConfig(
         }
     }
 
-    @Bean
-    fun aivenKafkaTemplate(): KafkaTemplate<String, String> {
-        return KafkaTemplate(aivenProducerFactory())
-    }
+    fun kafkaConsumerFactory(): ConsumerFactory<String, String> {
+        val configMap: MutableMap<String, Any> = HashMap()
+        populerCommonConfig(configMap)
+        configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
+        configMap[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+        configMap[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+        configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
+        configMap[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+        configMap[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
+        configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
 
-    @Bean
-    fun aivenKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
-        return ConcurrentKafkaListenerContainerFactory<String, String>().apply {
-            consumerFactory = kafkaConsumerFactory()
-            containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
-            containerProperties.setAuthExceptionRetryInterval(Duration.ofSeconds(4L))
-        }
+        return DefaultKafkaConsumerFactory(configMap)
     }
 
     private fun populerCommonConfig(configMap: MutableMap<String, Any>) {
