@@ -40,6 +40,7 @@ class KafkaConfigAiven(
         configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
         configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
         configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
+        configMap[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         configMap[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
 
         return DefaultKafkaConsumerFactory(configMap, StringDeserializer(), StringDeserializer())
