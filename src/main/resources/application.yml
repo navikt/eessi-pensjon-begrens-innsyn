@@ -1,8 +1,4 @@
 kafka:
-  keystore.path: ${KAFKA_KEYSTORE_PATH:}
-  truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
-  credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
-  brokers: ${KAFKA_BROKERS:localhost:9092}
   security.protocol: SSL
   sedSendt:
     topic: ${KAFKA_SEDSENDT_TOPIC}
@@ -10,6 +6,10 @@ kafka:
   sedMottatt:
     topic: ${KAFKA_SEDMOTTATT_TOPIC}
     groupid: eessi-pensjon-begrens-innsyn-group
+#  keystore.path: ${KAFKA_KEYSTORE_PATH:}
+#  truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
+#  credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
+#  brokers: ${KAFKA_BROKERS:localhost:9092}
 
 METRICS_REQUESTFILTER_ENABLE: false
 
@@ -34,22 +34,22 @@ no.nav.security.jwt:
           client-auth-method: private_key_jwt
 
 #Spring
-spring:
-  kafka:
-    listener:
-      ack-mode: manual
-      missingTopicsFatal: true  # app will not start if topics don't exist
-    consumer:
-      enable-auto-commit: false
-      max-poll-records: 1
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
-    properties:
-      security.protocol: SASL_SSL
-      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      sasl:
-        mechanism: PLAIN
-        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
+#spring:
+#  kafka:
+#    listener:
+#      ack-mode: manual
+#      missingTopicsFatal: true  # app will not start if topics don't exist
+#    consumer:
+#      enable-auto-commit: false
+#      max-poll-records: 1
+#    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_URL}
+#    properties:
+#      security.protocol: SASL_SSL
+#      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      sasl:
+#        mechanism: PLAIN
+#        jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srvusername}" password="${srvpassword}";
 
 securityTokenService:
   discoveryUrl: ${SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL}
