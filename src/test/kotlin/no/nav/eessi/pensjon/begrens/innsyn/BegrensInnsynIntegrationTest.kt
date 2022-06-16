@@ -43,7 +43,7 @@ private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
 
 private lateinit var mockServer : ClientAndServer
 
-@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, KafkaConfig::class])
+@SpringBootTest(classes = [ BegrensInnsynIntegrationTest.TestConfig::class, EessiPensjonBegrensInnsynApplicationIntegrationtest::class, IntegrationtestConfig::class])
 @ActiveProfiles("integrationtest")
 @DirtiesContext
 @EnableRetry

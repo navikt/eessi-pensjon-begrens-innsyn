@@ -25,7 +25,7 @@ import java.time.Duration
 
 
 @EnableKafka
-@Profile("test", "prod", "integrationtest")
+@Profile("test", "prod")
 @Configuration
 class KafkaConfig(
     @param:Value("\${kafka.keystore.path}") private val keystorePath: String,
@@ -39,7 +39,7 @@ class KafkaConfig(
     @Autowired private val kafkaErrorHandler: KafkaStoppingErrorHandler?
     ) {
 
-    @Profile("test", "integrationtest")
+    @Profile("test")
     @Bean("sedKafkaListenerContainerFactory")
     fun aivenSedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
