@@ -3,11 +3,8 @@ package no.nav.eessi.pensjon.config
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.ProducerConfig
-import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -17,9 +14,6 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import org.springframework.kafka.core.DefaultKafkaProducerFactory
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.core.ProducerFactory
 import org.springframework.kafka.listener.ContainerProperties
 import java.time.Duration
 
@@ -33,17 +27,13 @@ class KafkaConfig(
     @param:Value("\${kafka.truststore.path}") private val truststorePath: String,
     @param:Value("\${kafka.brokers}") private val aivenBootstrapServers: String,
     @param:Value("\${kafka.security.protocol}") private val securityProtocol: String,
-    @param:Value("\${kafka.onprem.bootstrap.servers}") private val onpremBootstrapServers: String,
-    @param:Value("\${srvusername}") private val srvusername: String,
-    @param:Value("\${srvpassword}") private val srvpassword: String,
     @Autowired private val kafkaErrorHandler: KafkaStoppingErrorHandler?
     ) {
 
-    @Profile("test")
-    @Bean("sedKafkaListenerContainerFactory")
-    fun aivenSedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
+    @Bean
+    fun sedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
-        factory.consumerFactory = aivenKafkaConsumerFactory()
+        factory.consumerFactory = kafkaConsumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         factory.containerProperties.setAuthExceptionRetryInterval(Duration.ofSeconds(4L))
 
@@ -53,9 +43,9 @@ class KafkaConfig(
         return factory
     }
 
-    fun aivenKafkaConsumerFactory(): ConsumerFactory<String, String> {
+    fun kafkaConsumerFactory(): ConsumerFactory<String, String> {
         val configMap: MutableMap<String, Any> = HashMap()
-        populerAivenCommonConfig(configMap)
+        populerCommonConfig(configMap)
         configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
         configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = aivenBootstrapServers
         configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
@@ -65,7 +55,7 @@ class KafkaConfig(
         return DefaultKafkaConsumerFactory(configMap, StringDeserializer(), StringDeserializer())
     }
 
-    private fun populerAivenCommonConfig(configMap: MutableMap<String, Any>) {
+    private fun populerCommonConfig(configMap: MutableMap<String, Any>) {
         configMap[SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG] = keystorePath
         configMap[SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG] = credstorePassword
         configMap[SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG] = credstorePassword
@@ -76,35 +66,4 @@ class KafkaConfig(
         configMap[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = securityProtocol
     }
 
-
-    @Profile("prod")
-    @Bean("sedKafkaListenerContainerFactory")
-    fun onpremSedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String>? {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
-        factory.consumerFactory = onpremKafkaConsumerFactory()
-        factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
-        factory.containerProperties.setAuthExceptionRetryInterval(Duration.ofSeconds(4L))
-        if (kafkaErrorHandler != null) {
-            factory.setErrorHandler(kafkaErrorHandler)
-        }
-        return factory
-    }
-
-    fun onpremKafkaConsumerFactory(): ConsumerFactory<String, String> {
-        val configMap: MutableMap<String, Any> = HashMap()
-        populerOnpremCommonConfig(configMap)
-        configMap[ConsumerConfig.CLIENT_ID_CONFIG] = "eessi-pensjon-begrens-innsyn"
-        configMap[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = onpremBootstrapServers
-        configMap[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
-        configMap[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
-        configMap[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1
-
-        return DefaultKafkaConsumerFactory(configMap, StringDeserializer(), StringDeserializer())
-    }
-
-    private fun populerOnpremCommonConfig(configMap: MutableMap<String, Any>) {
-        configMap[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SASL_SSL"
-        configMap[SaslConfigs.SASL_MECHANISM] = "PLAIN"
-        configMap[SaslConfigs.SASL_JAAS_CONFIG] = "org.apache.kafka.common.security.plain.PlainLoginModule required username=${srvusername} password=${srvpassword};"
-    }
 }
