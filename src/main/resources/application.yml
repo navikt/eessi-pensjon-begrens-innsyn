@@ -6,9 +6,6 @@ kafka:
   sedMottatt:
     topic: ${KAFKA_SEDMOTTATT_TOPIC}
     groupid: eessi-pensjon-begrens-innsyn-group
-  keystore.path: ${KAFKA_KEYSTORE_PATH:}
-  truststore.path: ${KAFKA_TRUSTSTORE_PATH:}
-  credstore.password: ${KAFKA_CREDSTORE_PASSWORD:}
   brokers: ${KAFKA_BROKERS:localhost:9092}
 
 METRICS_REQUESTFILTER_ENABLE: false
