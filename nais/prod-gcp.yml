@@ -25,10 +25,6 @@ spec:
       value: https://app.adeo.no/tpsws-aura/ws/Person/v3
     - name: PDL_URL
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
-    - name: SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL
-      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api.prod-fss-pub.nais.io/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
