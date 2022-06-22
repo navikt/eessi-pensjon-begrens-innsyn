@@ -31,10 +31,10 @@ buildscript {
 plugins {
 	id 'com.github.ben-manes.versions' version '0.42.0'
 	id 'se.patrikerdes.use-latest-versions' version '0.2.18'
-	id "org.owasp.dependencycheck" version "7.0.4.1"
+	id "org.owasp.dependencycheck" version "7.1.1"
 	id 'com.adarshr.test-logger' version '3.2.0'
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
-	id "org.sonarqube" version "3.3"
+	id "org.sonarqube" version "3.4.0.2513"
 	id 'jacoco'
 }
 
@@ -78,12 +78,12 @@ dependencies {
 		exclude module: 'junit'
 	}
 	testImplementation("org.mock-server:mockserver-client-java:${mockserverVersion}")
-	testImplementation "io.mockk:mockk:1.12.3"
+	testImplementation "io.mockk:mockk:1.12.4"
 
 	// Architecture tests
 	testImplementation("com.tngtech.archunit:archunit:${archUnitVersion}")
 	testImplementation("com.tngtech.archunit:archunit-junit5:${archUnitVersion}")
-	implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+	implementation("com.squareup.okhttp3:mockwebserver:4.10.0")
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus:1.8.4")
