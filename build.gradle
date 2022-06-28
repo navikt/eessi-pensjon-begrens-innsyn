@@ -93,9 +93,7 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:$epPersonoppslagVersion")
 
 	// Rina Eux API
-	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}") {
-		exclude module: 'ep-security-sts'
-	}
+	implementation("no.nav.eessi.pensjon:ep-eux:${epeuxVersion}")
 
 	// Logging
 	implementation("net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}")
