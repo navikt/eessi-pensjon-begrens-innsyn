@@ -8,7 +8,6 @@ buildscript {
 		logstashLogbackVersion = '7.1'
 		pensjonInformasjonVersion = '9.4.10'
 		mockserverVersion = '5.13.2'
-		junitVersion = '5.8.2'
 		archUnitVersion = '0.23.1'
 		epeuxVersion = '1.1.76'
 		epMetricsVersion = "0.4.29"
@@ -71,9 +70,11 @@ dependencies {
 	// Denne fikser en transient breaking change i embedded kafka
 	//testImplementation("org.scala-lang:scala-library:2.12.11")
 
+	testImplementation(platform("org.junit:junit-bom:5.8.2"))
+	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("org.junit.jupiter:junit-jupiter-params")
+
 	//mock - test
-	testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
-	testImplementation("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
 	testImplementation("org.mock-server:mockserver-netty:${mockserverVersion}") {
 		exclude module: 'junit'
 	}
