@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -15,7 +14,7 @@ import javax.annotation.PostConstruct
 
 @Service
 class SedListener(private val begrensInnsynService: BegrensInnsynService,
-        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)

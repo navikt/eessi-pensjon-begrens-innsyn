@@ -10,7 +10,7 @@ buildscript {
 		mockserverVersion = '5.13.2'
 		archUnitVersion = '0.23.1'
 		epeuxVersion = '1.1.76'
-		epMetricsVersion = "0.4.29"
+		epMetricsVersion = "0.5.0"
 		epLoggingVersion = "1.0.24"
 		epPersonoppslagVersion = "11.0.1"
 	}
