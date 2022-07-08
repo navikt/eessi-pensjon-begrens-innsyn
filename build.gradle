@@ -5,7 +5,7 @@ buildscript {
 		springBootVersion = '2.7.1'
 		oidcTokenSupportVersion = '2.0.14'
 		oidcTokenSupportTestVersion = '2.0.5'
-		logstashLogbackVersion = '7.1'
+		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
 		mockserverVersion = '5.13.2'
 		archUnitVersion = '0.23.1'
