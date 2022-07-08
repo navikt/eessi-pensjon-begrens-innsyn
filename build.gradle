@@ -3,6 +3,7 @@ buildscript {
 	ext {
 		kotlinVersion = '1.7.10'
 		springBootVersion = '2.7.1'
+		springKafkaVersion = '2.8.7'
 		oidcTokenSupportVersion = '2.0.14'
 		oidcTokenSupportTestVersion = '2.0.5'
 		logstashLogbackVersion = '7.2'
@@ -61,13 +62,13 @@ dependencies {
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlinVersion"))
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
-	implementation 'org.springframework.kafka:spring-kafka'
+	implementation "org.springframework.kafka:spring-kafka:$springKafkaVersion"
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude module: 'junit'
 		exclude module: "mockito-core"
 		exclude module: "junit-vintage-engine"
 	}
-	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 	// Denne fikser en transient breaking change i embedded kafka
 	//testImplementation("org.scala-lang:scala-library:2.12.11")
 
