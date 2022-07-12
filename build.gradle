@@ -4,7 +4,7 @@ buildscript {
 		kotlinVersion = '1.7.10'
 		springBootVersion = '2.7.1'
 		springKafkaVersion = '2.8.7'
-		oidcTokenSupportVersion = '2.0.14'
+		tokenSupportVersion = '2.0.14'
 		oidcTokenSupportTestVersion = '2.0.5'
 		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
@@ -104,9 +104,9 @@ dependencies {
 	implementation("no.nav.eessi.pensjon:ep-logging:$epLoggingVersion")
 
 	//Auth
-	implementation("no.nav.security:token-client-spring:${oidcTokenSupportVersion}")
-	implementation("no.nav.security:token-validation-spring:${oidcTokenSupportVersion}")
-	implementation("no.nav.security:token-validation-jaxrs:${oidcTokenSupportVersion}")
+	implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
+	implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
+	implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
 	implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportTestVersion}")
 
 }
