@@ -7,7 +7,6 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.eessi.pensjon.config.KafkaConfig
 import no.nav.eessi.pensjon.eux.EuxService
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
@@ -72,7 +71,7 @@ class BegrensInnsynIntegrationTest {
         ContainerTestUtils.waitForAssignment(container, embeddedKafka.partitionsPerTopic)
 
         // Sett opp producer
-        val sedSendtProducerTemplate = settOppProducerTemplate(SED_SENDT_TOPIC)
+        val sedSendtProducerTemplate = settOppProducerTemplate()
 
         // produserer sedSendt meldinger på kafka
         produserSedHendelser(sedSendtProducerTemplate)
@@ -119,12 +118,10 @@ class BegrensInnsynIntegrationTest {
         embeddedKafka.kafkaServers.forEach { it.shutdown() }
     }
 
-    private fun settOppProducerTemplate(topicNavn: String): KafkaTemplate<Int, String> {
-        val senderProps = KafkaTestUtils.producerProps(embeddedKafka.brokersAsString)
-        val pf = DefaultKafkaProducerFactory<Int, String>(senderProps)
-        val template = KafkaTemplate(pf)
-        template.defaultTopic = topicNavn
-        return template
+    private fun settOppProducerTemplate(): KafkaTemplate<Int, String> {
+        return KafkaTemplate<Int, String>(DefaultKafkaProducerFactory(KafkaTestUtils.producerProps(embeddedKafka.brokersAsString))).apply {
+            defaultTopic = SED_SENDT_TOPIC
+        }
     }
 
     private fun settOppUtitlityConsumer(topicNavn: String): KafkaMessageListenerContainer<String, String> {
