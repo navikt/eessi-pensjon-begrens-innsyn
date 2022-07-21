@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 
 private const val SED_SENDT_TOPIC = "eessi-basis-sedSendt-v1"
 private const val SED_MOTTATT_TOPIC = "eessi-basis-sedMottatt-v1"
@@ -66,7 +66,7 @@ class BegrensInnsynIntegrationTest {
         initMocks()
 
         // Vent til kafka er klar
-        val container = settOppUtitlityConsumer(SED_SENDT_TOPIC)
+        val container = settOppUtitlityConsumer()
         container.start()
         ContainerTestUtils.waitForAssignment(container, embeddedKafka.partitionsPerTopic)
 
@@ -124,15 +124,15 @@ class BegrensInnsynIntegrationTest {
         }
     }
 
-    private fun settOppUtitlityConsumer(topicNavn: String): KafkaMessageListenerContainer<String, String> {
+    private fun settOppUtitlityConsumer(): KafkaMessageListenerContainer<String, String> {
         val consumerProperties = KafkaTestUtils.consumerProps("eessi-pensjon-group2",
                 "false",
                 embeddedKafka)
         consumerProperties["auto.offset.reset"] = "earliest"
 
         val consumerFactory = DefaultKafkaConsumerFactory<String, String>(consumerProperties)
-        val containerProperties = ContainerProperties(topicNavn)
-        val container = KafkaMessageListenerContainer<String, String>(consumerFactory, containerProperties)
+        val containerProperties = ContainerProperties(SED_SENDT_TOPIC)
+        val container = KafkaMessageListenerContainer(consumerFactory, containerProperties)
         val messageListener = MessageListener<String, String> { record -> println("Konsumerer melding:  $record") }
         container.setupMessageListener(messageListener)
 
