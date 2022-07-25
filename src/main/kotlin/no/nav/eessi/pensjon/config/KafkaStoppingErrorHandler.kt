@@ -26,7 +26,7 @@ class KafkaStoppingErrorHandler : CommonErrorHandler {
 
         logger.error("En feil oppstod under kafka konsumering av meldinger: \n ${hentMeldinger(record)} \n" +
                 "Stopper containeren ! Restart er nødvendig for å fortsette konsumering, $stacktrace")
-        stopper.handleRecord(thrownException, record, consumer, container)
+        stopper.handleRemaining(thrownException, listOf(record), consumer, container)
 
     }
 
