@@ -12,26 +12,24 @@ import java.io.StringWriter
 
 @Profile("prod")
 @Component
-class KafkaStoppingErrorHandler : CommonErrorHandler {
+class KafkaStoppingErrorHandler : CommonContainerStoppingErrorHandler() {
     private val logger = LoggerFactory.getLogger(KafkaStoppingErrorHandler::class.java)
-    private val stopper = CommonContainerStoppingErrorHandler()
 
-    override fun handleRecord(
-        thrownException: Exception,
-        record: ConsumerRecord<*, *>,
+    override fun handleRemaining(
+        thrownException: java.lang.Exception,
+        records: MutableList<ConsumerRecord<*, *>>,
         consumer: Consumer<*, *>,
-        container: MessageListenerContainer) {
-
-        val stacktrace = StringWriter()
-
-        logger.error("En feil oppstod under kafka konsumering av meldinger: \n ${hentMeldinger(record)} \n" +
-                "Stopper containeren ! Restart er nødvendig for å fortsette konsumering, $stacktrace")
-        stopper.handleRemaining(thrownException, listOf(record), consumer, container)
-
+        container: MessageListenerContainer
+    ) {
+        logger.error("En feil oppstod under kafka konsumering av meldinger: \n" + textListingOf(records) +
+                "\nStopper containeren ! Restart er nødvendig for å fortsette konsumering", thrownException)
+        super.handleRemaining(thrownException, records, consumer, container)
     }
 
-    fun hentMeldinger(records: ConsumerRecord<*, *>) = "-" .repeat(20) +  vask11sifre(records.toString())
+    fun textListingOf(records: List<ConsumerRecord<*, *>>) =
+        records.joinToString(separator = "\n") {
+            "-" .repeat(20) + "\n" + vask11sifre(it.toString())
+        }
 
-    // TODO Finn gjerne en bedre måte
-    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "***")
+    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\b\d{11}\b"""), "***")
 }
