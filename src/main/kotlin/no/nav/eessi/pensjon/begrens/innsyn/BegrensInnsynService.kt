@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService.SedTypeUtils.ugyldigeTyper
 import no.nav.eessi.pensjon.eux.EuxService
-import no.nav.eessi.pensjon.eux.model.buc.BucType
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.SedType.X001
 import no.nav.eessi.pensjon.eux.model.SedType.X002
@@ -19,6 +18,7 @@ import no.nav.eessi.pensjon.eux.model.SedType.X012
 import no.nav.eessi.pensjon.eux.model.SedType.X013
 import no.nav.eessi.pensjon.eux.model.SedType.X050
 import no.nav.eessi.pensjon.eux.model.SedType.X100
+import no.nav.eessi.pensjon.eux.model.buc.BucType
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
@@ -77,7 +77,7 @@ class BegrensInnsynService(
     }
 
     private fun harAdressebeskyttelse(rinaNr: String, sedDokumentId: String): Boolean {
-        logger.info("Henter SED, finner alle fnr i dokumentet, og leter etter adressebeskyttelse i PDL")
+        logger.info("Henter SED, finner alle fnr i dokumentet med rinanr: $rinaNr og dukumentId:$sedDokumentId, og leter etter adressebeskyttelse i PDL")
         val sed = euxService.hentSedJson(rinaNr, sedDokumentId)
 
         val fnrListe = SedFnrSoek.finnAlleFnrDnrISed(sed!!)
