@@ -38,16 +38,15 @@ class BegrensInnsynService(
 
     private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
-    fun begrensInnsyn(hendelse: String) {
-        val sedHendelse = SedHendelseModel.fromJson(hendelse)
+    fun begrensInnsyn(sedHendelse: SedHendelseModel) {
         if (sedHendelse.rinaSakId == "9986027") return
         if (sedHendelse.sedType in ugyldigeTyper) return
         if (sedHendelse.sektorKode in gyldigSektorKoder|| sedHendelse.bucType in gyldigeBucTyper) {
-            begrensInnsyn(sedHendelse)
+            sjekkAdresseBeskyttelse(sedHendelse)
         }
     }
 
-    private fun begrensInnsyn(sedHendelse: SedHendelseModel) {
+    private fun sjekkAdresseBeskyttelse(sedHendelse: SedHendelseModel) {
         val rinaSakId = sedHendelse.rinaSakId
         val dokumentId = sedHendelse.rinaDokumentId
 

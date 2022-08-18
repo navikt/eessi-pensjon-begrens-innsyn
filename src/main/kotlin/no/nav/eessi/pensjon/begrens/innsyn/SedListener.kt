@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
@@ -14,7 +15,8 @@ import javax.annotation.PostConstruct
 
 @Service
 class SedListener(private val begrensInnsynService: BegrensInnsynService,
-        @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
+                  @Value("\${SPRING_PROFILES_ACTIVE:}") private val profile: String,
+                  @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
@@ -49,7 +51,9 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.debug(vask11sifre(hendelse))
 
                 try {
-                    begrensInnsynService.begrensInnsyn(hendelse)
+                    val sedHendelse = SedHendelseModel.fromJson(hendelse)
+
+                    begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latchSendt.countDown()
@@ -72,8 +76,18 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 logger.debug(vask11sifre(hendelse))
 
+                val sedHendelse = SedHendelseModel.fromJson(hendelse)
+
+                if (profile == "prod" && sedHendelse.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
+                    logger.error("Avsender id er ${sedHendelse.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelse")
+                    acknowledgment.acknowledge()
+                    return@measure
+                }
+
                 try {
-                    begrensInnsynService.begrensInnsyn(hendelse)
+                    begrensInnsynService.begrensInnsyn(sedHendelse)
+
+
                     acknowledgment.acknowledge()
                     logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latchMottatt.countDown()
