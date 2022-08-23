@@ -8,7 +8,6 @@ buildscript {
 		oidcTokenSupportTestVersion = '2.0.5'
 		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
-		mockserverVersion = '5.14.0'
 		archUnitVersion = '0.23.1'
 		epeuxVersion = '1.3.7'
 		epMetricsVersion = "0.5.8"
@@ -77,10 +76,9 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-params")
 
 	//mock - test
-	testImplementation("org.mock-server:mockserver-netty:${mockserverVersion}") {
+	testImplementation("org.mock-server:mockserver-netty:5.14.0") {
 		exclude module: 'junit'
 	}
-	testImplementation("org.mock-server:mockserver-client-java:${mockserverVersion}")
 	testImplementation "io.mockk:mockk:1.12.5"
 
 	// Architecture tests
