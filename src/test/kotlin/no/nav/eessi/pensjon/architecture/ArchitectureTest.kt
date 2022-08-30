@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon
+package no.nav.eessi.pensjon.architecture
 
 import com.tngtech.archunit.core.domain.JavaClasses
 import com.tngtech.archunit.core.domain.JavaMethod
@@ -14,6 +14,7 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods
 import com.tngtech.archunit.lang.syntax.elements.MethodsShouldConjunction
 import com.tngtech.archunit.library.dependencies.SliceRule
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
+import no.nav.eessi.pensjon.EessiPensjonBegrensInnsynApplication
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
