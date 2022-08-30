@@ -5,7 +5,6 @@ buildscript {
 		springBootVersion = '2.7.3'
 		springKafkaVersion = '2.9.0'
 		tokenSupportVersion = '2.1.4'
-		oidcTokenSupportTestVersion = '2.0.5'
 		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
 		archUnitVersion = '0.23.1'
@@ -105,7 +104,7 @@ dependencies {
 	implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
 	implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
 	implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
-	implementation("no.nav.security:token-validation-test-support:${oidcTokenSupportTestVersion}")
+	implementation("no.nav.security:token-validation-test-support:2.0.5")
 
 }
 
