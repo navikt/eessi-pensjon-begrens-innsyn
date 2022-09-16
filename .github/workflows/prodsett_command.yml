@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Pull repo'
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: 'Opprett nais variable'
         run: |
           echo "versjon: ${{ github.event.client_payload.slash_command.arg1 }}"
