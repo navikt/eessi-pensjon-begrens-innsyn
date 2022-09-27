@@ -52,7 +52,7 @@ dependencies {
 	// Denne fikser en transient breaking change i embedded kafka
 	//testImplementation("org.scala-lang:scala-library:2.12.11")
 
-	testImplementation(platform("org.junit:junit-bom:5.9.0"))
+	testImplementation(platform("org.junit:junit-bom:5.9.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.jupiter:junit-jupiter-params")
 
