@@ -20,7 +20,7 @@ plugins {
 	id 'com.cosminpolifronie.gradle.plantuml' version '1.6.0'
 }
 
-apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.3.0/ep-module.gradle"
+apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.4.0/ep-module.gradle"
 
 group = 'no.nav.eessi.pensjon'
 version = '0.0.1'
