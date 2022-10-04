@@ -6,7 +6,7 @@ buildscript {
 		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
 		archUnitVersion = '1.0.0'
-		epeuxVersion = '1.3.22'
+		epeuxVersion = '1.3.26'
 		epMetricsVersion = "0.5.23"
 		epLoggingVersion = "1.0.51"
 		epPersonoppslagVersion = '11.3.10'
