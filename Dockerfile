@@ -1,4 +1,4 @@
-FROM navikt/java:17
+FROM navikt/temurin:17
 
 COPY init-scripts/ep-jvm-tuning.sh /init-scripts/
 
