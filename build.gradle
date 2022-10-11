@@ -9,7 +9,7 @@ buildscript {
 		epeuxVersion = '1.3.26'
 		epMetricsVersion = "0.5.24"
 		epLoggingVersion = "1.0.52"
-		epPersonoppslagVersion = '11.3.10'
+		epPersonoppslagVersion = '11.5.1'
 	}
 }
 
