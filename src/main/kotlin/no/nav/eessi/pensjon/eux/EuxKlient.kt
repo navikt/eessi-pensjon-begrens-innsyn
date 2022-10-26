@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
-import java.io.IOException
 
 @Component
 class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: RestTemplate) {
@@ -22,7 +21,7 @@ class EuxKlient(private val downstreamClientCredentialsResourceRestTemplate: Res
         exclude = [HttpClientErrorException.NotFound::class],
         backoff = Backoff(delay = 30000L, maxDelay = 3600000L, multiplier = 3.0)
     )
-    internal fun hentSedJson(rinaSakId: String, dokumentId: String): String? {
+    fun hentSedJson(rinaSakId: String, dokumentId: String): String? {
         logger.info("Henter SED for rinaSakId: $rinaSakId , dokumentId: $dokumentId")
 
         val response = execute {
