@@ -2,7 +2,7 @@ buildscript {
 	ext {
 		springBootVersion = '2.7.5'
 		springKafkaVersion = '2.9.2'
-		tokenSupportVersion = '2.1.6'
+		tokenSupportVersion = '2.1.7'
 		logstashLogbackVersion = '7.2'
 		pensjonInformasjonVersion = '9.4.10'
 		archUnitVersion = '1.0.0'
