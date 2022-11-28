@@ -8,7 +8,7 @@ kafka:
     groupid: eessi-pensjon-begrens-innsyn-group
   brokers: ${KAFKA_BROKERS:localhost:9092}
 
-METRICS_REQUESTFILTER_ENABLE: false
+METRICS_REQUESTFILTER_ENABLE: true
 
 no.nav.security.jwt:
   client:

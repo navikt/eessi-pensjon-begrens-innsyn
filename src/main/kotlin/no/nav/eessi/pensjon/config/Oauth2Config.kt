@@ -1,5 +1,7 @@
 package no.nav.eessi.pensjon.config;
 
+import io.micrometer.core.instrument.MeterRegistry
+import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
@@ -17,7 +19,7 @@ import java.util.*
 
 @Profile("prod", "test")
 @Configuration
-class OAuth2Configuration {
+class OAuth2Configuration(private val meterRegistry: MeterRegistry) {
 
     @Value("\${EUX_RINA_API_V1_URL}")
     private lateinit var euxUrl: String
@@ -36,7 +38,10 @@ class OAuth2Configuration {
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return restTemplateBuilder
             .rootUri(euxUrl)
-            .additionalInterceptors(bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!))
+            .additionalInterceptors(
+                    bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!),
+                    RequestCountInterceptor(meterRegistry),
+            )
             .build()
     }
 
