@@ -8,7 +8,7 @@ buildscript {
 		archUnitVersion = '1.0.1'
 		epeuxVersion = '1.3.31'
 		epMetricsVersion = "1.0.1"
-		epLoggingVersion = "1.1.3"
+		epLoggingVersion = "1.1.6"
 		epPersonoppslagVersion = '11.5.5'
 	}
 }
