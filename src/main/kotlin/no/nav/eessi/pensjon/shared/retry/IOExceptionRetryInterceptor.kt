@@ -26,7 +26,7 @@ class IOExceptionRetryInterceptor : ClientHttpRequestInterceptor {
                 Thread.sleep(timeUnit.toMillis(waitTime))
             }
         }
-        logger.warn("Givimeng up after $count attempts.")
+        logger.warn("Giving up after $count attempts.")
         throw failException!!
     }
 }
