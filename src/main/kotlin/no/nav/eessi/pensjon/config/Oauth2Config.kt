@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.config;
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
+import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
@@ -40,7 +41,8 @@ class OAuth2Configuration(private val meterRegistry: MeterRegistry) {
             .rootUri(euxUrl)
             .additionalInterceptors(
                     bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!),
-                    RequestCountInterceptor(meterRegistry),
+                    IOExceptionRetryInterceptor(),
+                    RequestCountInterceptor(meterRegistry)
             )
             .build()
     }
