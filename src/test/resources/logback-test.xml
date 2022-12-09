@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+
+    <!-- default konfigurasjon for test / integrasjonstest; se logback-spring.xml for setting ved Q eller PROD-->
+    <!-- securelog logges til fil og stout -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%magenta(%d{dd-MM-yyyy HH:mm:ss.SSS}) %highlight(%-5level) %logger{25} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="secureLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>build/secure.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>build/secure.log.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>1</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>50MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerData>true</includeCallerData>
+        </encoder>
+    </appender>
+
+    <logger name="secureLog" level="DEBUG" additivity="false">
+        <appender-ref ref="secureLog"/>
+        <appender-ref ref="stdout" />
+   </logger>
+    <logger name="io" level="INFO"/>
+    <logger name="org" level="INFO"/>
+    <logger name="com" level="INFO"/>
+    <logger name="no.nav" level="DEBUG"/>
+    <logger name="no.nav.security" level="INFO"/>
+    <logger name="no.nav.eessi" level="DEBUG"/>
+
+    <logger name="kafka" level="WARN"/>
+    <logger name="org.apache.kafka" level="WARN"/>
+    <logger name="org.apache.zookeeper" level="WARN"/>
+    <logger name="org.mockserver.log" level="WARN"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="stdout" />
+    </root>
+
+</configuration>

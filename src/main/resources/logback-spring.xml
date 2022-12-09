@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
+    <!-- logback konfigurasjon for PROD; se logback-test.xml for setting test-->
+    <!-- securelog går kun til fil: /secure-logs/secure.log-->
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
@@ -9,6 +12,25 @@
                 <includeCallerData>true</includeCallerData>
             </encoder>
         </appender>
+
+        <appender name="secureLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/secure-logs/secure.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                <fileNamePattern>/secure-logs/secure.log.%i</fileNamePattern>
+                <minIndex>1</minIndex>
+                <maxIndex>1</maxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <maxFileSize>50MB</maxFileSize>
+            </triggeringPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>true</includeCallerData>
+            </encoder>
+        </appender>
+
+        <logger name="secureLog" level="DEBUG" additivity="false">
+            <appender-ref ref="secureLog"/>
+        </logger>
 
         <logger name="io" level="ERROR"/>
         <logger name="org" level="ERROR"/>
@@ -20,13 +42,14 @@
         <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF"/>
         <logger name="no.nav.security.token.support.core.validation" level="ERROR"/>
 
-
         <root level="info">
             <appender-ref ref="stdout_json"/>
         </root>
     </springProfile>
 
-    <springProfile name="local,test, integrationtest">
+    <!-- logback konfigurasjon for Q / lokalt; se logback-test.xml for setting test-->
+    <!-- securelog går kun til fil: /secure-logs/secure.log-->
+    <springProfile name="!prod,!test">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%level %logger %msg %n</pattern>
@@ -36,17 +59,40 @@
             </encoder>
         </appender>
 
+        <appender name="secureLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/secure-logs/secure.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                <fileNamePattern>/secure-logs/secure.log.%i</fileNamePattern>
+                <minIndex>1</minIndex>
+                <maxIndex>1</maxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <maxFileSize>50MB</maxFileSize>
+            </triggeringPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>true</includeCallerData>
+            </encoder>
+        </appender>
+
+        <logger name="secureLog" level="DEBUG"  additivity="false">
+            <appender-ref ref="secureLog"/>
+        </logger>
+
         <logger name="io" level="ERROR"/>
         <logger name="org" level="ERROR"/>
         <logger name="com" level="ERROR"/>
-        <logger name="no.nav" level="DEBUG"/>
-        <logger name="no.nav.security" level="INFO"/>
-        <logger name="no.nav.eessi" level="DEBUG"/>
+        <logger name="no.nav" level="INFO"/>
+        <logger name="no.nav.security" level="ERROR"/>
+        <logger name="no.nav.eessi.pensjon.security" level="ERROR"/>
+        <logger name="no.nav.eessi" level="INFO"/>
+        <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF"/>
         <logger name="no.nav.security.token.support.core.validation" level="ERROR"/>
 
-        <root level="info">
+        <root level="INFO">
             <appender-ref ref="stdout_json"/>
         </root>
+
     </springProfile>
+
 
 </configuration>
