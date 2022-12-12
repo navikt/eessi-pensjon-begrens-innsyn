@@ -6,6 +6,8 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  secureLogs:
+    enabled: true
   envFrom:
     - secret: begrens-innsyn
   azure:

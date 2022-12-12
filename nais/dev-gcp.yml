@@ -6,6 +6,8 @@ metadata:
   labels:
     team: eessipensjon
 spec:
+  secureLogs:
+    enabled: true
   envFrom:
     - secret: begrens-innsyn #srveessi-pensjon-b-4 value is the secret name in Google Secret Manager
   azure:
