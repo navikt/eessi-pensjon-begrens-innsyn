@@ -49,7 +49,7 @@
 
     <!-- logback konfigurasjon for Q / lokalt; se logback-test.xml for setting test-->
     <!-- securelog går kun til fil: /secure-logs/secure.log-->
-    <springProfile name="!prod,!test">
+    <springProfile name="test">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%level %logger %msg %n</pattern>
