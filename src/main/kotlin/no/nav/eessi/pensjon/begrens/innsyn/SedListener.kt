@@ -20,6 +20,8 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
 ) {
 
     private val logger = LoggerFactory.getLogger(SedListener::class.java)
+    private val secureLog = LoggerFactory.getLogger("secureLog")
+
     private val latchSendt = CountDownLatch(1)
     private val latchMottatt = CountDownLatch(1)
 
@@ -48,8 +50,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeOutgoingSed.measure {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                logger.debug(vask11sifre(hendelse))
-
+                secureLog.debug("Hendelse sendt:\n${vask11sifre(hendelse)}")
                 try {
                     val sedHendelse = SedHendelseModel.fromJson(hendelse)
 
@@ -74,7 +75,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeIncomingSed.measure {
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                logger.debug(vask11sifre(hendelse))
+                secureLog.debug("Hendelse mottatt:\n${vask11sifre(hendelse)}")
 
                 val sedHendelse = SedHendelseModel.fromJson(hendelse)
 
