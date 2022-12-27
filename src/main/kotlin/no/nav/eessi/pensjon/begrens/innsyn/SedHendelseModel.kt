@@ -5,7 +5,6 @@ import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.buc.BucType
 import no.nav.eessi.pensjon.personoppslag.Fodselsnummer
 import no.nav.eessi.pensjon.utils.mapJsonToAny
-import no.nav.eessi.pensjon.utils.typeRefs
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class SedHendelseModel(
@@ -26,6 +25,6 @@ data class SedHendelseModel(
     val navBruker: Fodselsnummer? = null
 ) {
     companion object {
-        fun fromJson(json: String): SedHendelseModel = mapJsonToAny(json, typeRefs())
+        fun fromJson(json: String): SedHendelseModel = mapJsonToAny(json)
     }
 }
