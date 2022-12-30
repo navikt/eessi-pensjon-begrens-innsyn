@@ -1,16 +1,25 @@
 package no.nav.eessi.pensjon.eux
 
+import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.eux.model.buc.Buc
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.eux.model.document.SedStatus
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
+import org.springframework.retry.RetryCallback
+import org.springframework.retry.RetryContext
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
+import org.springframework.retry.listener.RetryListenerSupport
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
 class EuxService(
-    private val klient: EuxKlient,
+    private val euxKlient: EuxKlientLib,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
@@ -33,9 +42,13 @@ class EuxService(
      *
      * @return [String] SED JSON
      */
+    @Retryable(
+        backoff = Backoff(delayExpression = "@euxKlientRetryConfig.initialRetryMillis", maxDelay = 200000L, multiplier = 3.0),
+        listeners  = ["euxKlientRetryLogger"]
+    )
     fun hentSedJson(rinaSakId: String, dokumentId: String): String? {
         return hentSed.measure {
-            klient.hentSedJson(rinaSakId, dokumentId)
+            euxKlient.hentSedJson(rinaSakId, dokumentId)
         }
     }
 
@@ -48,7 +61,7 @@ class EuxService(
      */
     fun hentBuc(rinaSakId: String): Buc? {
         return hentBuc.measure {
-            klient.hentBuc(rinaSakId)
+            euxKlient.hentBuc(rinaSakId)
         }
     }
 
@@ -76,7 +89,18 @@ class EuxService(
      */
     fun settSensitivSak(rinaSakId: String): Boolean {
         return settSensitiv.measure {
-            klient.settSensitivSak(rinaSakId)
+            euxKlient.settSensitivSak(rinaSakId)
         }
+    }
+}
+@Profile("!retryConfigOverride")
+@Component
+data class EuxKlientRetryConfig(val initialRetryMillis: Long = 20000L)
+
+@Component
+class EuxKlientRetryLogger : RetryListenerSupport() {
+    private val logger = LoggerFactory.getLogger(EuxKlientRetryLogger::class.java)
+    override fun <T : Any?, E : Throwable?> onError(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {
+        logger.warn("Feil under henting av SED - try #${context?.retryCount } - ${throwable?.toString()}", throwable)
     }
 }

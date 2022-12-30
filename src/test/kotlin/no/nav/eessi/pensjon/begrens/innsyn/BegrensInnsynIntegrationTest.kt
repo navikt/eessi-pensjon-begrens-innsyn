@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -58,7 +59,7 @@ class BegrensInnsynIntegrationTest {
     @Autowired
     lateinit var personService: PersonService
 
-    @Autowired
+    @MockkBean
     lateinit var euxService: EuxService
 
     @Test
@@ -176,11 +177,6 @@ class BegrensInnsynIntegrationTest {
     class TestConfig{
         @Bean
         fun personService(): PersonService = mockk {
-            every { initMetrics() } just Runs
-        }
-
-        @Bean
-        fun euxService(): EuxService = mockk {
             every { initMetrics() } just Runs
         }
 

@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.config;
 
 import io.micrometer.core.instrument.MeterRegistry
+import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
@@ -17,10 +18,13 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
-
 @Profile("prod", "test")
 @Configuration
-class OAuth2Configuration(private val meterRegistry: MeterRegistry) {
+class OAuth2Configuration(
+    private val clientConfigurationProperties: ClientConfigurationProperties,
+    private val oAuth2AccessTokenService: OAuth2AccessTokenService?,
+    private val meterRegistry: MeterRegistry,
+) {
 
     @Value("\${EUX_RINA_API_V1_URL}")
     private lateinit var euxUrl: String
@@ -29,15 +33,11 @@ class OAuth2Configuration(private val meterRegistry: MeterRegistry) {
      * Create one RestTemplate per OAuth2 client entry to separate between different scopes per API
      */
     @Bean
-    fun downstreamClientCredentialsResourceRestTemplate(
-        restTemplateBuilder: RestTemplateBuilder,
-        clientConfigurationProperties: ClientConfigurationProperties,
-        oAuth2AccessTokenService: OAuth2AccessTokenService?
-    ): RestTemplate? {
+    fun euxOAuthRestTemplate(): RestTemplate {
         val clientProperties =
             Optional.ofNullable(clientConfigurationProperties.registration["eux-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
-        return restTemplateBuilder
+        return RestTemplateBuilder()
             .rootUri(euxUrl)
             .additionalInterceptors(
                     bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!),
@@ -46,6 +46,8 @@ class OAuth2Configuration(private val meterRegistry: MeterRegistry) {
             )
             .build()
     }
+    @Bean
+    fun euxKlient(): EuxKlientLib = EuxKlientLib(euxOAuthRestTemplate())
 
     private fun bearerTokenInterceptor(
         clientProperties: ClientProperties,
