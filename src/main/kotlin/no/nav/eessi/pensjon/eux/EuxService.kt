@@ -59,6 +59,10 @@ class EuxService(
      *
      * @return [Buc]
      */
+    @Retryable(
+        backoff = Backoff(delayExpression = "@euxKlientRetryConfig.initialRetryMillis", maxDelay = 200000L, multiplier = 3.0),
+        listeners  = ["euxKlientBucRetryLogger"]
+    )
     fun hentBuc(rinaSakId: String): Buc? {
         return hentBuc.measure {
             euxKlient.hentBuc(rinaSakId)
@@ -101,6 +105,14 @@ data class EuxKlientRetryConfig(val initialRetryMillis: Long = 20000L)
 class EuxKlientRetryLogger : RetryListenerSupport() {
     private val logger = LoggerFactory.getLogger(EuxKlientRetryLogger::class.java)
     override fun <T : Any?, E : Throwable?> onError(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {
-        logger.warn("Feil under henting av SED - try #${context?.retryCount } - ${throwable?.toString()}", throwable)
+        logger.warn("Feil under henting fra Sed - try #${context?.retryCount } - ${throwable?.toString()}", throwable)
+    }
+}
+
+@Component
+class EuxKlientBucRetryLogger : RetryListenerSupport() {
+    private val logger = LoggerFactory.getLogger(EuxKlientBucRetryLogger::class.java)
+    override fun <T : Any?, E : Throwable?> onError(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {
+        logger.warn("Feil under henting fra BUC - try #${context?.retryCount } - ${throwable?.toString()}", throwable)
     }
 }
