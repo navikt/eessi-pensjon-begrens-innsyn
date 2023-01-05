@@ -51,9 +51,14 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
             consumeOutgoingSed.measure {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 secureLog.debug("Hendelse sendt:\n${vask11sifre(hendelse)}")
+                val offsetToSkip = listOf(70196L, 70197L)
+                val offset = cr.offset()
+                if (offset in offsetToSkip) {
+                    logger.warn("Hopper over offset: $offset grunnet feil.")
+                    return@measure
+                }
                 try {
                     val sedHendelse = SedHendelseModel.fromJson(hendelse)
-
                     begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
