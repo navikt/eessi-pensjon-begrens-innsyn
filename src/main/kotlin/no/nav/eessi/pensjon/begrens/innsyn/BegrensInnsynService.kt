@@ -39,9 +39,8 @@ class BegrensInnsynService(
     private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
     fun begrensInnsyn(sedHendelse: SedHendelseModel) {
-        if (sedHendelse.rinaSakId == "9986027") return
         if (sedHendelse.sedType in ugyldigeTyper) return
-        if (sedHendelse.sektorKode in gyldigSektorKoder|| sedHendelse.bucType in gyldigeBucTyper) {
+        if (sedHendelse.sektorKode in gyldigSektorKoder || sedHendelse.bucType in gyldigeBucTyper) {
             sjekkAdresseBeskyttelse(sedHendelse)
         }
     }
