@@ -2,23 +2,11 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService.SedTypeUtils.ugyldigeTyper
 import no.nav.eessi.pensjon.eux.EuxService
+import no.nav.eessi.pensjon.eux.model.BucType.H_BUC_07
+import no.nav.eessi.pensjon.eux.model.BucType.R_BUC_02
+import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.eux.model.SedType
-import no.nav.eessi.pensjon.eux.model.SedType.X001
-import no.nav.eessi.pensjon.eux.model.SedType.X002
-import no.nav.eessi.pensjon.eux.model.SedType.X003
-import no.nav.eessi.pensjon.eux.model.SedType.X004
-import no.nav.eessi.pensjon.eux.model.SedType.X005
-import no.nav.eessi.pensjon.eux.model.SedType.X006
-import no.nav.eessi.pensjon.eux.model.SedType.X007
-import no.nav.eessi.pensjon.eux.model.SedType.X008
-import no.nav.eessi.pensjon.eux.model.SedType.X009
-import no.nav.eessi.pensjon.eux.model.SedType.X010
-import no.nav.eessi.pensjon.eux.model.SedType.X011
-import no.nav.eessi.pensjon.eux.model.SedType.X012
-import no.nav.eessi.pensjon.eux.model.SedType.X013
-import no.nav.eessi.pensjon.eux.model.SedType.X050
-import no.nav.eessi.pensjon.eux.model.SedType.X100
-import no.nav.eessi.pensjon.eux.model.buc.BucType
+import no.nav.eessi.pensjon.eux.model.SedType.*
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
@@ -34,18 +22,18 @@ class BegrensInnsynService(
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
     private val gyldigSektorKoder = listOf("P", "R", "H")
-    private val gyldigeBucTyper = listOf(BucType.H_BUC_07, BucType.R_BUC_02)
+    private val gyldigeBucTyper = listOf(H_BUC_07, R_BUC_02)
 
     private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
 
-    fun begrensInnsyn(sedHendelse: SedHendelseModel) {
+    fun begrensInnsyn(sedHendelse: SedHendelse) {
         if (sedHendelse.sedType in ugyldigeTyper) return
         if (sedHendelse.sektorKode in gyldigSektorKoder || sedHendelse.bucType in gyldigeBucTyper) {
             sjekkAdresseBeskyttelse(sedHendelse)
         }
     }
 
-    private fun sjekkAdresseBeskyttelse(sedHendelse: SedHendelseModel) {
+    private fun sjekkAdresseBeskyttelse(sedHendelse: SedHendelse) {
         val rinaSakId = sedHendelse.rinaSakId
         val dokumentId = sedHendelse.rinaDokumentId
 

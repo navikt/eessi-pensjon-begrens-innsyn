@@ -7,11 +7,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.eessi.pensjon.eux.EuxService
+import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.eux.model.document.SedStatus
 import no.nav.eessi.pensjon.eux.model.sed.SED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import org.junit.jupiter.api.Test
 
 internal class BegrensInnsynServiceTest {
@@ -29,7 +31,7 @@ internal class BegrensInnsynServiceTest {
         every { euxService.hentSedJson(any(), any()) } returns sedJson
         every { personService.harAdressebeskyttelse(any(), any()) }.returns(true)
 
-        begrensInnsynService.begrensInnsyn(SedHendelseModel.fromJson(hendelse))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { personService.harAdressebeskyttelse(any(), any()) }
@@ -46,7 +48,8 @@ internal class BegrensInnsynServiceTest {
         every { euxService.hentSedJson(any(), any()) } returns sedJson
         every { personService.harAdressebeskyttelse(any(), any()) }.returns(true)
 
-        begrensInnsynService.begrensInnsyn(SedHendelseModel.fromJson(hendelse))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
+
 
         verify(exactly = 1) { euxService.hentSedJson("147710", "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { personService.harAdressebeskyttelse(any(), any()) }
@@ -64,7 +67,7 @@ internal class BegrensInnsynServiceTest {
         every { personService.harAdressebeskyttelse(any(), any()) }.returns(false)
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
-        begrensInnsynService.begrensInnsyn(SedHendelseModel.fromJson(hendelse))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
@@ -83,7 +86,7 @@ internal class BegrensInnsynServiceTest {
         every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
-        begrensInnsynService.begrensInnsyn(SedHendelseModel.fromJson(hendelse))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { euxService.hentSedJson(any(), "02249d3f5bdd4336999ccfbf7bb13c64") }
@@ -102,7 +105,7 @@ internal class BegrensInnsynServiceTest {
         every { personService.harAdressebeskyttelse(any(), any()) } returns false
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
-        begrensInnsynService.begrensInnsyn((SedHendelseModel.fromJson(hendelse)))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 2) { euxService.hentSedJson(any(), any()) }
         verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
@@ -116,7 +119,7 @@ internal class BegrensInnsynServiceTest {
         val hendelse = javaClass.getResource("/sed/P_BUC_06_X050.json")!!.readText()
 
         every { personService.harAdressebeskyttelse(any(), any()) } returns false
-        begrensInnsynService.begrensInnsyn((SedHendelseModel.fromJson(hendelse)))
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 0) { euxService.hentSedJson(any(), any()) }
         verify(exactly = 0) { personService.harAdressebeskyttelse(any(), any()) }
@@ -153,8 +156,8 @@ internal class BegrensInnsynServiceTest {
         every { euxService.hentBucDokumenter(any()) } returns docs
         every { personService.harAdressebeskyttelse(any(), any()) } returns false
 
-        val hendelse = SedHendelseModel(sektorKode = "P", rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId).toJson()
-        begrensInnsynService.begrensInnsyn(SedHendelseModel.fromJson(hendelse))
+        val hendelse = SedHendelse(sektorKode = "P", rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId, rinaDokumentVersjon = "4.25" ).toJson()
+        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentBucDokumenter(rinaSakId) }
         verify(exactly = 1) { euxService.hentSedJson(rinaSakId, rinaDokumentId) }

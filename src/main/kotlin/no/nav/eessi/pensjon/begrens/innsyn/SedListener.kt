@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
+import no.nav.eessi.pensjon.eux.model.SedHendelse
+import no.nav.eessi.pensjon.utils.mapAnyToJson
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import javax.annotation.PostConstruct
@@ -58,7 +61,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     return@measure
                 }
                 try {
-                    val sedHendelse = SedHendelseModel.fromJson(hendelse)
+                    val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                     begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
@@ -82,7 +85,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 secureLog.debug("Hendelse mottatt:\n${vask11sifre(hendelse)}")
 
-                val sedHendelse = SedHendelseModel.fromJson(hendelse)
+                val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
 
                 if (profile == "prod" && sedHendelse.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
                     logger.error("Avsender id er ${sedHendelse.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelse")
