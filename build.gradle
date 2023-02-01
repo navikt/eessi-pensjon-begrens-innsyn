@@ -53,7 +53,7 @@ dependencies {
 	implementation("no.nav.security:token-validation-test-support:2.0.5")
 
 	// eessi libs
-	implementation("no.nav.eessi.pensjon:ep-logging:1.1.13")
+	implementation("no.nav.eessi.pensjon:ep-logging:1.1.16")
 	implementation("no.nav.eessi.pensjon:ep-metrics:1.0.10")
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:12.2.2")
 	implementation("no.nav.eessi.pensjon:ep-eux:1.4.18")
