@@ -52,7 +52,7 @@
     <springProfile name="!prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>%level %logger %msg %n</pattern>
+                <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
             </encoder>
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <includeCallerData>true</includeCallerData>
@@ -78,21 +78,8 @@
             <appender-ref ref="secureLog"/>
         </logger>
 
-        <logger name="io" level="ERROR"/>
-        <logger name="org" level="ERROR"/>
-        <logger name="com" level="ERROR"/>
-        <logger name="no.nav" level="INFO"/>
-        <logger name="no.nav.security" level="ERROR"/>
-        <logger name="no.nav.eessi.pensjon.security" level="ERROR"/>
-        <logger name="no.nav.eessi" level="INFO"/>
-        <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF"/>
-        <logger name="no.nav.security.token.support.core.validation" level="ERROR"/>
-
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="stdout_json"/>
         </root>
-
     </springProfile>
-
-
 </configuration>
