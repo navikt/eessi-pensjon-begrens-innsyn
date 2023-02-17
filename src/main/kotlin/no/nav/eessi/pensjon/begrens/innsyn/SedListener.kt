@@ -1,6 +1,9 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
+import jakarta.annotation.PostConstruct
+import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.utils.mapJsonToAny
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -9,12 +12,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
-import no.nav.eessi.pensjon.eux.model.SedHendelse
-import no.nav.eessi.pensjon.utils.mapAnyToJson
-import no.nav.eessi.pensjon.utils.mapJsonToAny
 import java.util.*
 import java.util.concurrent.CountDownLatch
-import javax.annotation.PostConstruct
 
 @Service
 class SedListener(private val begrensInnsynService: BegrensInnsynService,

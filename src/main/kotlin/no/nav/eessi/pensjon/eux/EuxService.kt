@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.eux
 
+import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.eux.model.buc.Buc
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
@@ -15,7 +16,6 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.retry.listener.RetryListenerSupport
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
-import javax.annotation.PostConstruct
 
 @Service
 class EuxService(
