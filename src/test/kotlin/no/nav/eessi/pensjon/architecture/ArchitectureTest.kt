@@ -2,38 +2,55 @@ package no.nav.eessi.pensjon.architecture
 
 import com.tngtech.archunit.core.domain.JavaClasses
 import com.tngtech.archunit.core.domain.JavaMethod
-import com.tngtech.archunit.junit.AnalyzeClasses
+import com.tngtech.archunit.core.importer.ClassFileImporter
+import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.junit.ArchTest
 import com.tngtech.archunit.lang.ArchCondition
 import com.tngtech.archunit.lang.ArchRule
 import com.tngtech.archunit.lang.ConditionEvents
 import com.tngtech.archunit.lang.SimpleConditionEvent
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods
 import com.tngtech.archunit.lang.syntax.elements.MethodsShouldConjunction
-import com.tngtech.archunit.library.dependencies.SliceRule
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import no.nav.eessi.pensjon.EessiPensjonBegrensInnsynApplication
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.springframework.web.bind.annotation.RestController
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@AnalyzeClasses(packagesOf = [EessiPensjonBegrensInnsynApplication::class])
 class ArchitectureTest {
 
-    @ArchTest
-    val packagesShouldNotHaveCyclicDependencies: SliceRule =
-            slices().matching("..(*)..").should().beFreeOfCycles()
+    companion object {
 
-    @ArchTest
-    val servicesShouldNotDependOnEachOther: SliceRule =
-            slices().matching("..services.(**)").should().notDependOnEachOther()
+        @JvmStatic
+        private val root = EessiPensjonBegrensInnsynApplication::class.qualifiedName!!.replace("." + EessiPensjonBegrensInnsynApplication::class.simpleName, "")
 
-//    @ArchTest
-//    val componentDiagramCheck: ArchRule =
-//            classes().should(
-//                    adhereToPlantUmlDiagram(this::class.java.getResource("/components.puml"),
-//                            consideringOnlyDependenciesInAnyPackage("no.nav.eessi.pensjon..")))
+        @JvmStatic
+        lateinit var allClasses: JavaClasses
+
+        @JvmStatic
+        lateinit var productionClasses: JavaClasses
+
+        @JvmStatic
+        lateinit var testClasses: JavaClasses
+
+        @BeforeAll
+        @JvmStatic
+        fun `extract classes`() {
+            allClasses = ClassFileImporter().importPackages(root)
+
+            productionClasses = ClassFileImporter()
+                .withImportOption(ImportOption.DoNotIncludeTests())
+                .withImportOption(ImportOption.DoNotIncludeJars())
+                .importPackages(root)
+
+            testClasses = ClassFileImporter()
+                .withImportOption{ !ImportOption.DoNotIncludeTests().includes(it) }
+                .importPackages(root)
+        }
+    }
 
     @ArchTest
     fun `avoid JUnit4-classes`(importedClasses: JavaClasses) {
@@ -71,6 +88,30 @@ class ArchitectureTest {
     @ArchTest
     val everyArchTestMustCallCheck: MethodsShouldConjunction =
             methods().that().areAnnotatedWith(ArchTest::class.java).should(CallCheckMethod)
+
+    @Test
+    fun `no cycles on top level`() {
+        slices()
+            .matching("$root.(*)..")
+            .should().beFreeOfCycles()
+            .check(productionClasses)
+    }
+
+    @Test
+    fun `no cycles on any level for production classes`() {
+        slices()
+            .matching("$root.(*)..")
+            .should().beFreeOfCycles()
+            .check(productionClasses)
+    }
+
+    @Test
+    fun `controllers should have RestController-annotation`() {
+        ArchRuleDefinition.classes().that()
+            .haveSimpleNameEndingWith("Controller")
+            .should().beAnnotatedWith(RestController::class.java)
+            .check(allClasses)
+    }
 }
 
 object CallCheckMethod : ArchCondition<JavaMethod>("call check()-method") {
