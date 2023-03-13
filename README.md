@@ -3,6 +3,18 @@
 
 # eessi-pensjon-begrens-innsyn
 
+Begrens innsyn leser inn sendte og mottatte SEDer og finner alle norske fødselsnummer og sjekker om disse er fortrolig og strengt fortrolig (tidligere kode 7/6 ), 
+i disse tilfellene settes hele BUC til sensitiv, og kun personer med VIP rollen kan lese og skrive på SEDene i BUCen
+
+Omfanget starter fra applikasjonen leser melding på onprem-topiene:
+
+eessi-basis-sedSendt-v1
+eessi-basis-sedMottatt-v1
+
+Og slutter ved eux-rina-api tjeneste:
+
+https://eux-rina-api.nais.adeo.no/cpi/buc/$rinaSakId/sensitivsak
+
 ## Komponentstruktur
 
 ![Komponentstruktur-diagram](./components.svg)
