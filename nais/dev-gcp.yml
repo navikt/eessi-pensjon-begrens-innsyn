@@ -16,7 +16,8 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
+        - host: eux-rina-api-q2.dev-fss-pub.nais.io
+        - host: pdl-api.dev-fss-pub.nais.io
   webproxy: true
   kafka:
     pool: nav-dev
