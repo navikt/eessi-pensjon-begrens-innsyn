@@ -24,8 +24,6 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: VIRKSOMHET_PERSON_V3_ENDPOINTURL
-      value: https://app.adeo.no/tpsws-aura/ws/Person/v3
     - name: PDL_URL
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
