@@ -38,7 +38,7 @@ spec:
       value: eessibasis.sedmottatt-v1-q2
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-begrens-innsyn-q2.dev.intern.nav.no
+    - https://eessi-pensjon-begrens-innsyn-q2.intern.dev.nav.no
   liveness:
     path: /internal/isalive
     port: 8080
