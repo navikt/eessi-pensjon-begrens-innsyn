@@ -12,7 +12,7 @@ jobs:
     name: 'Bygg branch og publiser image'
     runs-on: ubuntu-latest
     env:
-      package: eessi-pensjon-begrens-innsyn
+      package: ${{ env.package }}
     steps:
       - name: 'Pull repo'
         uses: actions/checkout@v3
