@@ -1,3 +1,11 @@
+
+# ******************************************************************************************************************
+#
+# Dette er en auto-generert fil; endringer gjøres i templates/.github/workflows/bygg_mainline_og_deploy.yml
+# Kjør deretter ' make generate-files' for oppdatering av workflow hos prosjekter
+#
+# ******************************************************************************************************************
+
 name: Bygg, deploy DEV, publiser, tag og dispatch deploy til PROD
 
 on:
