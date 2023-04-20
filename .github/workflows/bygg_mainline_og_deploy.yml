@@ -33,7 +33,7 @@ jobs:
         id: docker-push
         with:
           team: eessipensjon
-          tag: ${{org.opencontainers.image.title}}
+          tag: ${{ github.event.repository.name }}
           pull: true
           dockerfile: Dockerfile
           docker_context: . # optional, default .a
