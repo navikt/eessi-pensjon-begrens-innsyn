@@ -13,7 +13,7 @@ jobs:
       id-token: "write"
     runs-on: ubuntu-latest
     env:
-      package: eessi-pensjon-begrens-innsyn
+      package: ${{docker_metadata_output_labels.org.opencontainers.image.title}}
     steps:
       - name: 'Pull repo'
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
         id: docker-push
         with:
           team: eessipensjon
-          tag: begrens-innsyn
+          tag: ${{docker_metadata_output_labels.org.opencontainers.image.title}}
           pull: true
           dockerfile: Dockerfile
           docker_context: . # optional, default .a
