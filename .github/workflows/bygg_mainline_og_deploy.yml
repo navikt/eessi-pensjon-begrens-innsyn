@@ -35,14 +35,7 @@ jobs:
           team: eessipensjon
           tag: ${{ github.event.repository.name }}
           pull: true
-          dockerfile: Dockerfile
-          docker_context: . # optional, default .a
           image_suffix: ${{ env.DATE }}${{ env.COMMIT_HASH }} # optional, default empty
-          cache_from: type=gha # optional, default type=gha
-          cache_to: type=gha,mode=max # optional, default type=gha,mode=max
-          build_secrets:
-            | # optional, default empty. See https://docs.docker.com/build/ci/github-actions/secrets/
-            key=string
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }} # required, but is defined as an organization variable
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }} # required, but is defined as an organization secret
 
