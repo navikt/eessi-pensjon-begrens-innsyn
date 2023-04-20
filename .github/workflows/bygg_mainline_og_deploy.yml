@@ -33,7 +33,7 @@ jobs:
         id: docker-push
         with:
           team: eessipensjon
-          tag: ${{docker_metadata_output_labels.org.opencontainers.image.title}}
+          tag: ${{org.opencontainers.image.title}}
           pull: true
           dockerfile: Dockerfile
           docker_context: . # optional, default .a
