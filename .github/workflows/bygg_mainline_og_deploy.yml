@@ -12,8 +12,6 @@ jobs:
       contents: "read"
       id-token: "write"
     runs-on: ubuntu-latest
-    env:
-      package: ${{docker_metadata_output_labels.org.opencontainers.image.title}}
     steps:
       - name: 'Pull repo'
         uses: actions/checkout@v3
