@@ -106,5 +106,6 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
     }
 
     // TODO Finn gjerne en bedre måte
-    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "***")
+    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "******").replaceAfter("navBruker", "******")
+
 }

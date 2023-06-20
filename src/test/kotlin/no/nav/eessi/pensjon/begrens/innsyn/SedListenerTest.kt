@@ -57,4 +57,12 @@ internal class SedListenerTest {
         verify(exactly = 0) { acknowledgment.acknowledge() }
 
     }
+
+    @Test
+    fun `Anonymisering av fnr og dnr ved logging`() {
+        every { begrensInnsynService.begrensInnsyn(any()) } throws RuntimeException()
+
+        assertThrows<RuntimeException> { sedListener.consumeSedMottatt(sedHendelse, cr, acknowledgment) }.message?.contains("navBruker******")
+
+    }
 }
