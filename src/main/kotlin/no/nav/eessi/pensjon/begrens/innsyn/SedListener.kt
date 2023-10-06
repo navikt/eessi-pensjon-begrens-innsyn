@@ -53,6 +53,9 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
             consumeOutgoingSed.measure {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 secureLog.debug("Hendelse sendt:\n${vask11sifre(hendelse)}")
+                val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
+                if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
+
                 val offset = cr.offset()
                 val offsetToSkip = listOf(70196L, 70197L, 70768L, 176379L)
                 if (offset in offsetToSkip) {
@@ -60,7 +63,6 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     return@measure
                 }
                 try {
-                    val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                     begrensInnsynService.begrensInnsyn(sedHendelse)
                     acknowledgment.acknowledge()
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
@@ -83,8 +85,9 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
             consumeIncomingSed.measure {
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 secureLog.debug("Hendelse mottatt:\n${vask11sifre(hendelse)}")
-
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
+                if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
+
 
                 if (profile == "prod" && sedHendelse.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
                     logger.error("Avsender id er ${sedHendelse.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelse")
@@ -107,5 +110,17 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
 
     // TODO Finn gjerne en bedre måte
     private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "******").replaceAfter("navBruker", "******")
+
+    private fun testMeldingIProdLogError(
+        sedHendelseRina: SedHendelse,
+        acknowledgment: Acknowledgment
+    ): Boolean {
+        if (profile == "prod" && sedHendelseRina.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07") || profile == "prod" && sedHendelseRina.mottakerId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
+            logger.error("Avsender id er ${sedHendelseRina.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelseRina")
+            acknowledgment.acknowledge()
+            return true
+        }
+        return false
+    }
 
 }
