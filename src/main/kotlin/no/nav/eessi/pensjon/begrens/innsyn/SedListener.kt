@@ -56,10 +56,9 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
-                val offset = cr.offset()
                 val offsetToSkip = listOf(70196L, 70197L, 70768L, 176379L)
-                if (offset in offsetToSkip) {
-                    logger.warn("Hopper over offset: $offset grunnet feil.")
+                if (cr.offset() in offsetToSkip) {
+                    logger.warn("Hopper over offset: ${cr.offset()} grunnet feil.")
                     return@measure
                 }
                 try {
@@ -86,8 +85,8 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
                 secureLog.debug("Hendelse mottatt:\n${vask11sifre(hendelse)}")
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
-                if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
+                if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
                 if (profile == "prod" && sedHendelse.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
                     logger.error("Avsender id er ${sedHendelse.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelse")
