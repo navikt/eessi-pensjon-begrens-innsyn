@@ -14,6 +14,7 @@ import no.nav.eessi.pensjon.eux.model.document.SedStatus
 import no.nav.eessi.pensjon.eux.model.sed.SED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.utils.mapJsonToAny
+import no.nav.eessi.pensjon.utils.toJson
 import org.junit.jupiter.api.Test
 
 internal class BegrensInnsynServiceTest {
@@ -169,9 +170,4 @@ internal class BegrensInnsynServiceTest {
         val json = javaClass.getResource("/sed/allDocuments.json")!!.readText()
         return jacksonObjectMapper().readValue(json, object : TypeReference<List<ForenkletSED>>() {})
     }
-
-    private fun Any.toJson(): String = jacksonObjectMapper()
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        .writeValueAsString(this)
-
 }
