@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		springBootVersion = '3.1.4'
-		springKafkaVersion = '3.0.11'
+		springKafkaVersion = '3.0.12'
 		tokenSupportVersion = '3.1.7'
 		archUnitVersion = '1.1.0'
 	}
@@ -47,7 +47,7 @@ dependencies {
 	implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
 
 	// eessi libs
-	implementation("no.nav.eessi.pensjon:ep-eux:2.1.54")
+	implementation("no.nav.eessi.pensjon:ep-eux:2.1.68")
 	implementation("no.nav.eessi.pensjon:ep-metrics:2.0.39")
 	implementation("no.nav.eessi.pensjon:ep-logging:2.1.34")
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:13.1.24"){
