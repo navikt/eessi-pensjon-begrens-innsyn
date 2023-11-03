@@ -176,9 +176,7 @@ class BegrensInnsynIntegrationTest {
     @TestConfiguration
     class TestConfig{
         @Bean
-        fun personService(): PersonService = mockk {
-            every { initMetrics() } just Runs
-        }
+        fun personService(): PersonService = mockk()
 
         @Bean
         fun downstreamClientCredentialsResourceRestTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate? {

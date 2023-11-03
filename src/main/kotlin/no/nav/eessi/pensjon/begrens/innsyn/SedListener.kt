@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.utils.mapJsonToAny
@@ -37,8 +36,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         return latchMottatt
     }
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         consumeOutgoingSed = metricsHelper.init("consumeOutgoingSed")
         consumeIncomingSed = metricsHelper.init("consumeIncomingSed")
     }

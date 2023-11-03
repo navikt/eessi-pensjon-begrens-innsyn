@@ -21,11 +21,6 @@ internal class SedListenerTest {
 
     private val sedHendelse = javaClass.getResource("/sed/P_BUC_01.json").readText()
 
-    @BeforeEach
-    fun setup() {
-        sedListener.initMetrics()
-    }
-
     @Test
     fun `gitt en gyldig sedHendelse når sedSendt hendelse konsumeres så ack melding`() {
         sedListener.consumeSedSendt(sedHendelse, cr, acknowledgment)

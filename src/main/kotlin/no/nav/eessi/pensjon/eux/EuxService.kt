@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.eux
 
-import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.eux.model.buc.Buc
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
@@ -27,8 +26,7 @@ class EuxService(
     private lateinit var hentBuc: MetricsHelper.Metric
     private lateinit var settSensitiv: MetricsHelper.Metric
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         hentSed = metricsHelper.init("hentSed", alert = MetricsHelper.Toggle.OFF)
         hentBuc = metricsHelper.init("hentBuc", alert = MetricsHelper.Toggle.OFF)
         settSensitiv = metricsHelper.init("settSensitiv", alert = MetricsHelper.Toggle.OFF)
