@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -50,7 +51,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeOutgoingSed.measure {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                secureLog.debug("Hendelse sendt:\n${vask11sifre(hendelse)}")
+                secureLog.debug("Hendelse sendt:\n${Fodselsnummer.vaskFnr(hendelse)}")
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
@@ -65,7 +66,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     logger.info("Acket sedSendt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latchSendt.countDown()
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedSendt hendelse:\n ${Fodselsnummer.vaskFnr(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
@@ -81,7 +82,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeIncomingSed.measure {
                 logger.info("Innkommet sedMottatt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
-                secureLog.debug("Hendelse mottatt:\n${vask11sifre(hendelse)}")
+                secureLog.debug("Hendelse mottatt:\n${Fodselsnummer.vaskFnr(hendelse)}")
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
 
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
@@ -98,15 +99,12 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                     logger.info("Acket sedMottatt melding med offset: ${cr.offset()} i partisjon ${cr.partition()}")
                     latchMottatt.countDown()
                 } catch (ex: Exception) {
-                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n ${vask11sifre(hendelse)} \n ${ex.message}", ex)
+                    logger.error("Noe gikk galt under behandling av sedMottatt hendelse:\n ${Fodselsnummer.vaskFnr(hendelse)} \n ${ex.message}", ex)
                     throw RuntimeException(ex.message)
                 }
             }
         }
     }
-
-    // TODO Finn gjerne en bedre måte
-    private fun vask11sifre(tekst: String) = tekst.replace(Regex("""\d{11}"""), "******").replaceAfter("navBruker", "******")
 
     private fun testMeldingIProdLogError(
         sedHendelseRina: SedHendelse,
