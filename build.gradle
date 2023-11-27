@@ -17,6 +17,7 @@ plugins {
 apply from: "buildSrc/ep-module.gradle"
 
 group = 'no.nav.eessi.pensjon'
+version = '0.0.1'
 
 dependencies {
 	// Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
