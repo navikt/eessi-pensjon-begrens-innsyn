@@ -87,6 +87,12 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
 
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
+                val offsetToSkip = listOf(814980L)
+                if (cr.offset() in offsetToSkip) {
+                    logger.warn("Hopper over offset: ${cr.offset()} grunnet feil.")
+                    return@measure
+                }
+
                 if (profile == "prod" && sedHendelse.avsenderId in listOf("NO:NAVAT05", "NO:NAVAT07")) {
                     logger.error("Avsender id er ${sedHendelse.avsenderId}. Dette er testdata i produksjon!!!\n$sedHendelse")
                     acknowledgment.acknowledge()
