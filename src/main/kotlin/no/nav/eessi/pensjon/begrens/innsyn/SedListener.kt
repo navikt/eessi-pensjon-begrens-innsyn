@@ -88,7 +88,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
                 val offsetToSkip = listOf(814980L)
-                if (cr.offset() in offsetToSkip || sedHendelse.rinaSakId in listOf("4179656")) {
+                if (cr.offset() in offsetToSkip) {
                     logger.warn("Hopper over offset: ${cr.offset()}, rinasakId> ${sedHendelse.rinaSakId} grunnet feil.")
                     acknowledgment.acknowledge()
                     return@measure
