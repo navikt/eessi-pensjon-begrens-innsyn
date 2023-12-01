@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.eux
 
+import no.nav.eessi.pensjon.config.SED_CACHE
 import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.eux.model.buc.Buc
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
@@ -7,6 +8,7 @@ import no.nav.eessi.pensjon.eux.model.document.SedStatus
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Profile
 import org.springframework.retry.RetryCallback
 import org.springframework.retry.RetryContext
@@ -44,6 +46,7 @@ class EuxService(
         backoff = Backoff(delayExpression = "@euxKlientRetryConfig.initialRetryMillis", maxDelay = 200000L, multiplier = 3.0),
         listeners  = ["euxKlientRetryLogger"]
     )
+    @Cacheable(cacheNames = [SED_CACHE], key = "#rinaSakId + '-' +  #dokumentId", cacheManager = "euxCacheManager")
     fun hentSedJson(rinaSakId: String, dokumentId: String): String? {
         return hentSed.measure {
             euxKlient.hentSedJson(rinaSakId, dokumentId)
