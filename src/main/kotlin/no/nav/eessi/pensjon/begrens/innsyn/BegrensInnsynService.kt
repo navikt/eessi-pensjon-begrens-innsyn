@@ -7,11 +7,14 @@ import no.nav.eessi.pensjon.eux.model.BucType.R_BUC_02
 import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.SedType.*
+import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 @Service
 class BegrensInnsynService(
@@ -33,6 +36,7 @@ class BegrensInnsynService(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun sjekkAdresseBeskyttelse(sedHendelse: SedHendelse) {
         val rinaSakId = sedHendelse.rinaSakId
         val dokumentId = sedHendelse.rinaDokumentId
@@ -49,9 +53,13 @@ class BegrensInnsynService(
 
             logger.info("Fant ${documentIds.size} dokumenter. IDer: $documentIds")
 
-            val beskyttet = documentIds
+            val beskyttet = measureTimedValue {
+                documentIds
                     .filterNot { it == dokumentId } // Denne er allerede sjekket over
                     .any { docId -> harAdressebeskyttelse(rinaSakId, docId) }
+            }.also {
+                logger.info("hentSed for rinasak:$rinaSakId tid: ${it.duration.inWholeSeconds}")
+            }.value
 
             if (beskyttet) {
                 logger.info("BEGRENSER INNSYN! RinaSakID $rinaSakId inneholder SED med adressebeskyttet person.")
