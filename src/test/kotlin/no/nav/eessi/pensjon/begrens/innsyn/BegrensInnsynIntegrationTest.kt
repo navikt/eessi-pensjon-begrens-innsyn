@@ -116,7 +116,6 @@ class BegrensInnsynIntegrationTest {
     private fun shutdown(container: KafkaMessageListenerContainer<String, String>) {
         mockServer.stop()
         container.stop()
-        embeddedKafka.kafkaServers.forEach { it.shutdown() }
     }
 
     private fun settOppProducerTemplate(): KafkaTemplate<Int, String> {
