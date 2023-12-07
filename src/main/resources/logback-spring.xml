@@ -73,6 +73,7 @@
             </encoder>
         </appender>
         <logger name="org.springframework.kafka" level="INFO"/>
+        <logger name="org.apache.kafka" level="INFO"/>
 
         <logger name="secureLog" level="DEBUG"  additivity="false">
             <appender-ref ref="secureLog"/>
