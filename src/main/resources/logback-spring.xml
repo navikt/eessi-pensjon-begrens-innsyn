@@ -37,7 +37,6 @@
         <logger name="com" level="ERROR"/>
         <logger name="no.nav" level="INFO"/>
         <logger name="no.nav.security" level="ERROR"/>
-        <logger name="no.nav.eessi.pensjon.security" level="ERROR"/>
         <logger name="no.nav.eessi" level="INFO"/>
         <logger name="no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor" level="OFF"/>
         <logger name="no.nav.security.token.support.core.validation" level="ERROR"/>
@@ -73,6 +72,7 @@
                 <includeCallerData>true</includeCallerData>
             </encoder>
         </appender>
+        <logger name="org.springframework.kafka" level="INFO"/>
 
         <logger name="secureLog" level="DEBUG"  additivity="false">
             <appender-ref ref="secureLog"/>
