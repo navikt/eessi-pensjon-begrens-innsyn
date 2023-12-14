@@ -1,7 +1,7 @@
 package no.nav.eessi.pensjon.eux
 
 import no.nav.eessi.pensjon.config.SED_CACHE
-import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
+import no.nav.eessi.pensjon.eux.klient.EuxKlient
 import no.nav.eessi.pensjon.eux.model.buc.Buc
 import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.eux.model.document.SedStatus
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class EuxService(
-    private val euxKlient: EuxKlientLib,
+    private val euxKlient: EuxKlient,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
