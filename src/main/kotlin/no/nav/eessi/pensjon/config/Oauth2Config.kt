@@ -1,7 +1,7 @@
 package no.nav.eessi.pensjon.config;
 
 import io.micrometer.core.instrument.MeterRegistry
-import no.nav.eessi.pensjon.eux.klient.EuxKlient
+import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.client.core.ClientProperties
@@ -47,7 +47,7 @@ class OAuth2Configuration(
             .build()
     }
     @Bean
-    fun euxKlient(): EuxKlient = EuxKlient(euxOAuthRestTemplate())
+    fun euxKlient(): EuxKlientLib = EuxKlientLib(euxOAuthRestTemplate())
 
     private fun bearerTokenInterceptor(
         clientProperties: ClientProperties,

@@ -3,7 +3,7 @@ package no.nav.eessi.pensjon.eux
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
-import no.nav.eessi.pensjon.eux.klient.EuxKlient
+import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -27,7 +27,7 @@ import org.springframework.web.client.HttpClientErrorException
 internal class EuxKlientTest{
 
     @MockkBean
-    lateinit var euxKlient: EuxKlient
+    lateinit var euxKlient: EuxKlientLib
 
     @Autowired
     lateinit var euxService: EuxService

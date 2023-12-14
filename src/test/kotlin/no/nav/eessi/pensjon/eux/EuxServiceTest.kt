@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.eessi.pensjon.config.EuxCacheConfig
 import no.nav.eessi.pensjon.config.SED_CACHE
-import no.nav.eessi.pensjon.eux.klient.EuxKlient
+import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
 import no.nav.eessi.pensjon.utils.toJson
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -58,9 +58,9 @@ class EuxServiceCacheTest {
     @TestConfiguration
     class Config {
         @Bean
-        fun EuxKlient() = EuxKlient(euxRestTemplate())
+        fun EuxKlientLib() = EuxKlientLib(euxRestTemplate())
         @Bean
-        fun EuxService() = EuxService(EuxKlient())
+        fun EuxService() = EuxService(EuxKlientLib())
         @Bean
         fun euxRestTemplate(): RestTemplate = mockk(relaxed = true)
     }
