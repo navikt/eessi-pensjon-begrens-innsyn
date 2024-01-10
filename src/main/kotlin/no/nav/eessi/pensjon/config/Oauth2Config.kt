@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.config;
+package no.nav.eessi.pensjon.config
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.eessi.pensjon.eux.klient.EuxKlientLib
@@ -51,7 +51,7 @@ class OAuth2Configuration(
 
     private fun bearerTokenInterceptor(
         clientProperties: ClientProperties,
-        oAuth2AccessTokenService: OAuth2AccessTokenService): ClientHttpRequestInterceptor? {
+        oAuth2AccessTokenService: OAuth2AccessTokenService): ClientHttpRequestInterceptor {
         return ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             request.headers.setBearerAuth(response.accessToken)
