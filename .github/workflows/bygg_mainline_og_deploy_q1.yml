@@ -6,7 +6,7 @@
 #
 # ******************************************************************************************************************
 
-name: Bygg, deploy DEV, publiser, tag og dispatch deploy til PROD
+name: Bygg, deploy publiser for branch RINA CDM
 
 on:
   push:
