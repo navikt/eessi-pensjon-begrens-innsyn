@@ -30,12 +30,12 @@ internal class BegrensInnsynServiceTest {
         val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any(), any()) }.returns(true)
+        every { personService.harAdressebeskyttelse(any()) }.returns(true)
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 1) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 1) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 1) { euxService.settSensitivSak("147729") }
         verify(exactly = 0) { euxService.hentBucDokumenter("147729") }
     }
@@ -47,13 +47,13 @@ internal class BegrensInnsynServiceTest {
         val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any(), any()) }.returns(true)
+        every { personService.harAdressebeskyttelse(any()) }.returns(true)
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
 
         verify(exactly = 1) { euxService.hentSedJson("147710", "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 1) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 1) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 1) { euxService.settSensitivSak("147710") }
         verify(exactly = 0) { euxService.hentBucDokumenter("147710") }
     }
@@ -65,14 +65,14 @@ internal class BegrensInnsynServiceTest {
         val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any(), any()) }.returns(false)
+        every { personService.harAdressebeskyttelse(any()) }.returns(false)
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 1) { euxService.hentBucDokumenter("147710") }
     }
 
@@ -84,14 +84,14 @@ internal class BegrensInnsynServiceTest {
         val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
+        every { personService.harAdressebeskyttelse(any()) } returns false andThen true
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { euxService.hentSedJson(any(), "02249d3f5bdd4336999ccfbf7bb13c64") }
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 1) { euxService.hentBucDokumenter("147729") }
         verify(exactly = 1) { euxService.settSensitivSak("147729") }
     }
@@ -103,13 +103,13 @@ internal class BegrensInnsynServiceTest {
         val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false
+        every { personService.harAdressebeskyttelse(any()) } returns false
         every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 2) { euxService.hentSedJson(any(), any()) }
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 1) { euxService.hentBucDokumenter(any()) }
         verify(exactly = 0) { euxService.settSensitivSak(any()) }
     }
@@ -119,11 +119,11 @@ internal class BegrensInnsynServiceTest {
 
         val hendelse = javaClass.getResource("/sed/P_BUC_06_X050.json")!!.readText()
 
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false
+        every { personService.harAdressebeskyttelse(any()) } returns false
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
         verify(exactly = 0) { euxService.hentSedJson(any(), any()) }
-        verify(exactly = 0) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 0) { personService.harAdressebeskyttelse(any()) }
         verify(exactly = 0) { euxService.settSensitivSak(any()) }
     }
 
@@ -155,7 +155,7 @@ internal class BegrensInnsynServiceTest {
 
         every { euxService.hentSedJson(any(), any()) } returns p8000
         every { euxService.hentBucDokumenter(any()) } returns docs
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false
+        every { personService.harAdressebeskyttelse(any()) } returns false
 
         val hendelse = SedHendelse(sektorKode = "P", rinaSakId = rinaSakId, rinaDokumentId = rinaDokumentId, rinaDokumentVersjon = "4.25" ).toJson()
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))

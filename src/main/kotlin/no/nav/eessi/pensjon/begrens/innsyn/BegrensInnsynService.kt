@@ -81,7 +81,7 @@ class BegrensInnsynService(
 
         logger.info("Fant ${fnrListe.size} unike fnr i SED (rinaNr: $rinaNr, sedDokId: $sedDokumentId)")
 
-        return personService.harAdressebeskyttelse(fnrListe, gradering)
+        return personService.harAdressebeskyttelse(fnrListe)
     }
 
     private fun trimFnrString(fnrAsString: String) = fnrAsString.replace("[^0-9]".toRegex(), "")

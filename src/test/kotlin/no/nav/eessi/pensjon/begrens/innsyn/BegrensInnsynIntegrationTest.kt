@@ -90,7 +90,7 @@ class BegrensInnsynIntegrationTest {
     private fun initMocks() {
 
         // Mock person
-        every { personService.harAdressebeskyttelse(any(), any()) } returns false andThen true
+        every { personService.harAdressebeskyttelse(any()) } returns false andThen true
 
         // Mocker EUX sensitiv sak
         every { euxService.settSensitivSak("147729") } returns true
@@ -168,7 +168,7 @@ class BegrensInnsynIntegrationTest {
         verify(exactly = 1) { euxService.settSensitivSak("147729") }
 
         // Verifisert at den er kjørt én gang pr. unike dokument. 
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any(), any()) }
+        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
     }
 
     // Mocks the PersonService and EuxService
