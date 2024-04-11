@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer.Companion.tabeller.kontrollsiffer1
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer.Companion.tabeller.kontrollsiffer2
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import org.slf4j.LoggerFactory
 
 /**
  * Norwegian national identity number
@@ -31,6 +31,8 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
         val resultAge = ChronoUnit.YEARS.between(foedselsdato, LocalDate.now()).toInt()
         return resultAge < 18
     }
+    fun erOverAlder(alder: Int): Boolean  = getAge() < alder
+    fun erUnderAlder(alder: Int): Boolean = getAge() > alder
     fun isDNumber() = erDnummer
     fun getBirthDateAsIso() = foedselsdato.toString()
 
