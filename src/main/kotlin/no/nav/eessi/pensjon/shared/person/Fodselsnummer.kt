@@ -31,8 +31,8 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
         val resultAge = ChronoUnit.YEARS.between(foedselsdato, LocalDate.now()).toInt()
         return resultAge < 18
     }
-    fun erOverAlder(alder: Int): Boolean  = getAge() < alder
-    fun erUnderAlder(alder: Int): Boolean = getAge() > alder
+    fun erOverAlder(alder: Int): Boolean  = getAge() > alder
+    fun erUnderAlder(alder: Int): Boolean = getAge() < alder
     fun isDNumber() = erDnummer
     fun getBirthDateAsIso() = foedselsdato.toString()
 
