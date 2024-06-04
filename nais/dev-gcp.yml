@@ -16,7 +16,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: eux-rina-api-q2.dev-fss-pub.nais.io
+        - host: eux-rina-api-q1.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
   webproxy: true
   kafka:
@@ -29,13 +29,13 @@ spec:
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api-eessibasis.dev-fss-pub.nais.io/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
-      value: dev-fss.eessibasis.eux-rina-api-q2
+      value: dev-fss.eessibasis.eux-rina-api-q1
     - name: AZURE_APP_PDL_CLIENT_ID
       value: dev-fss.pdl.pdl-api
     - name: KAFKA_SEDSENDT_TOPIC
-      value: eessibasis.sedsendt-v1-q2
+      value: eessibasis.sedsendt-v1-q1
     - name: KAFKA_SEDMOTTATT_TOPIC
-      value: eessibasis.sedmottatt-v1-q2
+      value: eessibasis.sedmottatt-v1-q1
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-begrens-innsyn-q2.intern.dev.nav.no
