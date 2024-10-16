@@ -5,6 +5,9 @@ buildscript {
 		springKafkaVersion = '3.2.4'
 		tokenSupportVersion = '4.1.4'
 		archUnitVersion = '1.3.0'
+
+		//test
+		jupiterVersion = '5.11.2'
 	}
 }
 
@@ -69,9 +72,9 @@ dependencies {
 
 	testImplementation("no.nav.security:token-validation-test-support:2.0.5")
 
-	testImplementation(platform("org.junit:junit-bom:5.11.2"))
-	testImplementation("org.junit.jupiter:junit-jupiter")
-	testImplementation("org.junit.jupiter:junit-jupiter-params")
+	testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+	testImplementation("org.junit.jupiter:junit-jupiter:$jupiterVersion")
+	testImplementation("org.junit.jupiter:junit-jupiter-params:$jupiterVersion")
 
 	//mock - test
 	testImplementation("org.mock-server:mockserver-netty:5.15.0") {
