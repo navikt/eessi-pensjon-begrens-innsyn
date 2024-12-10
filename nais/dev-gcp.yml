@@ -29,7 +29,7 @@ spec:
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api-eessibasis.eux-rina-api-q2/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
-      value: dev-fss.eessibasis.eux-rina-api-q2
+      value: dev-gcp.eessibasis.eux-rina-api-q2
     - name: AZURE_APP_PDL_CLIENT_ID
       value: dev-fss.pdl.pdl-api
     - name: KAFKA_SEDSENDT_TOPIC
