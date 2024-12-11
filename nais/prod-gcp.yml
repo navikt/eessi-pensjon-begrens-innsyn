@@ -16,7 +16,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: eux-rina-api.prod-fss-pub.nais.io
+        - host: eux-rina-api.intern.nav.no
         - host: pdl-api.prod-fss-pub.nais.io
   webproxy: true
   kafka:
@@ -27,9 +27,9 @@ spec:
     - name: PDL_URL
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api.prod-fss-pub.nais.io/cpi
+      value: https://eux-rina-api.intern.nav.no/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
-      value: prod-fss.eessibasis.eux-rina-api
+      value: prod-gcp.eessibasis.eux-rina-api
     - name: AZURE_APP_PDL_CLIENT_ID
       value: prod-fss.pdl.pdl-api
     - name: KAFKA_SEDSENDT_TOPIC
