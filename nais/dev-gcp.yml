@@ -16,7 +16,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: eux-rina-api-gcp-q2.intern.dev.nav.no
+        - host: eux-rina-api-q2.intern.dev.nav.no
         - host: pdl-api.dev-fss-pub.nais.io
   webproxy: true
   kafka:
@@ -27,7 +27,7 @@ spec:
     - name: PDL_URL
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api-gcp-q2.intern.dev.nav.no/cpi
+      value: https://eux-rina-api-q2.intern.dev.nav.no/cpi
     - name: AZURE_APP_EUX_CLIENT_ID
       value: dev-gcp.eessibasis.eux-rina-api-q2
     - name: AZURE_APP_PDL_CLIENT_ID
