@@ -2,18 +2,13 @@ package no.nav.eessi.pensjon.begrens.innsyn
 
 import no.nav.eessi.pensjon.begrens.innsyn.BegrensInnsynService.SedTypeUtils.ugyldigeTyper
 import no.nav.eessi.pensjon.eux.EuxService
-import no.nav.eessi.pensjon.eux.model.BucType.H_BUC_07
-import no.nav.eessi.pensjon.eux.model.BucType.R_BUC_02
+import no.nav.eessi.pensjon.eux.model.BucType.*
 import no.nav.eessi.pensjon.eux.model.SedHendelse
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.SedType.*
-import no.nav.eessi.pensjon.eux.model.document.ForenkletSED
 import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 @Service
@@ -25,9 +20,7 @@ class BegrensInnsynService(
     private val logger = LoggerFactory.getLogger(BegrensInnsynService::class.java)
 
     private val gyldigSektorKoder = listOf("P", "R", "H")
-    private val gyldigeBucTyper = listOf(H_BUC_07, R_BUC_02)
-
-    private val gradering = listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
+    private val gyldigeBucTyper = listOf(H_BUC_07, R_BUC_02, M_BUC_02, M_BUC_03a, M_BUC_03b)
 
     fun begrensInnsyn(sedHendelse: SedHendelse) {
         if (sedHendelse.sedType in ugyldigeTyper) return
@@ -36,7 +29,6 @@ class BegrensInnsynService(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun sjekkAdresseBeskyttelse(sedHendelse: SedHendelse) {
         val rinaSakId = sedHendelse.rinaSakId
         val dokumentId = sedHendelse.rinaDokumentId

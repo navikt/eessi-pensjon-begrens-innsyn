@@ -3,7 +3,6 @@ package no.nav.eessi.pensjon.begrens.innsyn
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
 
 /**
  * Går gjennom SED og søker etter fnr/dnr
@@ -42,21 +41,21 @@ object SedFnrSoek {
      * Rekursiv traversering av json noden
      */
     private fun traverserNode(jsonNode: JsonNode, funnedeFnr: MutableSet<String>) {
-        val fødselsnummere = finnFnr(jsonNode)
+        val fodselsnumre = finnFnr(jsonNode)
 
         when {
             jsonNode.isObject -> {
-                if(fødselsnummere.isEmpty()) {
+                if(fodselsnumre.isEmpty()) {
                     jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
                 } else {
-                    leggTilFunnedeFnr(fødselsnummere, jsonNode, funnedeFnr)
+                    leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
                 }
             }
             jsonNode.isArray -> {
                 jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
             }
             else -> {
-                leggTilFunnedeFnr(fødselsnummere, jsonNode, funnedeFnr)
+                leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
             }
         }
     }
