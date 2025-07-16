@@ -29,18 +29,22 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+
     - name: PDL_URL
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
       value: https://eux-rina-api.intern.nav.no/cpi
+
     - name: AZURE_APP_EUX_CLIENT_ID
       value: prod-gcp.eessibasis.eux-rina-api
     - name: AZURE_APP_PDL_CLIENT_ID
       value: prod-fss.pdl.pdl-api
+
     - name: KAFKA_SEDSENDT_TOPIC
       value: eessibasis.sedsendt-v1
     - name: KAFKA_SEDMOTTATT_TOPIC
       value: eessibasis.sedmottatt-v1
+
   image: {{ image }}
   ingresses:
     - https://eessi-pensjon-begrens-innsyn.intern.nav.no
