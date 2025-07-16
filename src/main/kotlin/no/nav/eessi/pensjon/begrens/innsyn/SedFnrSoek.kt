@@ -47,16 +47,13 @@ object SedFnrSoek {
             jsonNode.isObject -> {
                 if(fodselsnumre.isEmpty()) {
                     jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
-                } else {
-                    leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
                 }
+                else leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
             }
             jsonNode.isArray -> {
                 jsonNode.forEach { node -> traverserNode(node, funnedeFnr) }
             }
-            else -> {
-                leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
-            }
+            else -> leggTilFunnedeFnr(fodselsnumre, jsonNode, funnedeFnr)
         }
     }
 
@@ -80,11 +77,8 @@ object SedFnrSoek {
      */
     private fun erPinNorsk(jsonNode: JsonNode) : Boolean {
         val land = jsonNode.get("land")
-        if (land == null) {
-            return true
-        } else if (land.textValue() == "NO") {
-            return true
-        }
+        if (land == null) return true
+        else if (land.textValue() == "NO") return true
         return false
     }
 
