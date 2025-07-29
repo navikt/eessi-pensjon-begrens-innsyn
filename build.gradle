@@ -69,7 +69,7 @@ dependencies {
 	testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 
 	//nødvendig for validering av jwt og EnableJwtTokenValidationConfiguration
-	implementation("org.hibernate.validator:hibernate-validator")
+	implementation("org.hibernate.validator:hibernate-validator:9.0.1.Final")
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
 
