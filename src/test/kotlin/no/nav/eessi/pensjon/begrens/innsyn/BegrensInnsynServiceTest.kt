@@ -16,6 +16,8 @@ import no.nav.eessi.pensjon.personoppslag.pdl.PersonService
 import no.nav.eessi.pensjon.utils.mapJsonToAny
 import no.nav.eessi.pensjon.utils.toJson
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 internal class BegrensInnsynServiceTest {
 
@@ -23,94 +25,49 @@ internal class BegrensInnsynServiceTest {
     private val personService = mockk<PersonService>()
     private val begrensInnsynService = BegrensInnsynService(euxService, personService)
 
-    @Test
-    fun `Gitt at vi mottar en sed med skjermede personer, så skal vi begrense innsyn i hele bucen`() {
-
-        val hendelse = javaClass.getResource("/sed/P_BUC_01.json")!!.readText()
-        val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
+    @ParameterizedTest(name = "{0}")
+    @CsvSource(
+        value = [
+            "for P_BUC og P2000, P_BUC_01.json, P2000-NAV_med_SPSF.json, true, 147729, 147729",
+            "for R_BUC og R_005, R_BUC_02.json, R_BUC_02-R005-AP.json, true, 147710, 147710"],
+        nullValues = ["null"]
+    )
+    fun `Gitt at vi mottar en sed med skjermede personer, så skal vi begrense innsyn i hele bucen`(hendelse:String, sedJson:String, harbeskyttelse:Boolean, rinaNr: String, beskyttetRinaNr:String) {
+        val hendelse = javaClass.getResource("/sed/$hendelse")!!.readText()
+        val sedJson = javaClass.getResource("/sed/$sedJson")!!.readText()
 
         every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any()) }.returns(true)
+        every { personService.harAdressebeskyttelse(any()) }.returns(harbeskyttelse)
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
-        verify(exactly = 1) { euxService.hentSedJson("147729", "4338515b6bed451798ba478c835409a3") }
+        verify(exactly = 1) { euxService.hentSedJson(rinaNr, "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 1) { personService.harAdressebeskyttelse(any()) }
-        verify(exactly = 1) { euxService.settSensitivSak("147729") }
-        verify(exactly = 0) { euxService.hentBucDokumenter("147729") }
+        verify(exactly = 1) { euxService.settSensitivSak(beskyttetRinaNr) }
+        verify(exactly = 0) { euxService.hentBucDokumenter(rinaNr) }
+
     }
 
-    @Test
-    fun `Gitt at vi mottar en R_BUC med skjermede personer, så skal vi begrense innsyn i hele bucen`() {
+    @ParameterizedTest(name = "{0}")
+    @CsvSource(
+        value = [
+            "for P_BUC og P2000, P_BUC_01.json, P2000-NAV_med_SPSF.json, 147729",
+            "for R_BUC og R_005, R_BUC_02.json, R_BUC_02-R005-AP.json, 147710"],
+        nullValues = ["null"]
+    )    fun `Gitt at vi mottar en R_BUC uten skjermede personer, så skal vi returnere en liste over alle seder som skal sjekkes`(beskrivelse: String, hendelse:String, sedJson:String, rinaNr: String) {
 
-        val hendelse = javaClass.getResource("/sed/R_BUC_02.json")!!.readText()
-        val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json")!!.readText()
+        val hendelse = javaClass.getResource("/sed/$hendelse")!!.readText()
+        val sedJson = javaClass.getResource("/sed/$sedJson")!!.readText()
 
-        every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any()) }.returns(true)
-
-        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
-
-
-        verify(exactly = 1) { euxService.hentSedJson("147710", "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 1) { personService.harAdressebeskyttelse(any()) }
-        verify(exactly = 1) { euxService.settSensitivSak("147710") }
-        verify(exactly = 0) { euxService.hentBucDokumenter("147710") }
-    }
-
-    @Test
-    fun `Gitt at vi mottar en R_BUC uten skjermede personer, så skal vi returnere en liste over alle seder som skal sjekkes`() {
-
-        val hendelse = javaClass.getResource("/sed/R_BUC_02.json")!!.readText()
-        val sedJson = javaClass.getResource("/sed/R_BUC_02-R005-AP.json")!!.readText()
-
-        every { euxService.hentSedJson(any(), any()) } returns sedJson
+        every { euxService.hentSedJson(rinaNr, any()) } returns sedJson
         every { personService.harAdressebeskyttelse(any()) }.returns(false)
-        every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
+        every { euxService.hentBucDokumenter(rinaNr) } returns opprettDokumenter()
 
         begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
 
-        verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
+        verify(exactly = 1) { euxService.hentSedJson(rinaNr, "4338515b6bed451798ba478c835409a3") }
         verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
-        verify(exactly = 1) { euxService.hentBucDokumenter("147710") }
-    }
-
-
-    @Test
-    fun `Gitt at vi mottar en sed uten skjermede personer, så skal vi få tilbake en liste over alle seder som skal sjekkes på bucen`() {
-
-        val hendelse = javaClass.getResource("/sed/P_BUC_01.json")!!.readText()
-        val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
-
-        every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any()) } returns false andThen true
-        every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
-
-        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
-
-        verify(exactly = 1) { euxService.hentSedJson(any(), "4338515b6bed451798ba478c835409a3") }
-        verify(exactly = 1) { euxService.hentSedJson(any(), "02249d3f5bdd4336999ccfbf7bb13c64") }
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
-        verify(exactly = 1) { euxService.hentBucDokumenter("147729") }
-        verify(exactly = 1) { euxService.settSensitivSak("147729") }
-    }
-
-    @Test
-    fun `Git at vi ikke har skjermede personer i sedene, så skal vi ikke låse bucen`() {
-
-        val hendelse = javaClass.getResource("/sed/P_BUC_01.json")!!.readText()
-        val sedJson = javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
-
-        every { euxService.hentSedJson(any(), any()) } returns sedJson
-        every { personService.harAdressebeskyttelse(any()) } returns false
-        every { euxService.hentBucDokumenter(any()) } returns opprettDokumenter()
-
-        begrensInnsynService.begrensInnsyn(mapJsonToAny(hendelse))
-
-        verify(exactly = 2) { euxService.hentSedJson(any(), any()) }
-        verify(exactly = 2) { personService.harAdressebeskyttelse(any()) }
-        verify(exactly = 1) { euxService.hentBucDokumenter(any()) }
+        verify(exactly = 1) { euxService.hentBucDokumenter(rinaNr) }
         verify(exactly = 0) { euxService.settSensitivSak(any()) }
     }
 
