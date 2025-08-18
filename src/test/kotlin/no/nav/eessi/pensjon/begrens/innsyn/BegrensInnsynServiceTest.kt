@@ -28,8 +28,9 @@ internal class BegrensInnsynServiceTest {
     @ParameterizedTest(name = "{0}")
     @CsvSource(
         value = [
-            "for P_BUC og P2000, P_BUC_01.json, P2000-NAV_med_SPSF.json, true, 147729, 147729",
-            "for R_BUC og R_005, R_BUC_02.json, R_BUC_02-R005-AP.json, true, 147710, 147710"],
+            "P_BUC_01.json, P2000-NAV_med_SPSF.json, true, 147729, 147729",
+            "R_BUC_02.json, R_BUC_02-R005-AP.json, true, 147710, 147710"
+        ],
         nullValues = ["null"]
     )
     fun `Gitt at vi mottar en sed med skjermede personer, så skal vi begrense innsyn i hele bucen`(hendelse:String, sedJson:String, harbeskyttelse:Boolean, rinaNr: String, beskyttetRinaNr:String) {
