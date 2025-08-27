@@ -54,7 +54,7 @@ dependencies {
 	// eessi libs
 	implementation("no.nav.eessi.pensjon:ep-eux:2.5.12")
 	implementation("no.nav.eessi.pensjon:ep-metrics:2.1.4")
-	implementation("no.nav.eessi.pensjon:ep-logging:2.3.5")
+	implementation("no.nav.eessi.pensjon:ep-logging:2.3.8")
 	implementation("no.nav.eessi.pensjon:ep-personoppslag:13.3.19"){
 		exclude module: 'ep-eux'
 		exclude module: 'ep-logging'
