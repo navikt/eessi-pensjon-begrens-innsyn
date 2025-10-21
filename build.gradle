@@ -71,7 +71,7 @@ dependencies {
 	//nødvendig for validering av jwt og EnableJwtTokenValidationConfiguration
 	implementation("org.hibernate.validator:hibernate-validator:9.0.1.Final")
 
-	testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+	testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
 
 	//mock - test
 	testImplementation("org.mock-server:mockserver-netty:5.15.0") {
