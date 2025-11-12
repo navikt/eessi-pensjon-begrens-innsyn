@@ -35,7 +35,7 @@ class EuxServiceCacheTest {
     fun setup() {
         sedIds.forEach {
             every {
-                euxRestTemplate.getForObject("/buc/${RINASAK_ID}/sed/$it", String::class.java)
+                euxRestTemplate.getForObject("/cpi/buc${RINASAK_ID}/sed/$it", String::class.java)
             } returns javaClass.getResource("/sed/P2000-NAV_med_SPSF.json")!!.readText()
         }
     }
@@ -48,7 +48,7 @@ class EuxServiceCacheTest {
         }
         sedIds.distinct().forEach {
             verify(exactly = 1) {
-                euxRestTemplate.getForObject("/buc/${RINASAK_ID}/sed/$it", String::class.java)
+                euxRestTemplate.getForObject("/cpi/buc${RINASAK_ID}/sed/$it", String::class.java)
             }
         }
         println(cacheManager.getCache(SED_CACHE)?.nativeCache?.toJson())
