@@ -47,7 +47,7 @@ spec:
 
   image: {{ image }}
   ingresses:
-    - https://eessi-pensjon-begrens-innsyn-q2.intern.dev.nav.no
+    - https://eessi-pensjon-begrens-innsyn-q2.intern.dev.nav.no/cpi
   liveness:
     path: /internal/isalive
     port: 8080
