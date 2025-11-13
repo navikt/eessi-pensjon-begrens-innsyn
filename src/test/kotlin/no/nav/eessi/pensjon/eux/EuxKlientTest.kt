@@ -34,7 +34,7 @@ internal class EuxKlientTest{
 
     @Test
     fun `Gitt at et restkall fra euxKlient returnerer en BAD_REQUEST så skal retry gjøre samme kallet 3 ganger før den avslutter`(){
-        //val euxGetPath = "/cpi/buc111/sed/222"
+        //val euxGetPath = "/buc/111/sed/222"
 
         every {
             euxKlient.hentSedJson(eq("111"), eq("222"))
