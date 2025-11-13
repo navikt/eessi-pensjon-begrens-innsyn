@@ -33,7 +33,7 @@ spec:
     - name: PDL_URL
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: EUX_RINA_API_V1_URL
-      value: https://eux-rina-api-gcp-q2.intern.dev.nav.no/cpi
+      value: https://eux-rina-api-gcp-q2.intern.dev.nav.no
 
     - name: AZURE_APP_EUX_CLIENT_ID
       value: dev-gcp.eessibasis.eux-rina-api-q2
