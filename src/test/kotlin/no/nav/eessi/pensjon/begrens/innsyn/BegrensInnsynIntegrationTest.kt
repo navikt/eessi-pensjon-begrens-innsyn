@@ -3,9 +3,7 @@ package no.nav.eessi.pensjon.begrens.innsyn
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.eessi.pensjon.eux.EuxService
@@ -15,9 +13,9 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
@@ -120,14 +118,16 @@ class BegrensInnsynIntegrationTest {
 
     private fun settOppProducerTemplate(): KafkaTemplate<Int, String> {
         return KafkaTemplate<Int, String>(DefaultKafkaProducerFactory(KafkaTestUtils.producerProps(embeddedKafka.brokersAsString))).apply {
-            defaultTopic = SED_SENDT_TOPIC
+            setDefaultTopic(SED_SENDT_TOPIC)
         }
     }
 
     private fun settOppUtitlityConsumer(): KafkaMessageListenerContainer<String, String> {
-        val consumerProperties = KafkaTestUtils.consumerProps("eessi-pensjon-group2",
-                "false",
-                embeddedKafka)
+        val consumerProperties = KafkaTestUtils.consumerProps(
+            embeddedKafka,
+            "eessi-pensjon-group2",
+            false
+        )
         consumerProperties["auto.offset.reset"] = "earliest"
 
         val consumerFactory = DefaultKafkaConsumerFactory<String, String>(consumerProperties)

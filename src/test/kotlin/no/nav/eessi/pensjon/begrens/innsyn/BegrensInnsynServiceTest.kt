@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.begrens.innsyn
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
