@@ -39,8 +39,8 @@ dependencies {
 	implementation "org.springframework.kafka:spring-kafka:$springKafkaVersion"
 	implementation("org.springframework.retry:spring-retry:2.0.12")
 
-	implementation("com.fasterxml.jackson.core:jackson-core:2.20.1")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.core:jackson-core:$jacksonModuleKotlinVersion")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
