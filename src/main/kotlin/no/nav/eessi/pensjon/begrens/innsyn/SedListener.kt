@@ -27,8 +27,8 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
     private val latchSendt = CountDownLatch(1)
     private val latchMottatt = CountDownLatch(1)
 
-    private lateinit var consumeOutgoingSed: MetricsHelper.Metric
-    private lateinit var consumeIncomingSed: MetricsHelper.Metric
+    private var consumeOutgoingSed: MetricsHelper.Metric
+    private var consumeIncomingSed: MetricsHelper.Metric
 
     fun getLatchSendt(): CountDownLatch {
         return latchSendt
