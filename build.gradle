@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		kotlinVersion = '2.3.0'
-		springBootVersion = '4.0.0'
+		springBootVersion = '4.0.1'
 		springKafkaVersion = '4.0.1'
 		tokenSupportVersion = '6.0.0'
 		jacksonModuleKotlinVersion = '2.20.1'
@@ -27,7 +27,7 @@ version = '0.0.1'
 dependencies {
 	// Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
 	implementation(platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}"))
-	implementation("org.springframework.boot:spring-boot-starter-aop:3.5.8")
+	implementation("org.springframework.boot:spring-boot-starter-aop:3.5.9")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.yaml:snakeyaml:2.5") // Pga https://security.snyk.io/package/maven/org.yaml:snakeyaml
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
