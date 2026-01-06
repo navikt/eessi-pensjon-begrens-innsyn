@@ -20,6 +20,9 @@ spec:
       enabled: true
   accessPolicy:
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - host: eux-rina-api-gcp-q2.intern.dev.nav.no
         - host: pdl-api.dev-fss-pub.nais.io
