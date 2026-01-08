@@ -11,8 +11,6 @@ spec:
       destinations:
         - id: elastic
         - id: loki
-  secureLogs:
-    enabled: true
   envFrom:
     - secret: begrens-innsyn
   azure:
