@@ -45,9 +45,9 @@ spec:
       value: dev-fss.pdl.pdl-api
 
     - name: KAFKA_SEDSENDT_TOPIC
-      value: eessibasis.sedsendt-v1-q1
+      value: eessibasis.sedsendt-v1-q2
     - name: KAFKA_SEDMOTTATT_TOPIC
-      value: eessibasis.sedmottatt-v1-q1
+      value: eessibasis.sedmottatt-v1-q2
 
   image: {{ image }}
   ingresses:
