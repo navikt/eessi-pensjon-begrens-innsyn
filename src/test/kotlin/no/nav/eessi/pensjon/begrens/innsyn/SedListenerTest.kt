@@ -36,7 +36,6 @@ internal class SedListenerTest {
     }
 
     @Test
-    @Disabled
     fun `gitt en exception ved sedSendt så kastes RunTimeException og meldig blir IKKE ack'et`() {
         every { begrensInnsynService.begrensInnsyn(any()) } throws UncheckedIOException(IOException("JSON-issue"))
 
