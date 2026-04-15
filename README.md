@@ -6,10 +6,12 @@
 Begrens innsyn leser inn sendte og mottatte SEDer og finner alle norske fødselsnummer og sjekker om disse er fortrolig og strengt fortrolig (tidligere kode 7/6 ), 
 i disse tilfellene settes hele BUC til sensitiv, og kun personer med VIP rollen kan lese og skrive på SEDene i BUCen
 
-Omfanget starter fra applikasjonen leser melding på onprem-topiene:
+Omfanget starter fra applikasjonen leser melding på topic:
 
 eessi-basis-sedSendt-v1
 eessi-basis-sedMottatt-v1
+
+Henter så alle norske fødselsnummer i SED og sjekker disse opp mot PDL.
 
 Og slutter ved eux-rina-api tjeneste:
 
