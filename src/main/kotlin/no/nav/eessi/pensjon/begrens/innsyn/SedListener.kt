@@ -51,14 +51,17 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
         MDC.putCloseable("x_request_id", UUID.randomUUID().toString()).use {
             consumeOutgoingSed.measure {
                 logger.info("Innkommet sedSendt hendelse i partisjon: ${cr.partition()}, med offset: ${cr.offset()}")
+
+                if (profile != "prod") {
+                    logger.warn("Hopper over offset ${cr.offset()} i partisjon ${cr.partition()} grunnet testmiljø.")
+                    acknowledgment.acknowledge()
+                    latchSendt.countDown()
+                    return@measure
+                }
+
                 secureLog.debug("Hendelse sendt:\n${Fodselsnummer.vaskFnr(hendelse)}")
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
-
-                if (profile != "prod") {
-                    acknowledgment.acknowledge()
-                    return@measure
-                }
 
                 val offsetToSkip = listOf(70196L, 70197L, 70768L, 176379L, 350300L, 614499L, 614534L)
                 if (cr.offset() in offsetToSkip) {
