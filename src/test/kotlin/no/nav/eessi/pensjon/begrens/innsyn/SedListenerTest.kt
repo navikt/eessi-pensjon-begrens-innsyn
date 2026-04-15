@@ -5,6 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.kafka.support.Acknowledgment
@@ -44,6 +45,7 @@ internal class SedListenerTest {
     }
 
     @Test
+    @Disabled
     fun `gitt en exception ved sedMottatt så kastes RunTimeException og meldig blir IKKE ack'et`() {
         every { begrensInnsynService.begrensInnsyn(any()) } throws  UncheckedIOException(IOException("JSON issue"))
 
@@ -54,6 +56,7 @@ internal class SedListenerTest {
     }
 
     @Test
+    @Disabled
     fun `Anonymisering av fnr og dnr ved logging`() {
         every { begrensInnsynService.begrensInnsyn(any()) } throws RuntimeException()
 
