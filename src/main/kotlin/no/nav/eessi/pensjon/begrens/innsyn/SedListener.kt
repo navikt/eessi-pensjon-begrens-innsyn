@@ -55,11 +55,6 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 val sedHendelse = mapJsonToAny<SedHendelse>(hendelse)
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
-                if (profile != "prod") {
-                    acknowledgment.acknowledge()
-                    return@measure
-                }
-
                 val offsetToSkip = listOf(70196L, 70197L, 70768L, 176379L, 350300L, 614499L, 614534L)
                 if (cr.offset() in offsetToSkip) {
                     logger.warn("Hopper over offset: ${cr.offset()}, rinasakId> ${sedHendelse.rinaSakId}, id: ${sedHendelse.rinaDokumentId} grunnet feil.")
@@ -93,7 +88,7 @@ class SedListener(private val begrensInnsynService: BegrensInnsynService,
                 if (testMeldingIProdLogError(sedHendelse, acknowledgment)) return@measure
 
                 val offsetToSkip = listOf(814980L)
-                if (cr.offset() in offsetToSkip || sedHendelse.rinaSakId in listOf("4179656") || profile != "prod") {
+                if (cr.offset() in offsetToSkip || sedHendelse.rinaSakId in listOf("4179656")) {
                     logger.warn("Hopper over offset: ${cr.offset()}, rinasakId> ${sedHendelse.rinaSakId} grunnet feil.")
                     acknowledgment.acknowledge()
                     return@measure
