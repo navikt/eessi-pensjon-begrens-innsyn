@@ -50,7 +50,7 @@ dependencies {
 		exclude module: "tools.jackson.core:jackson-core"
 	}
 	configurations { all*.exclude group: 'commons-logging', module: 'commons-logging' }
-	implementation("org.slf4j:jcl-over-slf4j:2.0.17")
+	implementation("org.slf4j:jcl-over-slf4j:2.0.18")
 
 	//Auth
 	implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
