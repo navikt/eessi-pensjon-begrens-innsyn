@@ -38,7 +38,7 @@ class OAuth2Configuration(
             Optional.ofNullable(clientConfigurationProperties.registration["eux-credentials"])
                 .orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
         return RestTemplateBuilder()
-            .rootUri(euxUrl)
+            .baseUri(euxUrl)
             .additionalInterceptors(
                     bearerTokenInterceptor(clientProperties, oAuth2AccessTokenService!!),
                     IOExceptionRetryInterceptor(),

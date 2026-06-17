@@ -180,7 +180,7 @@ class BegrensInnsynIntegrationTest {
         @Bean
         fun downstreamClientCredentialsResourceRestTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate? {
             return restTemplateBuilder
-                .rootUri("https://localhost:${mockServer.localPort}")
+                .baseUri("https://localhost:${mockServer.localPort}")
                 .build()
         }
     }
